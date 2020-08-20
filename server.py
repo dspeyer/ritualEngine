@@ -11,6 +11,7 @@ import cv2
 
 from widgets.PhotoCollage import PhotoCollage
 from widgets.Histogram import Histogram
+from widgets.CrossWords import CrossWords
 
 defaultimg = np.zeros((64,64,3),'uint8')
 cv2.circle(defaultimg, (32,32), 24, (0,255,255), thickness=-1);
@@ -52,11 +53,12 @@ async def mkRitual(req):
         script = form['script']
     except KeyError:
         return web.Response(text='Bad Form',status=400)
+    page = int(form.get('page',1))
     print("good")
     if name in active:
         return web.Response(text='Duplicate',status=400)
     print("very good")
-    active[name] = struct(script=script, reqs={}, state=None, page=1,
+    active[name] = struct(script=script, reqs={}, state=None, page=page,
                           jpgs=[defaultjpg], jpgrats=[1])
     print("did the thing")
     return web.HTTPFound('/'+name+'/')
