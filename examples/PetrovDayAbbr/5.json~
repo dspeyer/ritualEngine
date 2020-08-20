@@ -1,8 +1,0 @@
-{
-    "widget": "Histogram",
-    "images": "selfies",
-    "inputbox": "#0000ff",
-    "resultbox": "#4a86e8",
-    "turnbox": "#ff00ff",
-    "initRange": [1980,2005]
-}
