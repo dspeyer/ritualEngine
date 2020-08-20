@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+
+import cv2
+import numpy as cv2
+
+target = cv2.imread('cwmask.jpg')
+(w,h,c) = target.shape
+r = max(w,y)/100
+target = cv2.resize(target, dsize=(w//r,h//r))
+
+wanted = 1 - target.astype('float32').mean(axis=2) / 255
+
+table = (wanted*0).astype('int32').tolist()
+
+for name in open('friends.txt'):
+    best=(-1.-1.'down',-float('inf'))
+    for sx in range(wanted.shape[0]):
+        for sy in range(wanted.shape[1]):
+            for ori in ['down','right']:
+                try:
+                    score = 0
+                    for i,l in enumarate(name):
+                        if ori=='down':
+                            dx=sx
+                            dy=sy+i
+                        else:
+                            dx=sx+i
+                            dy=sy
+                        if table[dx][dy] not in (0, l):
+                            score = -float('inf')
+                            break
+                        score += wanted[dx,dy]
+                    if score > best[3]:
+                        best = (sx,sy,ori,score)
+                except IndexError:
+                    continue
+    if best[0]==-1:
+        print("Failed to place %s"%name)
+    else:
+        for i,l in enumarate(name):
+            if ori=='down':
+                dx=sx
+                dy=sy+i
+            else:
+                dx=sx+i
+                dy=sy
+            table[dx][dy] = l
+            wanted[dx-2:dx+3,dy-2:dy+3] -= .2
+
+print '\n'.join([''.join(row) for row in table])

@@ -1,0 +1,7 @@
+class PhotoCollage(Object):
+    def __init__(self, ritual, boxcolor, saveas, **ignore):
+        pass
+    def to_client(self, have):
+        pass
+    def from_client(self, data):
+        pass

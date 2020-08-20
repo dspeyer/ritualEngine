@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <title>Web Ritual Control Page</title>
+    </head>
+    <body>
+        <h2>Join a ritual in progress:</h2>
+        <ul>
+            %list%
+        </ul>
+        <h2>Or start one:</h2>
+        <form action="/mkRitual" method="post">
+            Name: <input name="name" />
+            Script: <select name="script"> %scripts </select>
+            <input type="submit">
+        </form>
+    </body>
+</html>

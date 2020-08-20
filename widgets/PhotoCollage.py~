@@ -1,0 +1,117 @@
+import cv2
+import numpy as np
+import random
+
+CS=16
+
+class PhotoCollage(object):
+    def __init__(self, ritual, boxcolor, saveas, bigimage, **ignore):
+        self.boxcolor = boxcolor
+        self.saveto = ritual.__dict__[saveas] = {}
+        self.gs = 16 # TODO: tweak
+        self.map = np.zeros((self.gs,self.gs),'bool')
+        self.ts = self.gs
+        self.imgs = []
+        self.avg = 0
+        self.ritual = ritual
+        fn = 'examples/%s/%s' % (ritual.script, bigimage)
+        raw = cv2.imread(fn)
+        self.bigimage = cv2.resize(raw, dsize=(self.gs*CS,self.gs*CS))
+        
+    def to_client(self, have):
+        return { 'widget': 'PhotoCollage',
+                 'boxcolor': self.boxcolor,
+                 'gridsize': self.gs,
+                 'imgs': self.imgs }
+
+    def sq_img_from_file(self, jpg):
+        npjpg = np.asarray(bytearray(jpg), dtype="uint8")
+        img = cv2.imdecode(npjpg, cv2.IMREAD_COLOR)
+        (w,h,c) = img.shape
+        mx = max(w,h)
+        img2 = np.zeros((mx,mx,c),'uint8')
+        img2[(mx-w)//2:(mx+w)//2, (mx-h)//2:(mx+h)//2, :] = img
+        img3 = cv2.resize(img2, dsize=(CS,CS))
+        self.avg *= len(self.imgs) / (len(self.imgs)+1)
+        self.avg += img3.mean() / (len(self.imgs)+1)
+        return img3
+    
+    def from_client(self, data, ip):
+        imgid = len(self.ritual.jpgs)
+        jpg = data['img'].file.read()
+        self.ritual.jpgs.append(jpg)
+        img = self.sq_img_from_file(jpg)
+        self.saveto[ip] = imgid
+        opts = self.get_opts() + self.get_opts_via_shrink()
+        if not opts:
+            self.ts //= 2
+            opts = self.get_opts_via_shrink()
+        self.dbg = np.zeros((self.gs*CS+len(opts)*(CS+2)+5,self.gs*CS,3),'uint8')
+        dbgi = self.gs*CS + 2
+        self.dbg[:,:,2]=129
+        self.dbg[:self.gs*CS,:,:] = self.bigimage
+        bestopt = None
+        bestscore = float('inf')
+        print("-----Placing--------")
+        for opt in opts:
+            [x,y] = opt
+            comp = self.bigimage[x*CS:(x+self.ts)*CS,y*CS:(y+self.ts)*CS]
+            comp = cv2.resize(comp, (CS,CS))
+            imgfc = np.clip(img, self.avg-127, self.avg+127) - self.avg + 127
+            self.dbg[dbgi:dbgi+CS,1:1+CS,:] = img
+            self.dbg[dbgi:dbgi+CS,CS+2:2*CS+2,:] = imgfc
+            self.dbg[dbgi:dbgi+CS,2*CS+4:3*CS+4,:] = comp
+            score = ( imgfc.astype('float32') - img.astype('float32') ) ** 2
+            score = score.mean()
+            score **= 0.5
+            cv2.putText(self.dbg, '%.2f'%score, (dbgi,2*CS+3), fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=4, color=(0,0,0))
+            dbgi += CS+2
+            print(x,',',y,': ',score)
+            if score < bestscore:
+                bestopt = opt
+                bestscore = score
+        [x,y] = bestopt
+        print('picked ',x,',',y)
+        print('---------------------')
+        if self.map[x,y]:
+            os = self.ts * 2
+            tsx = (x//os)*os
+            tsy = (y//os)*os
+            print("looking to shrink image at ",tsx,tsy)
+            for img in self.imgs:
+                if img['x']==tsx and img['y']==tsy:
+                    self.mark(value=False, **img)
+                    img['size'] //= 2
+                    if x==tsx and y==tsy:
+                        img['x'] += img['size']
+                        img['y'] += img['size']
+                    self.mark(value=True, **img)
+                    print(img)
+                    break
+            else:
+                print("not found?")
+        self.imgs.append({'imgid':imgid,'x':x,'y':y,'size':self.ts})
+        self.mark(value=True, **self.imgs[-1])
+
+    def mark(self,x,y,size,value,**ignore):
+        self.map[x:x+size,y:y+size] = value
+        
+    def get_opts(self):
+        opts = []
+        for x in range(0,self.gs,self.ts):
+            for y in range(0,self.gs,self.ts):
+                if not self.map[x,y]:
+                    opts.append([x,y])
+        return opts
+
+    def get_opts_via_shrink(self):
+        opts = []
+        for img in self.imgs:
+            if img['size'] > self.ts:
+                for dx in range(2):
+                    for dy in range(2):
+                        opts.append([img['x']+dx*self.ts, img['y']+dy*self.ts])
+        return opts
+
+    def get_dbg(self):
+        return bytes(cv2.imencode('.PNG', self.dbg)[1])
