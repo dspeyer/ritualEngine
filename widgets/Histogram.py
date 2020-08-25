@@ -5,7 +5,7 @@ class Histogram(object):
     def __init__(self, ritual, boxColors, images, saveas, initRange=None, **ignore):
         self.ritual = ritual
         self.boxColors = boxColors
-        self.imageIds = ritual.__dict__[images]
+        self.imageIds = ritual.__dict__.get(images,{})
         if saveas not in self.ritual.__dict__:
             self.ritual.__dict__[saveas] = []
         self.data = self.ritual.__dict__[saveas]
@@ -19,11 +19,21 @@ class Histogram(object):
             # Should never happen
             self.x0 = 42
             self.w = 42
+        self.initiatives = []
 
     def from_client(self, data, ip):
+        x = data.get('x')
+        init = int(data['initiative'])
+        if x is not None:
+            return self.from_client_x(int(x),ip,init)
+        else:
+            return self.from_client_init(init)
+        
+    def from_client_x(self, x, ip, init):
+        self.initiatives = [ i for i in self.initiatives if i!=init ]
+        if x == -9999:
+            return
         imgId = self.imageIds.get(ip) or 0
-        print(data.keys())
-        x = int(data['x'])
         self.data.append({'x':x,'imgId':imgId})
         if x < self.x0:
             d = self.x0 - x
@@ -32,6 +42,10 @@ class Histogram(object):
         elif x >= self.x0 + self.w:
             self.w = (x - self.x0) + 1
 
+    def from_client_init(self, init):
+        self.initiatives.append(init)
+        self.initiatives.sort()
+            
     def to_client(self, have):
         WF = 15
         wi = int(np.ceil(self.w / WF))
@@ -66,7 +80,9 @@ class Histogram(object):
             "widget": "Histogram",
             "boxColors": self.boxColors,
             "imgs": outimgs,
-            "xaxes": xax
+            "xaxes": xax,
+            "initiatives": self.initiatives
         }
-            
-            
+
+    def subpagesame(self, subhave):
+        return int(subhave) == len(self.initiatives)

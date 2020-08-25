@@ -2,6 +2,7 @@ function putOnBox(elem, color) {
     let box = $('path[stroke="'+color+'"]')
     let rect = box[0].getBoundingClientRect();
     box.hide();
+    elem.css('position','absolute');
     for (let i of ['top','left','width','height']) {
         elem.css(i,rect[i]);
     }
@@ -9,27 +10,25 @@ function putOnBox(elem, color) {
 
 class Histogram {
     constructor({boxColors}) {
-        this.input = $('<input type="number">').css('position','absolute').appendTo($('body'));
+        this.page = 0;
+        this.input = $('<input type="number">').appendTo($('body'));
         putOnBox(this.input, boxColors.input);
-        this.content = $('<div>').css('position','absolute')
-                                 .css('border-bottom','1px white solid')
+        this.content = $('<div>').css('border-bottom','1px white solid')
                                  .appendTo($('body'));
         putOnBox(this.content, boxColors.result);
         this.hr = this.content.width() / this.content.height();
+        this.readiness = $('<div>').css({ color:'#7cc', background:'rgba(0,0,0,0.5)', 'text-align':'right' })
+                                   .appendTo($('body'));
+        putOnBox(this.readiness, boxColors.turn);
+        let initiative = Math.round(Math.random()*1e15); // Too big for birthday paradox, too small for FP trouble
+        this.initiative = initiative
+        $.post('widgetData', {initiative});
         this.imgs = [];
         this.xaxes = [];
         this.input.on('keyup', (ev)=>{
             if (ev.which == 13) {
                 let x = this.input.val();
-                let fd = new FormData();
-                fd.append('x', x);
-                $.ajax({
-                    type: 'POST',
-                    url: 'widgetData',
-                    data: fd,
-                    processData: false,
-                    contentType: false
-                });
+                $.post('widgetData', {x, initiative});
             }
         });
     }
@@ -69,10 +68,28 @@ class Histogram {
                              .css('border-left', '1px solid white') 
                              .appendTo(this.content) );
         }
+        let turn = data.initiatives.indexOf(this.initiative);
+        if (turn==-1) {
+            this.readiness.text('');
+        } else if (turn==0) {
+            this.readiness.text('It is your turn to tell');
+        } else if (turn==1) {
+            this.readiness.text("You're up next; be ready");
+        } else {
+            this.readiness.text("Your turn is in "+turn);
+        }
+        if (true) { // TODO: pick who has this power
+            $('<input type=button value="Skip">').
+                on('click',()=>{ $.post('widgetData',{initiative:data.initiatives[0],x:-9999}) }).
+                appendTo(this.readiness);
+        }
+        this.page = data.initiatives.length;
     }
+
     destroy() {
         this.content.remove();
         this.input.remove();
+        this.readiness.remove();
     }
 }
 

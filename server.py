@@ -81,7 +81,9 @@ async def status(req):
         return web.Response(status=404)
     ritual = active[name]
     have = int(req.query.get('have'))
-    if have:
+    subhave = req.query.get('subhave')
+    if ( have==ritual.page and
+         ( not ritual.state or not hasattr(ritual.state,'subpagesame') or ritual.state.subpagesame(subhave) ) ):
         sleepid += 1
         myid = sleepid
         sleeptask = create_task(sleep(25))

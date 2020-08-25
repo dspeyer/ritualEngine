@@ -1,5 +1,5 @@
 function dbg(txt) {
-    $('<div>').text(txt).css('color','white').appendTo($('body'));
+//    $('<div>').text(txt).css('color','white').appendTo($('body'));
 }
 
 class PhotoCollage {

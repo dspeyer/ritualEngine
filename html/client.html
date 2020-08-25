@@ -34,7 +34,7 @@
          var widgetClasses = {};
          async function ask() {
              $.ajax('status',{
-                 data:{have:page},
+                 data:{have:page,subhave:(state && state.page)},
                  success: async (data)=>{
                      if (data.page) {
                          if (data.page!=page && state) {
