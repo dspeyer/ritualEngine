@@ -19,7 +19,7 @@ class CrossWords {
                 $.post('widgetData', {name});
             }
         });
-        this.tableElem = $('<table cellspacing=0>').css('background','rgba(0,0,0,0.5)').appendTo($('body'));
+        this.tableElem = $('<table cellspacing=0 class=cw>').appendTo($('body'));
         putOnBox(this.tableElem, boxColors.content);
         this.table = [];
         for (let row of data) {
@@ -28,15 +28,24 @@ class CrossWords {
             this.table.push(trd);
             for (let cell of row) {
                 let td = $('<td>').attr('width',(100/data[0].length)+'%')
-                                  .css('font-size',(0.9*this.tableElem.height()/data.length)+'px')
-                                  .css('text-align','center')
-                                  .css('white-space','pre')
-                    .css('padding',0)
-                    .css('font-weight','bold')
                                   .appendTo(tr);
+                td.set = false;
                 trd.push(td);
             }
         }
+        $('<style>').text("table.cw {" +
+                          "  background: rgba(0,0,0,0.5); "+
+                          "} "+
+                          "table.cw td { " +
+                          "  font-size: " + (0.9*this.tableElem.height()/data.length)+"px; " +
+                          "  text-align: center; " +
+                          "  white-space: pre; " +
+                          "  padding: 0; " +
+                          "  font-weight: bold; " +
+                          "  position: relative; " +
+                          "}")
+                    .appendTo($('head'));
+
         console.log(this.table);
     }
     
@@ -47,6 +56,15 @@ class CrossWords {
                 let td = this.table[i][j];
                 td.css('color',datum.c);
                 td.text(datum.t);
+                if ( ! td.set && datum.t!=' ') {
+                    td.css('text-shadow','0 0 1px white');
+                    td.css('transform', 'scale(2)');
+                    window.setTimeout(()=>td.css('text-shadow','unset').css('transform','scale(1.9)'), 200);
+                    for (let t=1; t<5; t++) {
+                        window.setTimeout(()=>td.css('transform','scale(1.'+(9-t)+')'), 200+30*t);
+                    }
+                    td.set = true;
+                }
             }
         }
     }

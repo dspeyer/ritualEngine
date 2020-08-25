@@ -86,8 +86,12 @@ class CrossWords(object):
         if np.any( comp[1,:] * (comp[1,:]!=name) ):
             # print('    mismatch',comp[1,:],name)
             return -inf
-        return self.wanted[ori][sx,sy:ey].sum() - (self.table[ori][sx-2:sx+3,sy-2:ey+3]!=0).sum()/2
-
+        c0 = lambda x: (x>=0) and x or 0
+        wanted_spot = self.wanted[ori][sx,sy:ey].sum()
+        already_covered = (self.table[ori][c0(sx-2):sx+3,c0(sy-2):ey+3]!=0).sum()
+        vicinity = (self.table[ori][c0(sx-5):sx+6,c0(sy-5):ey+6]!=0).sum()
+        return wanted_spot - 0.5*already_covered - 0.2*vicinity
+        
     def place(self,sx,sy,ori,name):
         ey = sy + name.shape[0]
         self.table[ori][sx,sy:ey] = name
@@ -97,9 +101,9 @@ class CrossWords(object):
             else:
                 self.letters[l].append((sy+i,sx))
         c2m = self.target[ori][sx-1:sx+2,sy-1:ey+1]
-        color = c2m.mean(axis=(0,1)) / 4
-        rc = (np.random.random(3)*64).astype('uint8')
-        self.outcolor[ori][sx,sy:ey] = color + rc + 128
+        color = c2m.mean(axis=(0,1)) / 2
+        rc = (np.random.random(3)*32).astype('uint8')
+        self.outcolor[ori][sx,sy:ey] = color + rc + 95
 
     def to_client(self, have):
         data = []

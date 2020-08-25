@@ -37,12 +37,20 @@ async def ritualPage(req):
 
 async def getJs(req):
     fn = req.match_info.get('fn')
-    return web.Response(body=open('widgets/'+fn).read(), content_type='text/javascript', charset='utf-8');
+    return web.Response(body=open('widgets/'+fn).read(), content_type='text/javascript', charset='utf-8')
 
 async def jpg(req):
     name = req.match_info.get('name')
     imgid = req.match_info.get('id')
-    return web.Response(body=active[name].jpgs[int(imgid)], content_type='image/jpeg');
+    return web.Response(body=active[name].jpgs[int(imgid)], content_type='image/jpeg')
+
+async def background(req):
+    name = req.match_info.get('name')
+    sc = active[name].script
+    fn = active[name].background
+    path = 'examples/%s/%s'%(sc,fn)
+    content = open(path,'rb').read()
+    return web.Response(body=content, content_type='image/jpeg');   
 
 async def mkRitual(req):
     print("mkRitual")
@@ -57,8 +65,9 @@ async def mkRitual(req):
     print("good")
     if name in active:
         return web.Response(text='Duplicate',status=400)
+    opts = json.loads(open('examples/%s/index.json'%script).read())
     print("very good")
-    active[name] = struct(script=script, reqs={}, state=None, page=page,
+    active[name] = struct(script=script, reqs={}, state=None, page=page, background=opts['background'],
                           jpgs=[defaultjpg], jpgrats=[1])
     print("did the thing")
     return web.HTTPFound('/'+name+'/')
@@ -108,12 +117,18 @@ async def status(req):
     return web.Response(text=json.dumps(results), content_type='application/json')
 
 async def widgetData(req):
+    print("widgetData")
+    for k,v in req.headers.items():
+        print("  %s: %s"%(k,v))
     name = req.match_info.get('name','')
     if name not in active:
         return web.Response(status=404)
+    print("found")
     if not active[name].state:
         return web.Response(status=404)
+    print("found state")
     data = await req.post()
+    print("Data keys are %s"%data.keys())
     ip = req.headers['X-Forwarded-For']
     active[name].state.from_client(data=data,ip=ip)
     for i,task in active[name].reqs.items():
@@ -144,6 +159,7 @@ app.router.add_get('/{name}/', ritualPage)
 app.router.add_get('/widgets/{fn}', getJs)
 app.router.add_post('/mkRitual', mkRitual)
 app.router.add_get('/{name}/status', status)
+app.router.add_get('/{name}/bkg.jpg', background)
 app.router.add_post('/{name}/nextPage', nextPage)
 app.router.add_post('/{name}/widgetData', widgetData)
 app.router.add_get('/{name}/img/{id}.jpg', jpg)

@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import random
+from random import random
 
 CS=16
 
@@ -38,6 +38,8 @@ class PhotoCollage(object):
     
     def from_client(self, data, ip):
         imgid = len(self.ritual.jpgs)
+        print("Getting PhotoCollage Image Data")
+        print(data)
         jpg = data['img'].file.read()
         self.ritual.jpgs.append(jpg)
         img, rat = self.sq_img_from_file(jpg)
@@ -99,7 +101,13 @@ class PhotoCollage(object):
                     break
             else:
                 print("not found?")
-        self.imgs.append({'imgid':imgid,'x':x,'y':y,'size':self.ts})
+        (b,g,r) = self.bigimage[x*CS:(x+self.ts)*CS,y*CS:(y+self.ts)*CS,:].mean(axis=(0,1))
+        self.imgs.append( {'imgid':imgid,
+                           'x':x, 'y':y, # Swap because np/cv2 does everything sideways
+                           'r':r, 'g':g, 'b':b,
+                           'size':self.ts,
+                           'sm':random()/10+0.9, 'theta':random()*10-5 # Random parameters to avoid excess neatness
+        } )
         self.mark(value=True, **self.imgs[-1])
 
     def mark(self,x,y,size,value,**ignore):

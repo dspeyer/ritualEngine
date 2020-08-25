@@ -3,18 +3,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
 <g enable-background="new">
 <g>
-<clipPath id="cp114">
+<clipPath id="cp46">
 <path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
 </clipPath>
-<g clip-path="url(#cp114)">
-<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 Z " fill="#ffffff" fill-rule="evenodd"/>
+<g clip-path="url(#cp46)">
 <path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 97.3595 0 L 365662.6 0 L 365662.6 205739.99 L 97.3595 205739.99 Z " fill-opacity="0" fill-rule="evenodd"/>
-<clipPath id="cp115">
+<clipPath id="cp47">
 <path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 97.3595 0 L 365662.6 0 L 365662.6 205739.99 L 97.3595 205739.99 Z " fill-rule="evenodd"/>
 </clipPath>
-<g clip-path="url(#cp115)">
+<g clip-path="url(#cp47)">
 <g transform="matrix(.68994888,0,0,.6899488,.19165255,0)">
-<symbol id="im116" viewBox="0 0 1043 587">
+<symbol id="im48" viewBox="0 0 1043 587">
 <image width="1043" height="587" xlink:href="data:image/jpeg;base64,
 /9j/4AAQSkZJRgABAgAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkS
 Ew8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJ
@@ -2953,16 +2952,16 @@ L428Ruk1cRrNtG4Ls6Z9Kb0GtTmZ7O0jtYWCyqzorN5jqMAgfMoH3gTuGByMc81d
 l0Fbexi1GeCaOxmYpFLuGxyHAJDYwTgk47Y/Cuf3M2NxJwMDNWptVv59NgsJbyZ7
 SAsYoWclEJ64FIDas9K0G4tVknv/ACpCSChlHGCQD07jB/GiuZzRVE3P/9k="/>
 </symbol>
-<use xlink:href="#im116" x="0" y="0" width="1043" height="587"/>
+<use xlink:href="#im48" x="0" y="0" width="1043" height="587"/>
 </g>
 </g>
 <path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 97 -6799.9997 L 381142.04 -6799.9997 L 381142.04 221826.99 L 97 221826.99 Z " fill-opacity="0" fill-rule="evenodd"/>
-<clipPath id="cp117">
+<clipPath id="cp49">
 <path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 97 -6799.9997 L 381142.04 -6799.9997 L 381142.04 221826.99 L 97 221826.99 Z " fill-rule="evenodd"/>
 </clipPath>
-<g clip-path="url(#cp117)">
+<g clip-path="url(#cp49)">
 <g transform="matrix(.93761077,0,0,.9376107,.19094488,-13.385803)">
-<symbol id="im118" viewBox="0 0 800 480">
+<symbol id="im50" viewBox="0 0 800 480">
 <image width="800" height="480" xlink:href="data:image/jpeg;base64,
 /9j/4AAQSkZJRgABAgAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQO
 DwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcH
@@ -3712,7 +3711,7 @@ g/3VGBgfXcferdtrVvEsEz2LPqEEXlRzCbCdMKxTbyQP9oD1FHtJ9x8kexTgS/uL
 S5uYQWgtgplb5fkDHA/X0pb9dQ0+WNLseW7xrKoO0/KwyDxUuiasunQzwyW3nxTu
 pkXft3IFdSvQ9d+c9ttQ63qb6rcRzyoEkCFWIP3vmZs+33sfhT9pPuHJHsf/2Q=="/>
 </symbol>
-<use xlink:href="#im118" x="0" y="0" width="800" height="480"/>
+<use xlink:href="#im50" x="0" y="0" width="800" height="480"/>
 </g>
 </g>
 <path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 36654 32677 L 310410 32677 L 310410 199897 L 36654 199897 Z " fill-opacity="0" fill-rule="evenodd"/>

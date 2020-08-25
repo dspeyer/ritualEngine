@@ -33,19 +33,21 @@ class Histogram(object):
             self.w = (x - self.x0) + 1
 
     def to_client(self, have):
-        wi = int(np.ceil(self.w / 20))
+        WF = 15
+        wi = int(np.ceil(self.w / WF))
         y = np.zeros(self.w+wi, 'float32')
         outimgs = []
         for i in self.data:
             imgId = i['imgId']
             x = (i['x']-self.x0)
-            h = 5 * self.ritual.jpgrats[imgId]
+            w = 100 / WF
+            h = w * self.ritual.jpgrats[imgId]
             print(x,wi,x+wi)
             base = y[x:x+wi].max()
             y[x:x+wi] = base + h
             print(x,(x+wi),base)
             xm = x * 100 / (self.w+wi)
-            outimgs.append({'imgId':imgId, 'x':xm, 'y':float(base), 'w':5, 'h':h})
+            outimgs.append({'imgId':imgId, 'x':xm, 'y':float(base), 'w':w, 'h':h})
         dx = self.w / 10
         dxexp = 10 ** int(np.log(dx)/np.log(10))
         dxm = dx / dxexp
