@@ -97,6 +97,8 @@ A widget class may also define:
   up.  In practice, it's only needed if the client immediately sends
   data upon initialization.  This function takes a single argument,
   the subpage as a string.
+**`piece`** which answers web.Requests that match `/{name}/widgetPiece/{fn}`.
+**`destroy`** which is called when the page is departed.
 
 The widget class must be imported by `server.py`
 

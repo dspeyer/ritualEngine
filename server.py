@@ -44,6 +44,10 @@ async def jpg(req):
     imgid = req.match_info.get('id')
     return web.Response(body=active[name].jpgs[int(imgid)], content_type='image/jpeg')
 
+async def widgetPiece(req)
+    name = req.match_info.get('name')
+    return active[name].state.piece(req)
+
 async def background(req):
     name = req.match_info.get('name')
     sc = active[name].script
@@ -142,6 +146,8 @@ async def nextPage(req):
     name = req.match_info.get('name','')
     if name not in active:
         return web.Response(status=404)
+    if active[name].state and hasattr(active[name].state,'destroy'):
+        active[name].state.destroy()
     active[name].state = None
     active[name].page += 1
     for i,task in active[name].reqs.items():
@@ -164,6 +170,7 @@ app.router.add_get('/{name}/status', status)
 app.router.add_get('/{name}/bkg.jpg', background)
 app.router.add_post('/{name}/nextPage', nextPage)
 app.router.add_post('/{name}/widgetData', widgetData)
+app.router.add_get('/{name}/widgetPiece/{fn}', widgetPiece)
 app.router.add_get('/{name}/img/{id}.jpg', jpg)
 app.router.add_get('/{name}/dbg.png', stateDbg)
 
