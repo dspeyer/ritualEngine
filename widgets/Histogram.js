@@ -8,7 +8,7 @@ function putOnBox(elem, color) {
     }
 }    
 
-class Histogram {
+export class Histogram {
     constructor({boxColors}) {
         this.page = 0;
         this.input = $('<input type="number">').appendTo($('body'));
@@ -93,4 +93,3 @@ class Histogram {
     }
 }
 
-widgetClasses.Histogram = Histogram;

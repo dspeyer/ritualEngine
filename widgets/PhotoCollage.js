@@ -2,7 +2,7 @@ function dbg(txt) {
 //    $('<div>').text(txt).css('color','white').appendTo($('body'));
 }
 
-class PhotoCollage {
+export class PhotoCollage {
     constructor({boxcolor}) {
         let box = $('path[stroke="'+boxcolor+'"]');
         let rect = box[0].getBoundingClientRect();
@@ -122,4 +122,3 @@ class PhotoCollage {
     }
 }
 
-widgetClasses.PhotoCollage = PhotoCollage;

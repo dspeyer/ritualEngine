@@ -9,7 +9,7 @@ function putOnBox(elem, color) {
     }
 }    
 
-class CrossWords {
+export class CrossWords {
     constructor({boxColors, data}) {
         this.input = $('<input>').appendTo($('body'));
         putOnBox(this.input, boxColors.input);
@@ -75,4 +75,3 @@ class CrossWords {
     }
 }
 
-widgetClasses.CrossWords = CrossWords;

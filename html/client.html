@@ -48,7 +48,10 @@
                          $('#content svg').attr('width','').attr('height','');
                      }
                      if (data.widget) {
-                         if ( ! widgetClasses[data.widget] ) await $.getScript('/widgets/'+data.widget+'.js');
+                         if ( ! widgetClasses[data.widget] ) {
+                             let module = await import('/widgets/'+data.widget+'.js');
+                             widgetClasses[data.widget] = module[data.widget];
+                         }
                          if ( ! state ) state = new widgetClasses[data.widget](data);
                          state.from_server(data);
                      }

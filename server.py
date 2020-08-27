@@ -44,7 +44,7 @@ async def jpg(req):
     imgid = req.match_info.get('id')
     return web.Response(body=active[name].jpgs[int(imgid)], content_type='image/jpeg')
 
-async def widgetPiece(req)
+async def widgetPiece(req):
     name = req.match_info.get('name')
     return active[name].state.piece(req)
 
