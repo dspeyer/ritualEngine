@@ -12,6 +12,8 @@ import cv2
 from widgets.PhotoCollage import PhotoCollage
 from widgets.Histogram import Histogram
 from widgets.CrossWords import CrossWords
+from widgets.BucketSinging import BucketSinging
+
 
 defaultimg = np.zeros((64,64,3),'uint8')
 cv2.circle(defaultimg, (32,32), 24, (0,255,255), thickness=-1);
@@ -45,8 +47,9 @@ async def jpg(req):
     return web.Response(body=active[name].jpgs[int(imgid)], content_type='image/jpeg')
 
 async def widgetPiece(req):
-    name = req.match_info.get('name')
-    return active[name].state.piece(req)
+    # TODO: security
+    widget = globals()[req.match_info.get('widget')]
+    return widget.piece(req)
 
 async def background(req):
     name = req.match_info.get('name')
@@ -114,6 +117,8 @@ async def status(req):
                 data = json.loads(open(fn).read())
                 widget = globals()[data['widget']]
                 ritual.state = widget(ritual=ritual, **data)
+                if hasattr(ritual.state,'async_init'):
+                    await ritual.state.async_init()
             except Exception as e:
                 results['error'] = str(e)
         results['page'] = ritual.page
@@ -170,7 +175,7 @@ app.router.add_get('/{name}/status', status)
 app.router.add_get('/{name}/bkg.jpg', background)
 app.router.add_post('/{name}/nextPage', nextPage)
 app.router.add_post('/{name}/widgetData', widgetData)
-app.router.add_get('/{name}/widgetPiece/{fn}', widgetPiece)
+app.router.add_get('/widgets/{widget}/{fn}', widgetPiece)
 app.router.add_get('/{name}/img/{id}.jpg', jpg)
 app.router.add_get('/{name}/dbg.png', stateDbg)
 

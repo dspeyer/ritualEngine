@@ -53,7 +53,7 @@
                              widgetClasses[data.widget] = module[data.widget];
                          }
                          if ( ! state ) state = new widgetClasses[data.widget](data);
-                         state.from_server(data);
+                         await state.from_server(data);
                      }
                      if (data.error) {
                          alert(data.error);
