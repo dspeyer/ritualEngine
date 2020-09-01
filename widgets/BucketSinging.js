@@ -33,6 +33,7 @@ export class BucketSinging {
         "div.lyrics span { " +
         "  font-size: 16pt; " +
         "  text-align: center; " +
+        "  white-space: pre; " +
         "} " +
         "div.lyrics span.current { " +
         "  font-weight: bold; " +
@@ -48,7 +49,7 @@ export class BucketSinging {
     if (this.page == 'ready') return; // We are *not* idempotent
     if (client_ids.indexOf(this.client_id) == -1) return; // If the server hasn't heard us, we aren't ready
     this.page = 'ready';
-    $('<input type="button" value="Click here">').on('click',this.init_audio.bind(this, client_ids, server_url)).appendTo(this.div);
+    $('<input type="button" value="Click here to begin">').on('click',this.init_audio.bind(this, client_ids, server_url)).appendTo(this.div);
   }
 
   async init_audio(client_ids, server_url){
@@ -78,6 +79,11 @@ export class BucketSinging {
     this.offset = audio_offset;
 
     $('<div>').text('Audio offset: '+audio_offset).css({color:'white',position:'absolute',bottom:0}).appendTo($('body'));
+
+    // If alarms come through *before* we draw lyrics
+    this.savedAlarms = [];
+    bbs.event_hooks.push( (lid)=>{ this.savedAlarms.push(lid); } );
+
     
     await bbs.start({ input_device_id, output_device_id, audio_offset, server_url,
                       script_prefix: '/widgets/BucketSinging/',
@@ -118,13 +124,13 @@ export class BucketSinging {
 
     let lyricEls = {};
     if (this.offset > 0) {
-      let countdown = $('<div>').appendTo(this.div);
+      let countdown = $('<div>').css('text-align','center').appendTo(this.div);
       for (let i=-Math.floor(Math.min(this.offset,10)); i<0; i++) {
         lyricEls[i] = $('<span>').text(-i+'... ').appendTo(countdown);
       }
     }
     for (let i in this.lyrics) {
-      lyricEls[i] = $('<span>').text(this.lyrics[i]).css('white-space','pre').appendTo(this.div);
+      lyricEls[i] = $('<span>').text(this.lyrics[i]).appendTo(this.div);
     }
     if (this.offset == 0) {
       $('<p>').text('You are the lead singer.  Begin when ready.  Click anywhere in the '+
@@ -144,6 +150,11 @@ export class BucketSinging {
         cur++;
       });
     } else {
+      for (let i of this.savedAlarms) {
+        if (i in lyricEls) {
+          lyricEls[i].addClass('old');
+        }
+      }
       bbs.event_hooks.push( (lid)=>{
         this.div.find('span.current').removeClass('current').addClass('old');
         if (lyricEls[lid]) {
