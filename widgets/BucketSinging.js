@@ -71,17 +71,19 @@ export class BucketSinging {
     if ( ! ( input_device_id && output_device_id ) ) {
       alert("Did not find devices: "+devices);
     }
-    
-    const loopback = 'none';
-    const input_opts = {}
+
     let pos = client_ids.indexOf(this.client_id);
-    let audio_offset = Math.floor(Math.log(pos + 1) / Math.log(2)) * 40;
+    let audio_offset = Math.floor(Math.log(pos + 1) / Math.log(2)) * bbs.minimum_safe_offset_delta_s;
     console.log({pos,audio_offset,client_ids,cid:this.client_id,when:'in BucketSinging.js'});
     this.offset = audio_offset;
 
     $('<div>').text('Audio offset: '+audio_offset).css({color:'white',position:'absolute',bottom:0}).appendTo($('body'));
     
-    bbs.start({ input_device_id, output_device_id, input_opts, audio_offset, loopback, server_url });
+    await bbs.start({ input_device_id, output_device_id, audio_offset, server_url,
+                      script_prefix: '/widgets/BucketSinging/',
+                      loopback: 'none',
+                      input_opts: {}
+                    });
 
     setTimeout(this.calibrate.bind(this), 500);
   }
