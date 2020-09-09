@@ -1,17 +1,13 @@
+import { putOnBox } from '../../lib.js';
+
 function dbg(txt) {
 //    $('<div>').text(txt).css('color','white').appendTo($('body'));
 }
 
 export class PhotoCollage {
     constructor({boxcolor}) {
-        let box = $('path[stroke="'+boxcolor+'"]');
-        let rect = box[0].getBoundingClientRect();
-        box.hide();
-        this.div = $('<div>').css('position','absolute');
-        for (let i of ['top','left','width','height']) {
-            this.div.css(i,rect[i]);
-        }
-        $('body').append(this.div);
+        this.div = $('<div>').appendTo($('body'));
+        putOnBox(this.div, boxcolor);
         this.imgs = [];
         navigator.mediaDevices.enumerateDevices().then((list)=>{
             if (list.filter( (dev)=>(dev.kind=='videoinput') ).length) {

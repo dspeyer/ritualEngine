@@ -35,7 +35,14 @@ async def ritualPage(req):
     name = req.match_info.get('name','error')
     if name not in active:
         return web.Response(text="Not Found", status=404)
-    return web.Response(body=open('html/client.html').read().replace('%name%',name), content_type='text/html', charset='utf8')
+    return web.Response(body=open('html/client.html').read().replace('%name%',name),
+                        content_type='text/html', charset='utf8')
+
+async def loginPage(req):
+    return web.Response(body=open('html/login.html').read(), content_type='text/html')
+
+async def lib(req):
+    return web.Response(body=open('html/lib.js').read(), content_type='text/javascript')
 
 async def getJs(req):
     fn = req.match_info.get('fn')
@@ -167,6 +174,8 @@ async def stateDbg(req):
 
 app = web.Application()
 app.router.add_get('/', homepage)
+app.router.add_get('/login', loginPage) # For debugging
+app.router.add_get('/lib.js', lib)
 app.router.add_get('/{name}', ritualPage)
 app.router.add_get('/{name}/', ritualPage)
 app.router.add_get('/widgets/{fn}', getJs)

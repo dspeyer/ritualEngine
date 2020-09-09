@@ -1,15 +1,5 @@
 import * as bbs from './BucketSinging/app.js';
-
-// TODO: unify
-function putOnBox(elem, color) {
-    let box = $('path[stroke="'+color+'"]')
-    let rect = box[0].getBoundingClientRect();
-    box.hide();
-    elem.css('position','absolute');
-    for (let i of ['top','left','width','height']) {
-        elem.css(i,rect[i]);
-    }
-}    
+import { putOnBox } from '../../lib.js';
 
 export class BucketSinging {
   constructor({boxColor, lyrics}) {
