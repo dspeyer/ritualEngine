@@ -1,0 +1,300 @@
+<html>
+    <head>
+        <title>Please identify yourself before proceeding</title>
+
+        <style>
+         body {
+             background: url('https://secularsolstice.github.io/snow-bkg.jpg');
+             font-size: 14pt;
+             display: flex;
+             flex-direction: column;
+             justify-content: space-around;
+         }
+         form {
+             width: 30em;
+             max-width: 95%;
+             background: white;
+             margin: 1em auto;
+             border: 2px #777 outset;
+             padding: 1em;
+             position: relative;
+         }
+         input[type=text] {
+             width: 80%;
+         }
+         .fb_iframe_widget {
+             vertical-align: middle;
+         }
+         span.note {
+             font-size: 10pt;
+             color: #666;
+         }
+         .videoholder {
+             position: absolute;
+             top: 1em;
+             bottom: 1em;
+             left: 1em;
+             right: 1em;
+         }
+         #selfietaken {
+             font-size: 9pt;
+             font-family: sans-serif;
+         }
+         .photoBox {
+             width: 100px;
+             height: 100px;
+             position: relative;
+             overflow: hidden;
+             display: inline-block;
+             cursor: grab;
+         }
+         .photoBox {
+             user-drag: none; 
+             user-select: none;
+         }
+         .zoomBox {
+             display: inline-block;
+             vertical-align: top;
+         }
+         .mask {
+             position: absolute;
+             z-index: 1;
+             top: 0;
+             left: 0;
+             user-drag: none; 
+             -webkit-user-drag: none; 
+             user-select: none;
+         }
+        </style>
+
+        <script>
+         window.fbAsyncInit = function() {
+             FB.init({
+                 appId      : '669415713926457',
+                 cookie     : true,
+                 xfbml      : true,
+                 version    : 'v8.0'
+             });
+             
+             FB.AppEvents.logPageView();   
+             
+         };
+
+         (function(d, s, id){
+             var js, fjs = d.getElementsByTagName(s)[0];
+             if (d.getElementById(id)) {return;}
+             js = d.createElement(s); js.id = id;
+             js.src = "https://connect.facebook.net/en_US/sdk.js";
+             fjs.parentNode.insertBefore(js, fjs);
+         }(document, 'script', 'facebook-jssdk'));
+
+         var checkLoginState;
+         
+        </script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        
+        <script type="module">
+         import { getPhoto } from './lib.js';
+         
+         checkLoginState = function () {
+             FB.getLoginStatus(function(response) {
+                 if (response.status == 'connected') {
+                     FB.api('/me', {fields: ['name', 'picture', 'email']}, function(me) {
+                         $('#name').val(me.name);
+                         $('#email').val(me.email);
+                         $('#photourl').val(me.picture.data.url);
+                         urlchange();
+                     });
+                 }
+             });
+         };
+
+         function urlchange() {
+             $('#photo').attr('src', $('#photourl').val());
+             $('#psu').attr('checked', true);
+             initSize();
+         }
+
+         function filechange() {
+             console.log('filechange');
+             const file = $('#photofile')[0].files[0];
+             const reader = new FileReader();
+             reader.addEventListener("load", function () {
+                 $('#photofile')[0].dataurl = reader.result;
+                 $('#photo').attr('src', reader.result);
+             });
+             reader.readAsDataURL(file);
+             $('#psf').attr('checked', true);
+             initSize();
+         }
+
+         async function takePhoto() {
+             let holder = $('<div>').addClass('videoholder').appendTo($('form'));
+             let dataurl = await getPhoto(holder, 'dataurl');
+             holder.remove();
+             $('#photo').attr('src', dataurl);
+             $('#pss').attr('checked', true);
+             let st = $('#selfietaken').text('Taken')[0];
+             $('#selfie').val(dataurl);
+             initSize();
+         }
+
+         function radiochange() {
+             let val = $('input[name=photosource]:checked').val();
+             let url;
+             if (val == 'file') {
+                 url = $('#photofile')[0].dataurl;
+             } else if (val == 'url') {
+                 url = $('#photourl').val();
+             } else if (val == 'selfie') {
+                 url = $('#selfie').val();
+             } else {
+                 url = '';
+             }
+             $('#photo').attr('src',url);
+             initSize();
+         }
+
+         function sfromz(z) {
+             return Math.round( (Math.log(z)/Math.log(2))*5 );
+         }
+         function zfroms(s) {
+             return Math.pow(2, s/5);
+         }
+         
+         function initSize() {
+             setTimeout(()=>{
+                 let w = $('#photo').width();
+                 let h = $('#photo').height();
+                 let minz = Math.max(100/w, 100/h);
+                 let maxz = 4;
+                 $('#zoom').attr('min',sfromz(minz)).attr('max',sfromz(maxz)).val(-999999999);
+                 setZoom();
+             }, 100);
+         }
+
+         function setZoom() {
+             let z = zfroms($('#zoom').val());
+             let x = $('#x').val();
+             let y = $('#y').val();
+             $('#photoZoom').css('transform','scale('+z+')')
+                            .css('transform-origin','top left');
+             $('#photoTrans').css({position: 'relative', top: -y+'px', left: -x+'px'});
+         }
+
+         function initDrag(t) {
+             let mdx, mdy, mid=false;
+             t.on('mousedown', (ev)=>{
+                 mdx = ev.clientX;
+                 mdy = ev.clientY;
+                 mid = true;
+                 t.css('cursor','grabbing');
+                 ev.stopPropagation();
+             });
+             $(document.body).on('mousemove', (ev)=>{
+                 if ( ! mid) return;
+                 let nx = ev.clientX;
+                 let ny = ev.clientY;
+                 let dx = nx - mdx;
+                 let dy = ny - mdy;
+                 let vx = $('#x').val()-0;
+                 let vy = $('#y').val()-0;
+                 let z = zfroms($('#zoom').val());
+                 let w = $('#photo').width() * z;
+                 let h = $('#photo').height() * z;
+                 console.log({mdx,mdy,nx,ny,dx,dy,vx,vy,w,h});
+                 mdx = nx;
+                 mdy = ny;
+                 vx -= dx;
+                 vy -= dy;
+                 vx = Math.min(vx,w-100);
+                 vx = Math.max(vx,0);
+                 vy = Math.min(vy,h-100);
+                 vy = Math.max(vy,0);
+                 console.log({vx,vy});
+                 $('#x').val(vx);
+                 $('#y').val(vy);
+                 setZoom();
+             });
+             $(document.body).on('mouseup', (ev)=>{
+                 mid = false;
+                 t.css('cursor','grab');
+             });
+         }                 
+                 
+         
+         $(()=>{
+             $('#photofile').on('change', filechange);
+             $('#photourl').on('change', urlchange);
+             $('#photoselfie').on('click', takePhoto);
+             $('input[type=radio]').on('change', radiochange);
+             $('.zoomBox input').on('change', setZoom);
+             initDrag($('.photoBox'));
+         });
+        </script>
+    </head>
+    <body>
+
+        &nbsp;
+
+        <form method="POST" action="#" enctype="multipart/form-data">
+        
+            <p>We'll need a name and picture of you to show the other participants</p>
+
+            <p>Don't feel like typing?  We can autofill if you <fb:login-button
+                   data-size="medium"
+                   data-button-type="continue_with"
+                   scope="public_profile,email"
+                   onlogin="checkLoginState();">
+            </fb:login-button></p>
+
+            <p>
+                Email: <span class="note">(We're never going to email you, but we need a unique primary key)</span>
+                <input name="email" id="email" type="text">
+            </p>
+
+            
+            <p>
+                Name:<br>
+                <input name="name" id="name" type="text">
+            </p>
+
+            <p>
+                Picture:<br>
+                <div class="photoBox">
+                    <div id="photoTrans">
+                        <div id="photoZoom">
+                            <img id="photo">
+                        </div>
+                    </div>
+                    <img class="mask" src="data:image/png;base64,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">
+                </div>
+                <div class="zoomBox">
+                    Zoom<br>
+                    <input type="range" id="zoom" name="zoom"><br>
+                    Also drag the image to center your face.
+                    <input id="x" name="x" value="0" type="hidden">
+                    <input id="y" name="y" value="0" type="hidden">
+                </div> <br>
+
+                <input type="radio" name="photosource" value="file" id="psf">
+                <input type="file" id="photofile" name="photofile"><br>
+
+                <input type="radio" name="photosource" value="url" id="psu"> URL:
+                <input id="photourl" name="photourl" type="text"><br>
+
+                <input type="radio" name="photosource" value="selfie" id="pss">
+                <input type="button" id="photoselfie" value="Take a Selfie Right Now">
+                <input type="hidden" name="selfie" id="selfie">
+                <span id="selfietaken"></span> <br>
+            </p>
+            
+            <input type="submit" value="Proceed">
+            
+        </form>
+
+        &nbsp;
+        
+    </body>
+</html>

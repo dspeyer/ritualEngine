@@ -18,7 +18,7 @@ export class PhotoCollage {
         });
     }
     async getPhoto() {
-        let blob = await getPhoto(this.div);
+        let blob = await getPhoto(this.div, 'blob');
         let fd = new FormData();
         fd.append('img', blob);
         $.ajax({

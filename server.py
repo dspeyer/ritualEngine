@@ -3,9 +3,10 @@
 from glob import glob
 from os import path
 import json
+from base64 import b64decode
 
 from asyncio import run, create_task, sleep, CancelledError
-from aiohttp import web
+from aiohttp import web, ClientSession
 import numpy as np
 import cv2
 
@@ -16,7 +17,7 @@ from widgets.BucketSinging import BucketSinging
 
 
 defaultimg = np.zeros((64,64,3),'uint8')
-cv2.circle(defaultimg, (32,32), 24, (0,255,255), thickness=-1);
+cv2.circle(defaultimg, (32,32), 24, (0,255,255), thickness=-1)
 defaultjpg = bytes(cv2.imencode('.JPG', defaultimg)[1])
 
 class struct:
@@ -38,8 +39,52 @@ async def ritualPage(req):
     return web.Response(body=open('html/client.html').read().replace('%name%',name),
                         content_type='text/html', charset='utf8')
 
-async def loginPage(req):
+async def dbgLoginPage(req):
     return web.Response(body=open('html/login.html').read(), content_type='text/html')
+
+async def getAvatar(form):
+    for k in form:
+        print('  %s: "%s" %s'%(k,form[k],type(form[k])))
+    if form['photosource'] == 'file':
+        jpg = form['photofile'].file.read()
+        print('fileok')
+    elif form['photosource'] == 'selfie':
+        dataurl = form['selfie']
+        header, encoded = dataurl.split(",", 1)
+        jpg = b64decode(encoded)
+        print('selfieok')
+    elif form['photosource'] == 'url':
+        url = form['photourl']
+        client = ClientSession()
+        resp = await client.get(url)
+        jpg = await resp.read()
+        print('urlok')
+    else:
+        raise ValueError("Unrecognized photosource '%s'"%form['photosource'])
+    npjpg = np.asarray(bytearray(jpg), dtype="uint8")
+    img = cv2.imdecode(npjpg, cv2.IMREAD_COLOR)
+    (w,h,_) = img.shape
+    z = float(form['zoom'])
+    z = 2 ** (z/5)
+    print(w,h,z)
+    img = cv2.resize(img, dsize=(int(h*z), int(w*z)))
+    print('img.shape',img.shape)
+    x = int(float(form['x']))
+    y = int(float(form['y']))
+    print('x,y',x,y)
+    img = img[y:y+100, x:x+100]
+    print('img.shape',img.shape)
+    alpha = img[:,:,0:1] * 0
+    cv2.circle(alpha, (50,50), 50, (255,), thickness=-1)
+    img = np.concatenate((img, alpha), axis=2)
+    return bytes(cv2.imencode('.PNG', img)[1])
+
+async def dbgLogin(req):
+    for k,v in req.raw_headers:
+        print('%s: %s'%(k,v))
+    form = await req.post()
+    img = await getAvatar(form)
+    return web.Response(body=img, content_type='image/png')    
 
 async def lib(req):
     return web.Response(body=open('html/lib.js').read(), content_type='text/javascript')
@@ -174,7 +219,8 @@ async def stateDbg(req):
 
 app = web.Application()
 app.router.add_get('/', homepage)
-app.router.add_get('/login', loginPage) # For debugging
+app.router.add_get('/login', dbgLoginPage)
+app.router.add_post('/login', dbgLogin)
 app.router.add_get('/lib.js', lib)
 app.router.add_get('/{name}', ritualPage)
 app.router.add_get('/{name}/', ritualPage)
