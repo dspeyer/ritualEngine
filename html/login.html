@@ -149,6 +149,8 @@
                  url = $('#photourl').val();
              } else if (val == 'selfie') {
                  url = $('#selfie').val();
+             } else if (val == 'keep') {
+                 url = '/avatar/' + $('#psk').attr('hash') + '.png';
              } else {
                  url = '';
              }
@@ -223,7 +225,20 @@
              });
          }                 
                  
-         
+         async function lookupEmail() {
+             let email = $('#email').val();
+             let data = await new Promise((res)=>$.ajax('/userinfo/'+email, {success:res}));
+             if (data.found) {
+                 $('#name').val(data.name);
+                 $('#keepphoto').show();
+                 $('#psk').attr('checked',true).attr('hash',data.hash);
+                 radiochange();
+             } else {
+                 $('#keepphoto').hide();
+                 $('#psk').attr('checked',false);
+             }
+         }
+                 
          $(()=>{
              $('#photofile').on('change', filechange);
              $('#photourl').on('change', urlchange);
@@ -231,6 +246,7 @@
              $('input[type=radio]').on('change', radiochange);
              $('.zoomBox input').on('change', setZoom);
              initDrag($('.photoBox'));
+             $('#email').on('change', lookupEmail);
          });
         </script>
     </head>
@@ -288,6 +304,12 @@
                 <input type="button" id="photoselfie" value="Take a Selfie Right Now">
                 <input type="hidden" name="selfie" id="selfie">
                 <span id="selfietaken"></span> <br>
+
+                <div id="keepphoto" style="display:none;">
+                    <input type="radio" name="photosource" value="keep" id="psk">
+                    Keep Existing Photo
+                </div>
+                
             </p>
             
             <input type="submit" value="Proceed">

@@ -75,7 +75,7 @@ async def ritualPage(req):
 async def dbgLoginPage(req):
     return web.Response(body=open('html/login.html').read(), content_type='text/html')
 
-async def getAvatar(form):
+async def getAvatar(form, rid=None):
     if form['photosource'] == 'file':
         jpg = form['photofile'].file.read()
     elif form['photosource'] == 'selfie':
@@ -87,6 +87,8 @@ async def getAvatar(form):
         client = ClientSession()
         resp = await client.get(url)
         jpg = await resp.read()
+    elif form['photosource'] == 'keep':
+        return users[rid].img
     else:
         raise ValueError("Unrecognized photosource '%s'"%form['photosource'])
     npjpg = np.asarray(bytearray(jpg), dtype="uint8")
@@ -114,12 +116,23 @@ async def ritualPageLogin(req):
     form = await req.post()
     email = form['email']
     name = form['name']
-    img = await getAvatar(form)
     rid = np.base_repr(hash(email), 36)
+    img = await getAvatar(form, rid)
     users[rid] = struct(name=name, img=img)
     res = web.HTTPFound(req.url)
     res.set_cookie('ritLogin', rid)
     return res
+
+async def userinfo(req):
+    email = req.match_info.get('email')
+    rid = np.base_repr(hash(email), 36)
+    if rid in users:
+        out = { 'found': True,
+                'hash': rid,
+                'name': users[rid].name }
+    else:
+        out = { 'found': False }
+    return web.Response(text=json.dumps(out), content_type="text/json")
 
 async def displayAvatar(req):
     user = req.match_info.get('user')
@@ -294,6 +307,7 @@ app.router.add_get('/widgets/{widget}/{fn}', widgetPiece)
 app.router.add_get('/{name}/img/{id}.jpg', jpg)
 app.router.add_get('/{name}/dbg.png', stateDbg)
 app.router.add_get('/avatar/{user}.png', displayAvatar)
+app.router.add_get('/userinfo/{email}', userinfo)
 
 
 web.run_app(app)
