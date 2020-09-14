@@ -2,13 +2,6 @@ Each participant does some talking and then sends a value.  The values
 form a histogram.  Each participant is represented by a photo they
 already uploaded, or, if not available, a yellow circle.
 
-To allow users to go in an order, each client "rolls initiative".  The
-server then keeps track of all initiatives that haven't gone yet.
-This is robust against most weird things that could happen with
-clients, except that a client that disappears (e.g. by reloading the
-page) will keep its place in the initiative order and need to be
-skipped manually.
-
 ## Parameters
 
   * widget: "Histogram",
@@ -16,7 +9,7 @@ skipped manually.
   * boxColors: Colors of boxes in the svg
       * input: Where to put the value input box
       * result: Where to draw the graph (will overhang the bottom a little)
-      * turn: Where to put the "it is your turn to talk" box
+      * turn: Where to put the "it is your turn to talk" box (no longer used)
     },
   * saveas: tag to save data in, since we might want it later.  Also
             tag to load old data from.
@@ -26,16 +19,8 @@ skipped manually.
 
 ## Upward Protocol
 
-  * initiative: The initiative of the client being spoken of, usually
-                the one speaking
   * x: The value to take a histogram of
 
-If x is absent, this tells the server that a client of this initiative
-exists.
-
-If x is -9999 (a value which will hopefully never be used for real),
-nothing is added to the histogram, but the listed initiative is
-treated as gone anyway.
 
 ## Downward Protocol
 
@@ -51,9 +36,7 @@ treated as gone anyway.
   * xaxes: X axes labels, a list of:
      * x: Where to put the label, again a percentage
      * v: Value the label corresponds to, drawn as text
-  * initiatives: List of initiatives which have not gone yet
 
 ## Subpaging
 
-We use number of not-yet-gone initiatives as a subpage.  This is
-needed to get startup working.
+We use number of images as a subpage.  It may not actually be needed.

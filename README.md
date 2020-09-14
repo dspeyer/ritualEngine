@@ -63,6 +63,18 @@ The Video API used in PhotoCollage is https only.  The server does not
 support https, so it must be reverse-proxied by something that does
 (tested in Apache, but nginx is probably easier).
 
+## Logging In
+
+If the ritual requires logins, they are handled by setting a
+`ritLogin` cookie.  This id is a base 36 hash of the email.  There is
+no password or similar security.
+
+Ritual ids are associated with circular photos and display names
+stored in the server.
+
+If a user tries to connect to a login-requiring ritual without a
+cookie, they will be shown a login page.
+
 ## Widget API
 
 A widget is defined with three files, all in the `widgets` directory,
@@ -82,9 +94,9 @@ class must have three functions:
 
 **`from_client`** which receives data.  It gets two arguments, `data`
   which is a `MultiDictProxy` of client data straight from `aiohttp`,
-  an `ip` which is the client's ip as a string.  This function does
-  not return data to the client.  It modifies the widget's state for
-  when `to_client` gets called.
+  an `user` which is the client's ritual id or "anon"+ip as a string.
+  This function does not return data to the client.  It modifies the
+  widget's state for when `to_client` gets called.
 
 **`to_client`** which sends data.  It returns a python object which
   will go to the client side.  The object must be json-encodable.

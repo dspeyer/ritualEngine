@@ -9,18 +9,16 @@ export class Histogram {
                                  .appendTo($('body'));
         putOnBox(this.content, boxColors.result);
         this.hr = this.content.width() / this.content.height();
-        this.readiness = $('<div>').css({ color:'#7cc', background:'rgba(0,0,0,0.5)', 'text-align':'right' })
-                                   .appendTo($('body'));
-        putOnBox(this.readiness, boxColors.turn);
-        let initiative = Math.round(Math.random()*1e15); // Too big for birthday paradox, too small for FP trouble
-        this.initiative = initiative
-        $.post('widgetData', {initiative});
+        if (boxColors.turn) { // No longer used, but hide the box
+            let readiness = $('<div>').appendTo($('body'));
+            putOnBox(readiness, boxColors.turn);
+        }
         this.imgs = [];
         this.xaxes = [];
         this.input.on('keyup', (ev)=>{
             if (ev.which == 13) {
                 let x = this.input.val();
-                $.post('widgetData', {x, initiative});
+                $.post('widgetData', {x});
             }
         });
     }
@@ -60,22 +58,7 @@ export class Histogram {
                              .css('border-left', '1px solid white') 
                              .appendTo(this.content) );
         }
-        let turn = data.initiatives.indexOf(this.initiative);
-        if (turn==-1) {
-            this.readiness.text('');
-        } else if (turn==0) {
-            this.readiness.text('It is your turn to tell');
-        } else if (turn==1) {
-            this.readiness.text("You're up next; be ready");
-        } else {
-            this.readiness.text("Your turn is in "+turn);
-        }
-        if (true) { // TODO: pick who has this power
-            $('<input type=button value="Skip">').
-                on('click',()=>{ $.post('widgetData',{initiative:data.initiatives[0],x:-9999}) }).
-                appendTo(this.readiness);
-        }
-        this.page = data.initiatives.length;
+        this.page = data.imgs.length;
     }
 
     destroy() {

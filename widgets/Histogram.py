@@ -19,21 +19,10 @@ class Histogram(object):
             # Should never happen
             self.x0 = 42
             self.w = 42
-        self.initiatives = []
 
-    def from_client(self, data, ip):
-        x = data.get('x')
-        init = int(data['initiative'])
-        if x is not None:
-            return self.from_client_x(int(x),ip,init)
-        else:
-            return self.from_client_init(init)
-        
-    def from_client_x(self, x, ip, init):
-        self.initiatives = [ i for i in self.initiatives if i!=init ]
-        if x == -9999:
-            return
-        imgId = self.imageIds.get(ip) or 0
+    def from_client(self, data, user):
+        x = int(data.get('x'))
+        imgId = self.imageIds.get(user) or 0
         self.data.append({'x':x,'imgId':imgId})
         if x < self.x0:
             d = self.x0 - x
@@ -41,10 +30,9 @@ class Histogram(object):
             self.w += d
         elif x >= self.x0 + self.w:
             self.w = (x - self.x0) + 1
+        if hasattr(self.ritual,'participants') and user==self.ritual.participants[0]:
+            self.ritual.rotateSpeakers();
 
-    def from_client_init(self, init):
-        self.initiatives.append(init)
-        self.initiatives.sort()
             
     def to_client(self, have):
         WF = 15
@@ -80,9 +68,8 @@ class Histogram(object):
             "widget": "Histogram",
             "boxColors": self.boxColors,
             "imgs": outimgs,
-            "xaxes": xax,
-            "initiatives": self.initiatives
+            "xaxes": xax
         }
 
     def subpagesame(self, subhave):
-        return int(subhave) == len(self.initiatives)
+        return int(subhave) == len(self.data)

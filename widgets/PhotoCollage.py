@@ -36,7 +36,7 @@ class PhotoCollage(object):
         self.avg += img3.mean() / (len(self.imgs)+1)
         return img3, w/h
     
-    def from_client(self, data, ip):
+    def from_client(self, data, user):
         imgid = len(self.ritual.jpgs)
         print("Getting PhotoCollage Image Data")
         print(data)
@@ -44,7 +44,7 @@ class PhotoCollage(object):
         self.ritual.jpgs.append(jpg)
         img, rat = self.sq_img_from_file(jpg)
         self.ritual.jpgrats.append(rat)
-        self.saveto[ip] = imgid
+        self.saveto[user] = imgid
         opts = self.get_opts() + self.get_opts_via_shrink()
         opts = self.clean(opts)
         if not opts:

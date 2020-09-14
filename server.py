@@ -248,8 +248,11 @@ async def widgetData(req):
     print("found state")
     data = await req.post()
     print("Data keys are %s"%data.keys())
-    ip = req.headers['X-Forwarded-For']
-    active[name].state.from_client(data=data,ip=ip)
+    login = req.cookies.get('ritLogin')
+    if not login:
+        ip = req.headers['X-Forwarded-For']
+        login = 'anon' + ip
+    active[name].state.from_client(data=data,user=login)
     for i,task in active[name].reqs.items():
         print("Cancelling %d"%i)
         task.cancel()
