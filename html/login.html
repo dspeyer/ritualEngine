@@ -113,7 +113,7 @@
          function urlchange() {
              $('#photo').attr('src', $('#photourl').val());
              $('#psu').attr('checked', true);
-             initSize();
+             $('#photo').on('load', initSize);
          }
 
          function filechange() {
