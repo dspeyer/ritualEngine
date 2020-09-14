@@ -23,20 +23,30 @@
          body {
              background-color: black;
          }
-         #next {
+         #ctrls {
              position: absolute;
              right: 0;
              bottom: 0;
              z-index: 1;
+             display: none;
          }
         </style>
     </head>
     <body>
         <div id="content" class="content %cclass%"></div>
         <div id="participants" class="participants"></div>
-        <input type="button" id="next" value="▶">
+        <div id="ctrls">
+            <input type="button" id="prev" value="‎◀">
+            <input type="button" id="skip" value="‎S">
+            <input type="button" id="next" value="▶">
+        </div>
         <script>
-         $('#next').click(()=>{ $.post('nextPage'); });
+         if (%islead%) {
+             $('#ctrls').show();
+             $('#prev').click(()=>{ $.post('prevPage'); });
+             $('#skip').click(()=>{ $.post('skipSpeaker'); });
+             $('#next').click(()=>{ $.post('nextPage'); });
+         }
          let name = '%name%';
          document.title = name;
          let page = 0;

@@ -24,6 +24,15 @@ class struct:
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
+class Ritual(struct):
+    def __init__(self, **kwargs):
+        super(Ritual, self).__init__(**kwargs)
+    def rotateSpeakers(self):
+        if hasattr(self,'participants') and len(self.participants)>1:
+            first = self.participants[0]
+            self.participants = self.participants[1:]
+            self.participants.append(first)
+
 active = {}
 users = {}
 
@@ -44,18 +53,23 @@ async def ritualPage(req):
     name = req.match_info.get('name','error')
     if name not in active:
         return web.Response(text="Not Found", status=404)
+    islead = req.url.path.endswith('/lead')
     if hasattr(active[name],'participants'):
         login = req.cookies.get('ritLogin')
         if login and login in users:
             if login not in active[name].participants:
-                active[name].participants.append(login)
+                if islead:
+                    active[name].participants.insert(0,login)
+                else:
+                    active[name].participants.append(login)
                 for i,task in active[name].reqs.items():
                     task.cancel()
         else:
             return web.Response(body=open('html/login.html').read(), content_type='text/html')            
     return web.Response(body=tpl('html/client.html',
                                  name=name,
-                                 cclass=hasattr(active[name],'participants') and 'shrunk' or ''),
+                                 cclass=hasattr(active[name],'participants') and 'shrunk' or '',
+                                 islead=str(islead).lower()),
                         content_type='text/html', charset='utf8')
 
 async def dbgLoginPage(req):
@@ -151,7 +165,7 @@ async def mkRitual(req):
         return web.Response(text='Duplicate',status=400)
     opts = json.loads(open('examples/%s/index.json'%script).read())
     print("very good")
-    active[name] = struct(script=script, reqs={}, state=None, page=page, background=opts['background'],
+    active[name] = Ritual(script=script, reqs={}, state=None, page=page, background=opts['background'],
                           jpgs=[defaultjpg], jpgrats=[1])
     if opts['showParticipants']:
         active[name].participants = []
@@ -228,18 +242,31 @@ async def widgetData(req):
         task.cancel()
     return web.Response(status=204)    
 
-async def nextPage(req):
+async def nextOrPrevPage(req):
     name = req.match_info.get('name','')
     if name not in active:
         return web.Response(status=404)
+    isnext = req.url.path.endswith('/nextPage')
     if active[name].state and hasattr(active[name].state,'destroy'):
         active[name].state.destroy()
     active[name].state = None
-    active[name].page += 1
+    active[name].page += (isnext and 1 or -1)
+    if isnext:
+        active[name].rotateSpeakers()
     for i,task in active[name].reqs.items():
         print("Cancelling %d"%i)
         task.cancel()
-    return web.HTTPFound('/'+name+'/')
+    return web.Response(status=204)
+
+async def skipSpeaker(req):
+    name = req.match_info.get('name','')
+    if name not in active:
+        return web.Response(status=404)
+    active[name].rotateSpeakers()
+    for i,task in active[name].reqs.items():
+        print("Cancelling %d"%i)
+        task.cancel()
+    return web.Response(status=204)
 
 async def stateDbg(req):
     name = req.match_info.get('name','')
@@ -253,12 +280,16 @@ app.router.add_post('/login', dbgLogin)
 app.router.add_get('/lib.js', lib)
 app.router.add_get('/{name}/partake', ritualPage)
 app.router.add_post('/{name}/partake', ritualPageLogin)
+app.router.add_get('/{name}/lead', ritualPage)
+app.router.add_post('/{name}/lead', ritualPageLogin)
 app.router.add_get('/widgets/{fn}', getJs)
 app.router.add_post('/mkRitual', mkRitual)
 app.router.add_get('/{name}/status', status)
 app.router.add_get('/{name}/bkg.jpg', background)
-app.router.add_post('/{name}/nextPage', nextPage)
+app.router.add_post('/{name}/nextPage', nextOrPrevPage)
+app.router.add_post('/{name}/prevPage', nextOrPrevPage)
 app.router.add_post('/{name}/widgetData', widgetData)
+app.router.add_post('/{name}/skipSpeaker', skipSpeaker)
 app.router.add_get('/widgets/{widget}/{fn}', widgetPiece)
 app.router.add_get('/{name}/img/{id}.jpg', jpg)
 app.router.add_get('/{name}/dbg.png', stateDbg)
