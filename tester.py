@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
-from random import shuffle
+from random import shuffle, random, choice
 from time import sleep
 from glob import glob
 
@@ -11,6 +11,7 @@ parser = argparse.ArgumentParser(description='Send POSTS to test widgets.')
 parser.add_argument('-u', metavar='URL', help='URL for the slide deck')
 parser.add_argument('-n', metavar='namefile', nargs='?', help='Send names from the file')
 parser.add_argument('-p', metavar='picturedir', nargs='?', help='Send images from the directory')
+parser.add_argument('-a', metavar='avatardir', nargs='?', help='Send avatar images from the directory')
 parser.add_argument('-c', metavar='count', nargs='?', type=int, help='Count to send')
 
 args = parser.parse_args()
@@ -36,3 +37,23 @@ if args.p:
         if args.c and i >= args.c-1:
             break
         sleep(.5)
+
+if args.a:
+    fns = glob(args.a+'/*.jpg')
+    shuffle(fns)
+    for i,fn in enumerate(fns):
+        print("sending '%s'"%fn)
+        jpg = open(fn,'rb').read()
+        files = { 'photofile': ('blob', jpg, 'image/jpeg') }
+        data = {
+            'email': '%f@mailinator.com'%(random()),
+            'name': choice(['Alice','Bob','Carol','Eve'])+' '+fn.split('/')[-1].split('_')[0],
+            'zoom': 0,
+            'x': 0,
+            'y': 0,
+            'photosource': 'file'
+        }
+        requests.post(args.u+'/partake', data=data, files=files)
+        if args.c and i >= args.c-1:
+            break
+        sleep(0.5)

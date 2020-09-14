@@ -25,40 +25,54 @@ class struct:
         self.__dict__.update(kwargs)
 
 active = {}
+users = {}
 
+# TODO: real templating system?
+def tpl(fn, **kwargs):
+    s = open(fn).read()
+    for k,v in kwargs.items():
+        s = s.replace('%'+k+'%', v)
+    return s
+    
 async def homepage(req):
-    l = '\n'.join([ '<li><a href="/%s/">%s (%s)</a>'%(x,x,active[x].script) for x in active.keys() ])
+    l = '\n'.join([ '<li><a href="/%s/partake">%s (%s)</a>'%(x,x,active[x].script) for x in active.keys() ])
     s = '\n'.join([ '<option>%s</option>'%(x.replace('examples/','')) for x in glob('examples/*') ])
-    html = open('html/index.html').read().replace('%list%',l).replace('%scripts%',s) # TODO: real templating system?
+    html = tpl('html/index.html', list=l, scripts=s)
     return web.Response(text=html, content_type='text/html')
 
 async def ritualPage(req):
     name = req.match_info.get('name','error')
     if name not in active:
         return web.Response(text="Not Found", status=404)
-    return web.Response(body=open('html/client.html').read().replace('%name%',name),
+    if hasattr(active[name],'participants'):
+        login = req.cookies.get('ritLogin')
+        if login and login in users:
+            if login not in active[name].participants:
+                active[name].participants.append(login)
+                for i,task in active[name].reqs.items():
+                    task.cancel()
+        else:
+            return web.Response(body=open('html/login.html').read(), content_type='text/html')            
+    return web.Response(body=tpl('html/client.html',
+                                 name=name,
+                                 cclass=hasattr(active[name],'participants') and 'shrunk' or ''),
                         content_type='text/html', charset='utf8')
 
 async def dbgLoginPage(req):
     return web.Response(body=open('html/login.html').read(), content_type='text/html')
 
 async def getAvatar(form):
-    for k in form:
-        print('  %s: "%s" %s'%(k,form[k],type(form[k])))
     if form['photosource'] == 'file':
         jpg = form['photofile'].file.read()
-        print('fileok')
     elif form['photosource'] == 'selfie':
         dataurl = form['selfie']
         header, encoded = dataurl.split(",", 1)
         jpg = b64decode(encoded)
-        print('selfieok')
     elif form['photosource'] == 'url':
         url = form['photourl']
         client = ClientSession()
         resp = await client.get(url)
         jpg = await resp.read()
-        print('urlok')
     else:
         raise ValueError("Unrecognized photosource '%s'"%form['photosource'])
     npjpg = np.asarray(bytearray(jpg), dtype="uint8")
@@ -66,14 +80,10 @@ async def getAvatar(form):
     (w,h,_) = img.shape
     z = float(form['zoom'])
     z = 2 ** (z/5)
-    print(w,h,z)
     img = cv2.resize(img, dsize=(int(h*z), int(w*z)))
-    print('img.shape',img.shape)
     x = int(float(form['x']))
     y = int(float(form['y']))
-    print('x,y',x,y)
     img = img[y:y+100, x:x+100]
-    print('img.shape',img.shape)
     alpha = img[:,:,0:1] * 0
     cv2.circle(alpha, (50,50), 50, (255,), thickness=-1)
     img = np.concatenate((img, alpha), axis=2)
@@ -84,7 +94,22 @@ async def dbgLogin(req):
         print('%s: %s'%(k,v))
     form = await req.post()
     img = await getAvatar(form)
-    return web.Response(body=img, content_type='image/png')    
+    return web.Response(body=img, content_type='image/png')
+
+async def ritualPageLogin(req):
+    form = await req.post()
+    email = form['email']
+    name = form['name']
+    img = await getAvatar(form)
+    rid = np.base_repr(hash(email), 36)
+    users[rid] = struct(name=name, img=img)
+    res = web.HTTPFound(req.url)
+    res.set_cookie('ritLogin', rid)
+    return res
+
+async def displayAvatar(req):
+    user = req.match_info.get('user')
+    return web.Response(body=users[user].img, content_type='image/png')
 
 async def lib(req):
     return web.Response(body=open('html/lib.js').read(), content_type='text/javascript')
@@ -128,8 +153,10 @@ async def mkRitual(req):
     print("very good")
     active[name] = struct(script=script, reqs={}, state=None, page=page, background=opts['background'],
                           jpgs=[defaultjpg], jpgrats=[1])
+    if opts['showParticipants']:
+        active[name].participants = []
     print("did the thing")
-    return web.HTTPFound('/'+name+'/')
+    return web.HTTPFound('/'+name+'/partake')
 
 sleepid=0
 async def status(req):
@@ -176,6 +203,8 @@ async def status(req):
         results['page'] = ritual.page
     if ritual.state:
         results.update(ritual.state.to_client(req.query.get('internalhave')))
+    if hasattr(ritual,'participants'):
+        results['participants'] = [ {'name':users[p].name, 'img':'/avatar/%s.png'%p} for p in ritual.participants ]
     print(results.keys())
     return web.Response(text=json.dumps(results), content_type='application/json')
 
@@ -222,8 +251,8 @@ app.router.add_get('/', homepage)
 app.router.add_get('/login', dbgLoginPage)
 app.router.add_post('/login', dbgLogin)
 app.router.add_get('/lib.js', lib)
-app.router.add_get('/{name}', ritualPage)
-app.router.add_get('/{name}/', ritualPage)
+app.router.add_get('/{name}/partake', ritualPage)
+app.router.add_post('/{name}/partake', ritualPageLogin)
 app.router.add_get('/widgets/{fn}', getJs)
 app.router.add_post('/mkRitual', mkRitual)
 app.router.add_get('/{name}/status', status)
@@ -233,6 +262,7 @@ app.router.add_post('/{name}/widgetData', widgetData)
 app.router.add_get('/widgets/{widget}/{fn}', widgetPiece)
 app.router.add_get('/{name}/img/{id}.jpg', jpg)
 app.router.add_get('/{name}/dbg.png', stateDbg)
+app.router.add_get('/avatar/{user}.png', displayAvatar)
 
 
 web.run_app(app)
