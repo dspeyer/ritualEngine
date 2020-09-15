@@ -6,6 +6,7 @@ import numpy as np
 import cv2
 
 from core import app, active, users, tpl, Ritual
+from users import connectUserRitual
 
 defaultimg = np.zeros((64,64,3),'uint8')
 cv2.circle(defaultimg, (32,32), 24, (0,255,255), thickness=-1)
@@ -24,19 +25,7 @@ async def ritualPage(req):
         return web.Response(text="Not Found", status=404)
     islead = req.url.path.endswith('/lead')
     if hasattr(active[name],'participants'):
-        foundLogin = False
-        logins = req.cookies.get('ritLogin')
-        if logins:
-            for login in logins.split('__'):
-                if login in users:
-                    foundLogin = True
-                    if login not in active[name].participants:
-                        if islead:
-                            active[name].participants.insert(0,login)
-                        else:
-                            active[name].participants.append(login)
-            for i,task in active[name].reqs.items():
-                task.cancel()
+        foundLogin = connectUserRitual(req, active[name], islead)
         if not foundLogin:
             res = web.Response(body=open('html/login.html').read(), content_type='text/html')
             res.set_cookie('LastRitual', name)

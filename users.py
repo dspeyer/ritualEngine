@@ -97,6 +97,22 @@ async def displayAvatar(req):
     user = req.match_info.get('user')
     return web.Response(body=users[user].img, content_type='image/png')
 
+def connectUserRitual(req, ritual, islead):
+    foundLogin = False
+    logins = req.cookies.get('ritLogin')
+    if logins:
+        for login in logins.split('__'):
+            if login in users:
+                foundLogin = True
+                if login not in ritual.participants:
+                    if islead:
+                        ritual.participants.insert(0,login)
+                    else:
+                        ritual.participants.append(login)
+        for i,task in ritual.reqs.items():
+            task.cancel()
+    return foundLogin
+
 app.router.add_get('/login', dbgLoginPage)
 app.router.add_post('/login', dbgLogin)
 app.router.add_post('/{name}/partake', login)
