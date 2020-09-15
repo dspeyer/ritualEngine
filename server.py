@@ -112,8 +112,10 @@ async def getAvatar(form, rid=None):
     x = int(float(form['x']))
     y = int(float(form['y']))
     img = img[y:y+100, x:x+100]
-    alpha = img[:,:,0:1] * 0
+    alpha = img[:,:,0] * 0
     cv2.circle(alpha, (50,50), 50, (255,), thickness=-1)
+    alpha = cv2.GaussianBlur(alpha, (5,5), 0)
+    alpha = np.expand_dims(alpha,axis=2)
     img = np.concatenate((img, alpha), axis=2)
     return bytes(cv2.imencode('.PNG', img)[1])
 
