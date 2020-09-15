@@ -20,9 +20,9 @@ class Histogram(object):
             self.x0 = 42
             self.w = 42
 
-    def from_client(self, data, user):
+    def from_client(self, data, users):
         x = int(data.get('x'))
-        imgId = self.imageIds.get(user) or 0
+        imgId = self.imageIds.get(','.join(users)) or 0
         self.data.append({'x':x,'imgId':imgId})
         if x < self.x0:
             d = self.x0 - x
@@ -30,7 +30,7 @@ class Histogram(object):
             self.w += d
         elif x >= self.x0 + self.w:
             self.w = (x - self.x0) + 1
-        if hasattr(self.ritual,'participants') and user==self.ritual.participants[0]:
+        if hasattr(self.ritual,'participants') and self.ritual.participants[0] in users:
             self.ritual.rotateSpeakers();
 
             

@@ -227,7 +227,7 @@
                  
          async function lookupEmail() {
              let email = $('#email').val();
-             let data = await new Promise((res)=>$.ajax('/userinfo/'+email, {success:res}));
+             let data = await new Promise((res)=>$.ajax('/userinfo?email='+email, {success:res}));
              if (data.found) {
                  $('#name').val(data.name);
                  $('#keepphoto').show();
@@ -247,6 +247,9 @@
              $('.zoomBox input').on('change', setZoom);
              initDrag($('.photoBox'));
              $('#email').on('change', lookupEmail);
+             if (window.location.pathname == '/addLogin') {
+                 $('#manageLink').hide();
+             }
          });
         </script>
     </head>
@@ -258,6 +261,8 @@
         
             <p>We'll need a name and picture of you to show the other participants</p>
 
+            <p id="manageLink">Is there more than one person in front of this browser?  If so, you'll need to <a href="/manageLogins">Manage Logins</a> instead.</p>
+            
             <p>Don't feel like typing?  We can autofill if you <fb:login-button
                    data-size="medium"
                    data-button-type="continue_with"

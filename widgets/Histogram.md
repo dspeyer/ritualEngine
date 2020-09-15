@@ -2,6 +2,12 @@ Each participant does some talking and then sends a value.  The values
 form a histogram.  Each participant is represented by a photo they
 already uploaded, or, if not available, a yellow circle.
 
+We use the uploaded photos (from a previous photocollage) and not the
+user avatars for two reasons:
+
+1) They're rectangles, not circles
+2) This way we don't have to disambiguate multi-participant browsers
+
 ## Parameters
 
   * widget: "Histogram",

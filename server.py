@@ -55,22 +55,34 @@ async def ritualPage(req):
         return web.Response(text="Not Found", status=404)
     islead = req.url.path.endswith('/lead')
     if hasattr(active[name],'participants'):
-        login = req.cookies.get('ritLogin')
-        if login and login in users:
-            if login not in active[name].participants:
-                if islead:
-                    active[name].participants.insert(0,login)
-                else:
-                    active[name].participants.append(login)
-                for i,task in active[name].reqs.items():
-                    task.cancel()
-        else:
-            return web.Response(body=open('html/login.html').read(), content_type='text/html')            
+        foundLogin = False
+        logins = req.cookies.get('ritLogin')
+        if logins:
+            for login in logins.split('__'):
+                if login in users:
+                    foundLogin = True
+                    if login not in active[name].participants:
+                        if islead:
+                            active[name].participants.insert(0,login)
+                        else:
+                            active[name].participants.append(login)
+            for i,task in active[name].reqs.items():
+                task.cancel()
+        if not foundLogin:
+            res = web.Response(body=open('html/login.html').read(), content_type='text/html')
+            res.set_cookie('LastRitual', name)
+            return res
     return web.Response(body=tpl('html/client.html',
                                  name=name,
                                  cclass=hasattr(active[name],'participants') and 'shrunk' or '',
                                  islead=str(islead).lower()),
                         content_type='text/html', charset='utf8')
+
+async def addLogin(req):
+    return web.Response(body=open('html/login.html').read(), content_type='text/html')                
+
+async def manageLogins(req):
+    return web.Response(body=open('html/manage.html').read(), content_type='text/html')                
 
 async def dbgLoginPage(req):
     return web.Response(body=open('html/login.html').read(), content_type='text/html')
@@ -112,24 +124,40 @@ async def dbgLogin(req):
     img = await getAvatar(form)
     return web.Response(body=img, content_type='image/png')
 
-async def ritualPageLogin(req):
+async def login(req):
     form = await req.post()
     email = form['email']
     name = form['name']
     rid = np.base_repr(hash(email), 36)
     img = await getAvatar(form, rid)
-    users[rid] = struct(name=name, img=img)
-    res = web.HTTPFound(req.url)
-    res.set_cookie('ritLogin', rid)
+    users[rid] = struct(name=name, img=img, email=email)
+    logins = req.cookies.get('ritLogin')
+    if logins:
+        logins = logins.split('__')
+    else:
+        logins = []
+    print("logins: ",logins)
+    logins = [ l for l in logins if l in users ]
+    print("logins: ",logins)
+    logins.append(rid)
+    print("logins: ",logins)
+    url = req.url
+    if url.path == '/addLogin':
+        url = str(url).replace('/addLogin','/manageLogins') # Curse the URL class's immutability
+    res = web.HTTPFound(url)
+    res.set_cookie('ritLogin', '__'.join(logins))
     return res
 
 async def userinfo(req):
-    email = req.match_info.get('email')
-    rid = np.base_repr(hash(email), 36)
+    rid = req.query.get('id')
+    if not rid:
+        email = req.query.get('email')
+        rid = np.base_repr(hash(email), 36)
     if rid in users:
         out = { 'found': True,
                 'hash': rid,
-                'name': users[rid].name }
+                'name': users[rid].name,
+                'email': users[rid].email }
     else:
         out = { 'found': False }
     return web.Response(text=json.dumps(out), content_type="text/json")
@@ -249,10 +277,12 @@ async def widgetData(req):
     data = await req.post()
     print("Data keys are %s"%data.keys())
     login = req.cookies.get('ritLogin')
-    if not login:
+    if login:
+        login = login.split('__')
+    else:
         ip = req.headers['X-Forwarded-For']
-        login = 'anon' + ip
-    active[name].state.from_client(data=data,user=login)
+        login = ['anon' + ip]
+    active[name].state.from_client(data=data,users=login)
     for i,task in active[name].reqs.items():
         print("Cancelling %d"%i)
         task.cancel()
@@ -295,9 +325,9 @@ app.router.add_get('/login', dbgLoginPage)
 app.router.add_post('/login', dbgLogin)
 app.router.add_get('/lib.js', lib)
 app.router.add_get('/{name}/partake', ritualPage)
-app.router.add_post('/{name}/partake', ritualPageLogin)
+app.router.add_post('/{name}/partake', login)
 app.router.add_get('/{name}/lead', ritualPage)
-app.router.add_post('/{name}/lead', ritualPageLogin)
+app.router.add_post('/{name}/lead', login)
 app.router.add_get('/widgets/{fn}', getJs)
 app.router.add_post('/mkRitual', mkRitual)
 app.router.add_get('/{name}/status', status)
@@ -310,7 +340,11 @@ app.router.add_get('/widgets/{widget}/{fn}', widgetPiece)
 app.router.add_get('/{name}/img/{id}.jpg', jpg)
 app.router.add_get('/{name}/dbg.png', stateDbg)
 app.router.add_get('/avatar/{user}.png', displayAvatar)
-app.router.add_get('/userinfo/{email}', userinfo)
+app.router.add_get('/userinfo', userinfo)
+app.router.add_get('/addLogin', addLogin)
+app.router.add_post('/addLogin', login)
+app.router.add_get('/manageLogins', manageLogins)
+
 
 
 web.run_app(app)
