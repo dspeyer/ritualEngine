@@ -27,7 +27,7 @@ class CrossWords(object):
 
         self.letters = defaultdict(list)
 
-    def from_client(self, data, ip):
+    def from_client(self, data, users):
         rawname = data['name']
         name = [ ord(c) for c in rawname ]
         name = np.array(name)

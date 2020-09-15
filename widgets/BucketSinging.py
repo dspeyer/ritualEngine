@@ -51,7 +51,7 @@ class BucketSinging(object):
         content = open(os.path.join(BUCKET_PATH,'html',fn), 'rb').read()
         return web.Response(body=content, content_type='text/javascript')
 
-    def from_client(self, data, ip):
+    def from_client(self, data, users):
         print("got registration of %d"%int(data['client_id']))
         self.client_ids.append(int(data['client_id']))
 
