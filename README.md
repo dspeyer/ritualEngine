@@ -116,7 +116,7 @@ The widget class must be imported by `server.py`
 
 ### Client Side
 
-The .js file also defines a class with the widget's name.  The class
+The .js file also defines (and exports) a class with the widget's name.  The class
 also has three functions:
 
 **A constructor** which takes the first batch of data from the client
@@ -133,12 +133,6 @@ also has three functions:
 The client class may also define a value `page` which will be passed
 to the client's `subpagesame` function.  Note that this is a value,
 not a function to be called.
-
-The client must end with
-
-    widgetClasses.ClassName = ClassName;
-
-because javascript is weird about global variables.
 
 When the client wishes to send data to the server, it may invoke POST
 directly with $.post('widgetData',{k:v,k2:v2,...}).  Note that these
