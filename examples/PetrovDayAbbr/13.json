@@ -1,7 +1,7 @@
 {
     "widget": "Trivia",
     "boxColors": {
-        "controls": "#ff00ff",
-        "results": "#00ff00"
+        "controls": "#00ffff",
+        "results": "#0000ff"
     }
 }

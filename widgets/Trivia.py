@@ -1,4 +1,5 @@
 from random import random
+from colorsys import hsv_to_rgb
 
 # Character widths are from Liberation Serif
 # Actual display font may vary
@@ -100,22 +101,29 @@ cws = {
   "~": 0.70
 }
 
+def intt(x):
+    return tuple((int(i) for i in x))
+
 class Trivia(object):
     def __init__(self, ritual, boxColors, **ignore):
         self.ritual = ritual
         self.boxColors = boxColors
         self.data = []
 
-    def from_client(self, txt, users):
+    def from_client(self, data, users):
+        txt = data['txt']
         tw = sum([ cws.get(c, 1) for c in txt ])
-        lines = int(tw / 30) + int(random()*2)
+        lines = max(int(tw / 20) + int(random()*2), 1)
         w = tw / lines
         w *= 1.1 # safety margin
         x = random()
         y = random() * 0.8
         rgb = hsv_to_rgb(random(), 1, 128)
-        color = '#%02x%02x%02x' % (int(x) for x in rgb)
-        data.append({'t':txt, 'w':'%.1fem'%w, 'x': x, 'y': y, 'color': color})
+        print(rgb)
+        print(type(rgb))
+        color = '#%02x%02x%02x' % intt(rgb)
+        self.data.append({'t':txt, 'w':'%.1fem'%w, 'x': x, 'y': y, 'color': color})
+        print(self.data)
             
     def to_client(self, have):
         return {

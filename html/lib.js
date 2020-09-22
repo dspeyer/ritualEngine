@@ -1,5 +1,6 @@
 export function putOnBox(elem, color) {
     let box = $('path[stroke="'+color+'"]')
+    console.log({elem,color,box});
     let rect = box[0].getBoundingClientRect();
     box.hide();
     elem.css('position','absolute');
@@ -107,7 +108,6 @@ function placements(sf, w, h) {
                 xl = (nx + xlt) / 2;
             }
         }
-        console.log({x,y,r,nx,ny,nr,h,t:(y==r)});
         x = nx;
         y = ny;
         r = nr;
