@@ -10,6 +10,7 @@ from widgets.PhotoCollage import PhotoCollage
 from widgets.Histogram import Histogram
 from widgets.CrossWords import CrossWords
 from widgets.BucketSinging import BucketSinging
+from widgets.Trivia import Trivia
 
 async def lib(req):
     return web.Response(body=open('html/lib.js').read(), content_type='text/javascript')
