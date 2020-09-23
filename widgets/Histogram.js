@@ -10,8 +10,8 @@ export class Histogram {
         putOnBox(this.content, boxColors.result);
         this.hr = this.content.width() / this.content.height();
         if (boxColors.turn) { // No longer used, but hide the box
-            let readiness = $('<div>').appendTo($('body'));
-            putOnBox(readiness, boxColors.turn);
+            this.readiness = $('<div>').appendTo($('body'));
+            putOnBox(this.readiness, boxColors.turn);
         }
         this.imgs = [];
         this.xaxes = [];
@@ -63,8 +63,8 @@ export class Histogram {
 
     destroy() {
         this.content.remove();
-        this.input.remove();
-        this.readiness.remove();
+        this.input.remove();        
+        if (this.readiness) this.readiness.remove();
     }
 }
 

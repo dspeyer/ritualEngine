@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp31">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp31)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-opacity=".4431" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 45906 10962 L 324510 10962 L 324510 31266 L 45906 31266 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="24" font-family="DroidSerif" font-style="italic"><tspan y="32.04" x="94.637668 119.693668 134.06967 147.96567 156.79767 163.01367 170.30968 181.42168 187.63768 201.53368 215.90969 222.12569 229.42169 243.7977 252.6297 264.4617 275.6697 287.5017 298.6137 307.4457 314.7417 329.1177 342.4617 348.6777 356.2857 370.1817 381.8457 390.6777 396.8937 409.54173 423.31773 437.69374 443.90974 455.11775 466.94975 478.61375 490.44575 504.82176 513.65377 520.94979 533.5978 539.8138 547.1098 558.9418 572.83779 584.0458 598.42178 610.2538 624.1498">What is an interesting fact you recently learned?</tspan></text>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 10775 87820 L 358163 87820 L 358163 198760 L 10775 198760 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#0000ff" d="M 10775 87820 L 358163 87820 L 358163 198760 L 10775 198760 Z "/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 30875 31266 L 326927 31266 L 326927 83514 L 30875 83514 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#00ffff" d="M 30875 31266 L 326927 31266 L 326927 83514 L 30875 83514 Z "/>
+</g>
+</g>
+</g>
+</svg>

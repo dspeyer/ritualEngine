@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp33">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp33)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-opacity=".4431" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 45906 10962 L 319662 10962 L 319662 194778 L 45906 194778 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif" font-style="italic"><tspan y="229.72" x="9 32.328004 47.144006 56.872007 76.04001 93.83201 122.40801 134.18402 153.35202 169.12802 197.70401 209.48001 228.64801 238.376 253.32 271.84803 300.424 315.976 334.50404 353.67204 372.20005 381.92805 397.70405 405.70405 434.28004 460.45603 479.62403 489.35203 504.90403 524.072 552.6481 567.59207 583.36807 601.83206 616.776 632.552 647.368 663.144 682.312 694.088 708.904">Using the third candle, which represents </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif" font-style="italic"><tspan y="267.72" x="9 35.176004 50.120004 59.848005 71.62401 81.352008 100.520008 118.312007 126.312007 134.664 144.392 154.12 171.912 191.08 202.856 211.208 222.984 242.152 257.92799 266.27998 276.42399 294.792 313.96 328.904 340.68 359.848 368.19999 383.75199 402.28 421.448 439.976 449.704 465.48 473.832 485.608 503.976 512.32809 527.2721 543.0481 561.5121 576.45608 592.23208 607.04806 622.82406 641.99209 653.76809 662.1201 673.8961 693.06417 708.84017">writing, light the fourth candle to represent the </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif" font-style="italic"><tspan y="305.72" x="9 23.816002 39.368005 49.096006 64.87201 84.04001 95.81601 105.54401 115.688 125.416 140.968 149.256 177.896 193.672 205.448 224.616 242.984 261.512">scientific method.</tspan></text>
+</g>
+</g>
+</g>
+</svg>

@@ -5,9 +5,11 @@ from random import random
 CS=16
 
 class PhotoCollage(object):
-    def __init__(self, ritual, boxcolor, saveas, bigimage, **ignore):
+    def __init__(self, ritual, boxcolor, bigimage, saveas=None, **ignore):
         self.boxcolor = boxcolor
-        self.saveto = ritual.__dict__[saveas] = {}
+        self.saveto = {}
+        if saveas:
+            ritual.__dict__[saveas] = self.saveto
         self.gs = 16 # TODO: tweak
         self.map = np.zeros((self.gs,self.gs),'bool')
         self.ts = self.gs // 2

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp12">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp12)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 8620 10962 L 356548 10962 L 356548 31806 L 8620 31806 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 16.968504 21.578742)" font-size="24" font-family="DroidSerif" font-style="italic"><tspan y="32.04" x="62.73709 80.54509 94.92109 101.13709 113.785099 127.5611 141.9371 153.14511 159.36112 168.19312 182.56912 193.77713 208.15314 214.15314 220.36914 233.85715 245.06516 252.36116 264.19319 271.80119 279.09718 291.74519 297.96119 311.85719 323.68919 334.80119 346.46519 357.6732 364.96919 378.45719 390.28919 396.5052 409.1532 422.9292 437.3052 448.5132 454.72923 466.56123 480.4572 491.66523 498.9612 506.2572 518.08926 529.20126 538.0332 544.2492 565.7292 577.56118 599.04116 612.81716 624.02517 634.5372 640.5372 646.7532 655.5852 669.9612 681.7932 696.1692 702.3852 714.21719 728.59317 737.4252 749.2572 760.4652 766.6812 773.97726 782.8092 793.9212 800.1372 812.7852 824.6172 838.5132">On your turn, briefly describe your earliest memory, then enter its year</tspan></text>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 131956 36447 L 189052 36447 L 189052 57291 L 131956 57291 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 259.75593 71.74606)" font-size="24" font-family="DroidSerif" font-style="italic"><tspan y="32.04" x="46.34124 59.68524 71.51724 85.413249 96.62125">Year:</tspan></text>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 176752 40027 L 209896 40027 L 209896 48943 L 176752 48943 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#0000ff" d="M 176752 40027 L 209896 40027 L 209896 48943 L 176752 48943 Z "/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 34198 68744 L 335542 68744 L 335542 186920 L 34198 186920 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#4a86e8" d="M 34198 68744 L 335542 68744 L 335542 186920 L 34198 186920 Z "/>
+</g>
+</g>
+</g>
+</svg>

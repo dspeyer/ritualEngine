@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp37">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp37)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-opacity=".6275" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 45906 10962 L 319662 10962 L 319662 194778 L 45906 194778 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="191.72" x="9 28.328001 43.4 60.520006 74.952 92.07201 107.144008 125.672008 135.88 156.52 173.73601 187.368 206.056 226.696 245.16 272.712 282.63203 299.752 319.368 336.584 353.704 367.336 382.408 399.52799 419.14399 439.43199 449.63999 464.71199 481.83198 501.44798 515.07998 530.152 547.272 566.888 587.176 607.81607 627.43209 645.4161 666.0561 681.8001 697.00009 706.15206">Preserving knowledge required redundancy. </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="229.72" x="9 20.744 41.384004 59.752008 77.64001 95.52801 113.41601 131.30402 139.30402 157.67201 177.28801 197.576 212.64801 222.85602 243.49602 260.712 279.08 290.344 310.632 327.75199 346.11997 366.05598 386.34397 401.41596 419.87995 439.49595 456.61595 474.59996 495.23997 513.608 534.568 551.688 572.328 590.312 600.52 614.952 629.38406 647.36807 668.00808 683.7521 700.8721 708.8721">In 1439, during the European Renaissance, </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="267.72" x="9 31.816002 52.104005 63.368005 80.48801 101.128009 120.744 137.864 152.936 170.15201 178.44 198.056 215.176 230.248 242.056 259.176 274.91999 286.184 303.304 322.91999 331.20799 349.192 357.47999 377.09599 394.21598 412.744 422.952 438.69599 455.81599 464.10398 475.36799 493.83198 502.11997 521.73599 540.19998 548.488 558.05599 578.344 592.776 604.04 612.328 623.592 643.88 661.864 673.128">Gutenberg perfected a device to do just that.</tspan></text>
+</g>
+</g>
+</g>
+</svg>

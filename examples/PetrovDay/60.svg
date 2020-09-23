@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp73">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp73)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 8620 10962 L 356548 10962 L 356548 70794 L 8620 70794 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 16.968504 21.578742)" font-size="24" font-family="DroidSerif" font-style="italic"><tspan y="32.04" x="218.09256 232.97257 247.34857 261.12458 269.95658 283.73258 297.07658 307.80458 321.70057 335.54856 349.92457 356.14057 368.78858 382.56459 396.94059 408.1486 419.2606 431.0926 438.38859 445.99659 452.2126 471.84458 479.14057 487.97257 502.34858 508.56459 522.4606 529.7566 537.0526 543.2686 554.3806 561.67666 574.75668 580.97268 592.63668 606.53268 620.9086 634.8046 642.10067 653.9326 665.0446 671.2606 678.55667 685.85269">Photograph yourself with all six candles lit</tspan></text>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 79734 39139 L 286026 39139 L 286026 193711 L 79734 193711 Z " fill-opacity="0" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#980000" d="M 79734 39139 L 286026 39139 L 286026 193711 L 79734 193711 Z "/>
+</g>
+</g>
+</g>
+</svg>

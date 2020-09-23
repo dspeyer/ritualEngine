@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp2">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp2)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 45906 10962 L 319662 10962 L 319662 194778 L 45906 194778 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="153.72" x="9 23.400002 35.144 55.784006 68.744 80.008 100.296009 117.41601 130.376 149.992 167.112 184.328 194.53601 215.17601 235.81601 246.02402 266.66404 283.88005 291.88005 304.84004 316.10404 336.39204 353.51203 366.47203 386.76 407.40003 417.60804 436.13606 453.25605 468.32804 482.76005 499.88005 512.84 540.392 558.37606 572.80807 585.76809 601.5121 616.5841 633.7041 651.6881 662.9521 680.0721 699.6881 708.8401">&#x201c;In the beginning, the universe was created. </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="191.72" x="9 28.584002 48.872 59.08 73.512 82.824008 103.11201 121.09601 135.52802 144.84001 175.04802 193.03202 212.64801 229.768 239.08 257.064 266.37599 276.296 294.75999 306.024 315.33598 333.79997 345.60798 354.91996 374.53596 391.65596 410.11994 429.73594 439.65596 456.77595 466.08793 484.61595 501.73594 516.8079 534.8559 544.1679 562.1519 582.79196 600.00796 615.07998 630.2799 638.2799 647.5919 665.5759 686.21597 705.832">This has made a lot of people very angry, and </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="229.72" x="9 28.616002 45.736 62.856004 83.496 91.784008 119.336009 129.544 149.16 166.28 176.2 194.248 202.536 217.608 234.728 251.944 269.928 285 304.616 321.736 341.352 349.63999 367.624 382.056 390.344 408.328 416.616 436.232 454.216 473.832 482.12 512.328 530.792 549.32 566.44 575.592 589.992">been widely regarded as a bad move.&#x201d; </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="305.72" x="9 41 49.288003 72.552 91.01601 111.30401 128.52 138.44 156.42401 170.85602 179.14402 201.06401 220.68001 238.664 268.872">&#x2014; Douglas Adams</tspan></text>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 213610 43846 L 507262 43846 L 507262 78106 L 213610 78106 Z " fill-opacity="0" fill-rule="evenodd"/>
+</g>
+</g>
+</g>
+</svg>

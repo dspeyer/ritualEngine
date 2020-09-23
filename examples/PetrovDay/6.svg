@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp5">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp5)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 8620 10962 L 356548 10962 L 356548 70794 L 8620 70794 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 16.968504 21.578742)" font-size="24" font-family="DroidSerif" font-style="italic"><tspan y="32.04" x="87.346469 102.03447 116.41047 128.24246 142.61847 148.83448 157.66648 171.56247 184.71448 196.54648 202.76248 216.65848 222.87448 236.72249 251.0985 264.87449 273.70649 287.48249 293.6985 307.4745 315.0825 321.2985 333.9465 347.7225 362.0985 373.30653 384.41853 396.25053 403.5465 411.1545 417.3705 437.0025 444.2985 453.1305 467.5065 473.7225 486.3705 500.1465 514.5225 525.7305 531.94656 539.24258 546.5386 555.3706 561.5866 573.2506 587.1466 601.5226 615.4186 622.7146 634.54666 640.76266 654.6586 669.0346 682.9306 689.1466 703.5226 717.3706 724.6666 738.4426 752.3386 766.2346 772.4506 781.2826 795.65859 809.55459 818.3866">Then take a photo of yourself with your lit candle and upload that.</tspan></text>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 79734 39139 L 286026 39139 L 286026 193711 L 79734 193711 Z " fill-opacity="0" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#980000" d="M 79734 39139 L 286026 39139 L 286026 193711 L 79734 193711 Z "/>
+</g>
+</g>
+</g>
+</svg>

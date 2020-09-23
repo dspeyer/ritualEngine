@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp86">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp86)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 97.3595 0 L 365662.6 0 L 365662.6 205739.99 L 97.3595 205739.99 Z " fill-opacity="0" fill-rule="evenodd"/>
+<clipPath id="cp87">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 97.3595 0 L 365662.6 0 L 365662.6 205739.99 L 97.3595 205739.99 Z " fill-rule="evenodd"/>
+</clipPath>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 45906 10962 L 319662 10962 L 319662 194778 L 45906 194778 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#d90000" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif" font-style="italic"><tspan y="229.72" x="231.12705 256.47105 274.83906 284.56706 303.09507 311.38307 328.24708 346.61509 365.78309 380.72709 389.01509 406.99909 421.94309 437.7191 456.2471 468.0231">Hold your breath</tspan></text>
+</g>
+</g>
+</g>
+</svg>

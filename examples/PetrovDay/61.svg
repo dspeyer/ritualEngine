@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp74">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp74)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 45906 10962 L 319662 10962 L 319662 194778 L 45906 194778 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#d94a4a" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="153.72" x="9 23.400002 53.384004 71.84801 90.31201 105.38401 122.50401 128.93602 143.36803 168.87203 188.80803 206.79203 234.34403 259.84803 278.312 290.12004 315.62403 345.60804 363.59205 383.20805 408.71205 426.08805 441.83204 452.04005 469.16004 489.80006 505.54405 522.66409 531.8481 557.3521 577.2881 595.8161 612.9361 628.0081 646.0561 671.5601 689.4481 707.3361">&#x201c;Moore&#x2019;s Law of Mad Science: Every 18 </tspan></text>
+<text fill="#d94a4a" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="191.72" x="9 39.208 57.672 78.312007 89.576007 109.864009 124.296009 132.296 143.048 154.31201 174.6 191.72 202.472 214.216 237.96 248.712 263.784 280.904 300.52 320.80799 331.016 346.08799 363.20799 382.82398 393.57597 404.83998 423.30397 434.05595 453.67195 470.79194 485.22395 496.48796 511.55995 529.3839 547.4319 558.1839 569.4479 589.7359 606.8559 617.6079 645.1599 663.6239 678.6959 688.6159 708.23196">months, the IQ required to destroy the world </tspan></text>
+<text fill="#d94a4a" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="229.72" x="9 28.616002 43.688005 62.152006 81.768009 96.200008 104.48801 123.464008 141.51201 149.8 167.688 175.976 195.592 214.056 224.264 244.904 256.168 265.32 279.72">drops by 1 point.&#x201d; </tspan></text>
+<text fill="#d94a4a" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="305.72" x="9 41 49.288003 66.664 85.128009 105.41601 120.48801 136.23201 153.352 161.64 181.928 202.568 221.256 241.896 260.36 287.912 308.552 316.84 327.912 345.8 363.688 381.576 399.464">&#x2014; Source unknown (2005)</tspan></text>
+</g>
+</g>
+</g>
+</svg>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp117">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp117)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 37506 52716 L 328254 52716 L 328254 153024 L 37506 153024 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 73.83071 103.77165)" font-size="32" font-family="DroidSerif"><tspan y="39.72" x="9 20.744 29.032 44.776 62.760004 83.4 91.688 109.672008 125.41601 136.68001">I can act.</tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 73.83071 103.77165)" font-size="32" font-family="DroidSerif"><tspan y="115.72" x="9 29.256003 47.304 61.384004 72.648 92.936008 110.05601 124.13601 143.75202 162.21602 189.76802 206.88802 221.96002 236.04003 254.50403 266.31205 280.39204 290.31205 308.29606 328.93608 346.15208 366.44007 384.42408 401.64009 418.76008 426.76008 440.84007 471.04808 489.09608 503.17607 514.44009 534.7281 553.1921 573.4801 590.6961 610.98416 622.2481 636.6801 650.76016 667.8801 682.31216 698.05618 716.04019 735.6562 752.7762">By the power of language, my thoughts escape </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 73.83071 103.77165)" font-size="32" font-family="DroidSerif"><tspan y="153.72" x="9 39.208 57.256 67.304 97.512 107.72 128.36 147.976 158.02399 176.008 185.928 204.392 225.032 242.152 251.30399 261.352 273.09599 283.14399 301.128 331.336 341.384 359.368 378.984 388.90403 406.02403 416.07203 427.33604 445.80003 455.84803 470.28004 490.56803 508.55204 523.624 540.744 550.79208 578.34408 598.6321 616.6161 627.88009 637.9281 649.6721 659.72018 678.40817 699.04818 717.51217 742.85617 750.85617">my mind alone. I am able to share what I know, </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 73.83071 103.77165)" font-size="32" font-family="DroidSerif"><tspan y="191.72" x="9 26.984002 47.624 67.240009 84.616008 95.880008 114.34401 131.72002 152.00801 169.128 187.112 202.184 219.56 247.112 267.4 285.384 296.648 314.02403 332.488 343.752 364.04 381.16 396.232 410.664 428.04 448.328 466.312 484.84004 501.96003 519.336 529.256 546.376 564.36 579.432 600.072 617.192 636.80807 654.1841 673.8001 690.9201 702.7281 721.1921 736.2641 753.3841">and to hear what others have learned before </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 73.83071 103.77165)" font-size="32" font-family="DroidSerif"><tspan y="229.72" x="9 39.208 56.328004">me.</tspan></text>
+</g>
+</g>
+</g>
+</svg>

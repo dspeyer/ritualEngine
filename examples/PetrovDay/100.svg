@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp121">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp121)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 37506 52716 L 328254 52716 L 328254 153024 L 37506 153024 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 73.83071 103.77165)" font-size="32" font-family="DroidSerif"><tspan y="39.72" x="9 20.744 29.032 44.776 62.760004 83.4 91.688 109.672008 125.41601 136.68001">I can act.</tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 73.83071 103.77165)" font-size="32" font-family="DroidSerif"><tspan y="115.72" x="9 29.256003 47.304 56.328004 67.592 87.880008 105.00001 114.02401 133.64002 152.10402 179.65602 196.77602 211.84803 220.87201 239.33602 251.14402 260.168 279.784 298.248 328.456 348.072 368.36 379.624 396.744 411.81599 426.248 434.248 443.27198 473.47999 491.52799 500.55198 511.81599 532.104 549.224 558.24807 577.8641 596.32809 623.88009 641.00009 656.0721 665.0961 683.5601 695.3681 704.39218 734.60018 752.64816">By the power of Computers, my the power of my </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 73.83071 103.77165)" font-size="32" font-family="DroidSerif"><tspan y="153.72" x="9 39.208 49.416 70.056 89.672 105.192 115.4 129.832 145.35199 163.336 193.544 213.16 223.08 233.288 245.096 255.30399 272.42399 292.03999 301.192 316.71199 336.296 356.58399 374.568 385.832 401.352 420.968 439.43199 466.98399 484.10398 499.17597 514.696 526.50399 541.576 560.04 590.248 605.768 633.32 653.60806 663.81607 679.56008 699.8481 715.3681 733.3521 743.2721 753.1921">mind is amplified. That power from which all </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 73.83071 103.77165)" font-size="32" font-family="DroidSerif"><tspan y="191.72" x="9 20.264 40.552003 57.672006 72.104007 89.22401 97.51201 115.97601 127.24001 147.52802 164.64801 179.72002 194.15203 202.44002 220.42401 235.49602 253.96002 268.39204 285.51203">these others arose.</tspan></text>
+</g>
+</g>
+</g>
+</svg>

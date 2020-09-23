@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp23">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp23)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-opacity=".4431" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 10775 10962 L 254759 10962 L 254759 31266 L 10775 31266 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 21.21063 21.578742)" font-size="24" font-family="DroidSerif" font-style="italic"><tspan y="32.04" x="9 34.056 48.432 62.328004 71.16 77.37601 84.672008 95.784008 102.00001 110.83201 125.20801 137.04001 143.25601 157.63202 171.52802 193.00801 204.84001 211.05602 224.83202 232.44002 238.65602 251.30402 265.08003 279.45603 290.66404 296.88005 308.71205 322.60804 333.81605 341.11204 348.40803 360.24003 371.35203 380.18403 386.40003 393.696 407.592 419.424 433.80003 442.63203 449.928 457.536 464.832 478.728 492.216 499.512 511.344 517.56 531.456 545.832 557.496 569.328 580.44 589.272 603.048 614.256">What is the name of your earliest identifiable ancestor?</tspan></text>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 48180 31266 L 317580 31266 L 317580 199302 L 48180 199302 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#00ffff" d="M 48180 31266 L 317580 31266 L 317580 199302 L 48180 199302 Z "/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 256370 10802 L 358166 10802 L 358166 26426 L 256370 26426 Z " fill-opacity="0" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#9fc5e8" d="M 256370 10802 L 358166 10802 L 358166 26426 L 256370 26426 Z "/>
+</g>
+</g>
+</g>
+</svg>

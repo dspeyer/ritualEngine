@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp55">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp55)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 8620 10962 L 356548 10962 L 356548 70794 L 8620 70794 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 16.968504 21.578742)" font-size="24" font-family="DroidSerif" font-style="italic"><tspan y="32.04" x="203.44412 218.32413 232.70014 246.47614 255.30814 269.08415 282.42814 293.15614 307.05213 320.90013 335.27613 341.49214 348.47615 362.85215 373.96415 382.79615 389.01216 397.84416 412.22016 424.05216 430.26817 437.87617 445.17216 459.06816 480.54817 492.38017 498.59617 512.37216 519.9801 526.1961 538.8441 552.6201 566.9961 578.2041 584.4201 592.0281 599.3241 606.93209 615.76406 630.14 636.356 648.02 661.916 676.292 690.188 697.484">Photograph just the flame of your fifth candle</tspan></text>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 79734 39139 L 286026 39139 L 286026 193711 L 79734 193711 Z " fill-opacity="0" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#980000" d="M 79734 39139 L 286026 39139 L 286026 193711 L 79734 193711 Z "/>
+</g>
+</g>
+</g>
+</svg>

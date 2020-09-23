@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp101">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp101)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 62304 10962 L 303264 10962 L 303264 194778 L 62304 194778 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 122.64567 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="153.72" x="9 23.400002 35.144 43.144 51.432 63.239999 81.703998 96.77599 105.063999 123.528 144.168 161.288 169.288 177.57599 205.12799 222.24799 232.16799 247.91199 266.37599 296.58399 313.70399 321.99198 340.45597 360.74397 375.81596 384.10395 404.74397 421.86396 449.41596 457.70396 473.44795 491.91194 522.11996 541.73599 562.024 573.28799 590.40798 605.48">&#x201c;I, for one, welcome our new computer </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 122.64567 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="191.72" x="9 27.464 45.992006 63.112009 78.184009 88.104007 106.56801 121.64001 141.25601 155.68802 164.84003 179.24002">overlords.&#x201d; </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 122.64567 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="267.72" x="9 41 49.288003 71.048007 88.16801 108.80801 117.09601 128.488 145.608 166.248 186.888 197.09601 217.73601 234.95201 249.38402 257.38404 265.67204 277.06404 294.18403 312.648 332.264 350.24803 365.32 384.936 402.984 411.272 427.016 447.304 465.288 495.496 515.112 525.32 543.784 564.424">&#x2014; Ken Jennings, Jeopardy champion,</tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 122.64567 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="305.72" x="9 17.288 25.576 33.864 42.152 50.440004 68.424 80.232 91.496 108.616008 123.688 131.976 141.896 160.36 174.792 185 205.64 222.856 231.144 242.408 260.872 269.16 280.904 301.8 331.784 338.216 352.648 360.936 392.84004 410.82405 422.08805 436.52006 454.98405">     after losing to IBM&#x2019;s Watson</tspan></text>
+</g>
+</g>
+</g>
+</svg>

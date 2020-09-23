@@ -1,0 +1,9 @@
+{
+    "widget": "CrossWords",
+    "boxColors": {
+        "content": "#00ffff",
+        "input": "#9fc5e8"
+    },
+    "image": "circle_around.png",
+    "size": 70
+}

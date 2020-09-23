@@ -1,0 +1,9 @@
+{
+    "widget": "Histogram",
+    "images": "selfies",
+    "boxColors": {
+        "input": "#0000ff",
+        "result": "#4a86e8"
+    },
+    "saveas": "histogram"
+}

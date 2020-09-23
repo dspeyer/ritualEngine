@@ -62,14 +62,14 @@ async def status(req):
             results['error'] = 'no background'
         fn = 'examples/%s/%d.json'%(ritual.script,ritual.page)
         if not ritual.state and path.exists(fn):
-            try:
+#            try:
                 data = json.loads(open(fn).read())
                 widget = globals()[data['widget']]
                 ritual.state = widget(ritual=ritual, **data)
                 if hasattr(ritual.state,'async_init'):
                     await ritual.state.async_init()
-            except Exception as e:
-                results['error'] = str(e)
+#            except Exception as e:
+#                results['error'] = str(e)
         results['page'] = ritual.page
     if ritual.state:
         results.update(ritual.state.to_client(req.query.get('internalhave')))

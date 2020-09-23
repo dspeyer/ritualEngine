@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp21">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp21)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-opacity=".4431" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 8620 10962 L 356548 10962 L 356548 31806 L 8620 31806 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 16.968504 21.578742)" font-size="24" font-family="DroidSerif" font-style="italic"><tspan y="32.04" x="10.237091 28.045092 42.421094 48.637094 61.285097 75.0611 89.437099 100.645099 106.8611 115.6931 130.0691 141.2771 155.6531 161.6531 167.86911 181.35712 192.56513 199.86113 211.69313 219.30113 226.59714 239.24514 245.46114 259.35716 271.18916 282.30116 293.96516 305.17317 312.46916 325.95716 337.78916 344.00517 352.83717 367.21318 379.04518 385.26118 399.03718 406.33317 420.22917 432.06117 443.17317 452.00517 458.22117 469.33317 478.16517 491.94117 503.14918 515.7972 522.0132 534.6612 548.4372 562.8132 569.0292 583.40518 597.30117 610.21316 622.04519 628.26119 639.4692 651.30117 665.19717 679.09317 685.09317 691.30917 698.60519 712.98117 724.64517 731.94119 746.31716 760.21316 767.50918 781.88516 795.2291 801.4451 813.10916 826.88516 840.73318 848.0292 859.8612 870.9732 877.1892 890.9652 902.1732">On your turn, briefly describe the oldest story you have read, including copies or </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 16.968504 21.578742)" font-size="24" font-family="DroidSerif" font-style="italic"><tspan y="61.04" x="281.09843 289.93043 300.65843 314.5544 328.93043 340.04243 347.3384 361.2344 370.0664 377.3624 391.1384 405.5144 416.6264 422.6264 428.8424 437.6744 452.0504 463.88243 478.25843 484.47444 496.30644 510.68244 519.5144 531.34646 542.55447 548.77047 556.06649 564.89846 576.01046 582.22647 594.87448 606.7064 620.6024">translations, then enter its year</tspan></text>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 131956 42910 L 189052 42910 L 189052 63754 L 131956 63754 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 259.75593 84.468509)" font-size="24" font-family="DroidSerif" font-style="italic"><tspan y="32.04" x="46.34124 59.68524 71.51724 85.413249 96.62125">Year:</tspan></text>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 176752 46490 L 209896 46490 L 209896 55406 L 176752 55406 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#0000ff" d="M 176752 46490 L 209896 46490 L 209896 55406 L 176752 55406 Z "/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 34198 68744 L 335542 68744 L 335542 186920 L 34198 186920 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#4a86e8" d="M 34198 68744 L 335542 68744 L 335542 186920 L 34198 186920 Z "/>
+</g>
+</g>
+</g>
+</svg>

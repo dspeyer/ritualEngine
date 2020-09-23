@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp17">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp17)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 45906 10962 L 324510 10962 L 324510 31266 L 45906 31266 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="24" font-family="DroidSerif" font-style="italic"><tspan y="32.04" x="9 22.032002 29.328003 43.704004 57.048006 63.048006 72.81601 80.11201 94.48801 104.25601 118.63201 133.00801 140.30402 151.41602 165.19202 179.56803 185.56803 195.33603 204.16803 218.54404 230.37604 240.14405 247.75205 255.04805 266.25605 277.36805 286.20005 295.96806 304.80006 324.43205 338.20805 347.97605 360.88804 372.72004 383.92805 395.04005 406.87205 417.98405 427.75205 441.52806 449.13606 458.90406 476.40007 490.24806 497.54405 504.84004 512.448 521.28 531.04806 546.24008 558.88809 568.65609 585.57608 599.952 613.848 625.056 636.88809 656.5201 666.2881 681.2401 688.53616 701.8801 713.71218">Sing, in unison, the first two verses of Uplift By Andrew Eigel</tspan></text>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 10775 30730 L 358163 30730 L 358163 198766 L 10775 198766 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#00ffff" d="M 10775 30730 L 358163 30730 L 358163 198766 L 10775 198766 Z "/>
+</g>
+</g>
+</g>
+</svg>

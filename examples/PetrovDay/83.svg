@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp102">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp102)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 45906 10962 L 319662 10962 L 319662 194778 L 45906 194778 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="153.72" x="9 20.392 37.512 55.976 75.592 93.576007 108.648 128.264 143.464 151.464 163.592 173.79999 185.064 197.19199 208.456 228.74399 243.816 264.456 278.888 291.016 309.47999 329.76799 341.03199 349.03199 361.15998 388.71199 406.69599 421.128 433.25599 453.896 472.36 483.624 495.75199 513.73599 528.16799 540.296 559.91207 570.12008 581.92807 593.736 603.94406 619.68807 639.9761 649.89608 661.16006 673.2881 691.2721 705.7041">Jeopardy, it turns out, was not as difficult as </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="191.72" x="9 36.552003 53.672006 76.16801 87.43201 107.72001 126.184009 146.472 163.688 183.976 195.24 204.392 226.888 247.784 268.072 279.336 301.832 313.64 333.928 343.84803 353.76805 371.81605 394.31205 411.52806 428.64805 449.28807 466.40806 480.84004 498.82405 508.74406 531.24008 541.44808 562.0881 573.35208 590.47207 600.392 610.312 620.52 637.736 654.856 675.49606 691.24008 708.36007">we thought. But fully general intelligence </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="229.72" x="9 24.072 41.192 71.4 89.384 99.592 120.232 134.664 142.952 161.416 181.704 192.968 201.256 219.72 231.528 239.816 254.888 272.008 289.992 305.736 326.024 335.176">remains out of reach. </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="32" font-family="DroidSerif"><tspan y="305.72" x="9 40.552003 57.672006 65.96001 77.22401 97.51201 107.72001 128.36002 147.04802 155.33602 166.60002 186.88802 204.87201 216.13602 224.42401 234.63202 245.89603 254.18402 264.39204 278.82405 287.11204 306.72804 316.93605 328.74406 340.55207 350.76008 366.50407 386.79206 396.71208 407.97608">We think that it is difficult.</tspan></text>
+</g>
+</g>
+</g>
+</svg>

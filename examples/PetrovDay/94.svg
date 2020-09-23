@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp115">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp115)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365568 0 L 365568 205740 L 0 205740 Z " fill-opacity=".4431" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 45906 10962 L 324510 10962 L 324510 31266 L 45906 31266 Z " fill-opacity="0" fill-rule="evenodd"/>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="24" font-family="DroidSerif" font-style="italic"><tspan y="32.04" x="23.323212 32.13121 39.739213 45.95521 58.60321 72.37921 86.75521 92.971218 107.34721 121.24322 134.15522 145.98722 152.20322 165.69123 177.52323 189.35523 203.73123 209.94724 217.24324 231.61925 244.53125 258.30726 265.60325 278.51524 290.34724 304.24324 310.45924 317.75523 332.13124 338.34724 352.24324 358.45924 370.12324 383.89924 396.81123 404.1072 418.0032 425.4432 433.0512 440.3472 453.6912 468.0672 476.8992 484.1952 498.5712 511.9152 518.13119 531.9792 543.1872 556.9632 563.9472 575.7792 587.4432 596.27517 602.27517 608.49118 620.3231 633.2351 645.06716 659.4431 665.6591 672.95516 687.3311 693.5471 707.4431">If you have been involved in a covid-fighting project, even in a </tspan></text>
+<text fill="#ffffff" xml:space="preserve" transform="matrix(.75 0 0 .75 90.36614 21.578742)" font-size="24" font-family="DroidSerif" font-style="italic"><tspan y="61.04" x="234.27829 245.39029 266.8703 280.7663 288.0623 295.35829 301.57429 321.20628 334.62226 345.13429 351.13429 357.35029 371.7263 385.62229 407.1023 418.9343 425.1503 432.4463 441.2783 447.4943 461.8703 473.7023 484.9103">small way, name it here</tspan></text>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 10775 78202 L 358163 78202 L 358163 198754 L 10775 198754 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#0000ff" d="M 10775 78202 L 358163 78202 L 358163 198754 L 10775 198754 Z "/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 30875 39888 L 326927 39888 L 326927 71904 L 30875 71904 Z " fill-opacity=".2577" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#00ffff" d="M 30875 39888 L 326927 39888 L 326927 71904 L 30875 71904 Z "/>
+</g>
+</g>
+</g>
+</svg>
