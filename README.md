@@ -3,6 +3,11 @@
 Everybody gets to partake of the same slides, and they can contain
 widgets to create a feeling of presence and community.
 
+The ritual is controled by a "leader" (or several leaders) who use a
+`/lead` url rather than `/partake`.  There is no UI for this so that
+nobody clicks it by accident.  There might one day be a `/observe`,
+but we don't actually need it.
+
 ## Glossary
 
 **Script:** A series of things to do in a ritual    
