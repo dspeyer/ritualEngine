@@ -1,0 +1,104 @@
+<html>
+    <head>
+        <title>Manage Ritual Engine Logons</title>
+        <style>
+         body {
+             background: url('https://secularsolstice.github.io/snow-bkg.jpg');
+             font-size: 14pt;
+             display: flex;
+             flex-direction: column;
+             justify-content: space-around;
+         }
+         .content {
+             width: 30em;
+             max-width: 95%;
+             background: white;
+             margin: 1em auto;
+             border: 2px #777 outset;
+             padding: 1em;
+             position: relative;
+         }
+         .button {
+             display: block;
+             width: 100%;
+             background: #ccc;
+             border: 2px outset #aaa;
+             text-decoration: none;
+             color: black;
+             text-align: center;
+         }
+         .user {
+             width: 95%;
+             border: 1px dotted grey;
+             height: 100px;
+             margin: 1em auto;
+         }
+         .user img {
+             float: left;
+         }
+         .user b {
+             font-size: 20pt;
+             display: block;
+         }
+         .user tt {
+             display: block;
+         }
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+         let users = document.cookie
+                             .split('; ')
+                             .find(row => row.startsWith('ritLogin'))
+                             .split('=')[1]
+                             .split('__');
+         
+         async function initList() {
+             let anything = false;
+             for (let user of users) {
+                 let data = await new Promise((res)=>$.ajax('/userinfo?id='+user, {success:res}));
+                 if (data.found) {
+                     data.user = user;
+                     let html = ('<div class="user"><img src="/avatar/%user%.png">' +
+                                 '<b>%name%</b><tt>%email%</tt>' +
+                                 '<input type=button value="Remove" onclick="logoff(\'%user%\');">' +
+                                 '</div>');
+                     for (let k in data) {
+                         html = html.replace(RegExp('%'+k+'%','g'), data[k]);
+                     }
+                     $(html).appendTo($('#logonList'));
+                     anything = true;
+                 }
+             }
+             if ( ! anything) {
+                 $('#logonList').append("<i>No one is here.  Who's even reading this?  Spooooky.</i>");
+             }
+             let last = document.cookie.split('; ').find(row => row.startsWith('LastRitual='));
+             if (last) {
+                 last = last.split('=')[1];
+                 $('#or').append(' or to the ')
+                         .append($('<a href=/'+last+'/partake></a>').text(last))
+                         .append(' ritual');
+             }
+
+         }
+
+         function logoff(user) {
+             users = users.filter((x)=>(x!=user));
+             document.cookie = 'ritLogin='+users.join(',');
+             window.location.reload();
+         }
+
+         $(initList);
+        </script>
+    </head>
+    <body>
+        <div class="content">
+            <h3>Ritual participants currently using this browser:</h3>
+            <div id="logonList"></div>
+            <a class="button" href="/addLogin">Add Another</a>
+            <br>
+            <br>
+            Done here?  Return to <a href="/">the main page</a><span id="or"></span>.
+        </div>
+    </body>
+</html>
