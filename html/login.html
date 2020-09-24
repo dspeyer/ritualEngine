@@ -187,15 +187,22 @@
 
          function initDrag(t) {
              let mdx, mdy, mid=false;
-             t.on('mousedown', (ev)=>{
+             t.on('mousedown touchstart', (ev)=>{
+                 if (ev.changedTouches) {
+                     ev.preventDefault();
+                     ev = ev.changedTouches[0];
+                 }
                  mdx = ev.clientX;
                  mdy = ev.clientY;
                  mid = true;
                  t.css('cursor','grabbing');
-                 ev.stopPropagation();
              });
-             $(document.body).on('mousemove', (ev)=>{
+             $(document.body).on('mousemove touchmove', (ev)=>{                 
                  if ( ! mid) return;
+                 if (ev.changedTouches) {
+                     ev.preventDefault();
+                     ev = ev.changedTouches[0];
+                 }
                  let nx = ev.clientX;
                  let ny = ev.clientY;
                  let dx = nx - mdx;
@@ -219,7 +226,7 @@
                  $('#y').val(vy);
                  setZoom();
              });
-             $(document.body).on('mouseup', (ev)=>{
+             $(document.body).on('mouseup touchend', (ev)=>{
                  mid = false;
                  t.css('cursor','grab');
              });
