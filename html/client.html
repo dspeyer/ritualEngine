@@ -3,12 +3,14 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <style>
          .content {
-             width: 100%;
-             height: 100vh;
+             width: 100vw;
+             height: 56.25vw; /* 9x16 TODO: don't hardcode this */
              background-image: url('bkg.jpg');
          }
          .content.shrunk {
-             height: calc( 100vh - 117px );
+             max-height: calc( 100vh - 125px );
+             max-width: calc( ( 100vh - 125px ) * 16 / 9 );
+             margin: auto;
          }
          .content svg {
              width: 100%;
@@ -29,6 +31,12 @@
              bottom: 0;
              z-index: 1;
              display: none;
+             opacity: 0.6;
+         }
+         #pagenumber {
+             border: 1px solid #666;
+             font-family: monospace;
+             color: white;
          }
         </style>
     </head>
@@ -37,6 +45,7 @@
         <div id="participants" class="participants"></div>
         <div id="ctrls">
             <input type="button" id="prev" value="‎◀">
+            <span id="pagenumber">?</span>
             <input type="button" id="skip" value="‎S">
             <input type="button" id="next" value="▶">
         </div>
@@ -62,6 +71,7 @@
                              state = null;
                          }
                          page=data.page;
+                         $('#pagenumber').text(page);
                      }
                      if (data.svg) {
                          $('#content').html(data.svg);
