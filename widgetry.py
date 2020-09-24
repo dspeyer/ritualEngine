@@ -11,6 +11,7 @@ from widgets.Histogram import Histogram
 from widgets.CrossWords import CrossWords
 from widgets.BucketSinging import BucketSinging
 from widgets.Trivia import Trivia
+from widgets.CircleFlames import CircleFlames
 
 async def lib(req):
     return web.Response(body=open('html/lib.js').read(), content_type='text/javascript')
@@ -60,16 +61,18 @@ async def status(req):
             results['svg'] = svg
         else:
             results['error'] = 'no background'
+
         fn = 'examples/%s/%d.json'%(ritual.script,ritual.page)
         if not ritual.state and path.exists(fn):
-#            try:
+            try:
                 data = json.loads(open(fn).read())
                 widget = globals()[data['widget']]
                 ritual.state = widget(ritual=ritual, **data)
                 if hasattr(ritual.state,'async_init'):
                     await ritual.state.async_init()
-#            except Exception as e:
-#                results['error'] = str(e)
+            except Exception as e:
+                print("fn='%s"%fn)
+                raise e
         results['page'] = ritual.page
     if ritual.state:
         results.update(ritual.state.to_client(req.query.get('internalhave')))

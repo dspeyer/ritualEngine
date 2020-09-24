@@ -3,5 +3,6 @@
     "boxColors": {
         "controls": "#00ffff",
         "results": "#0000ff"
-    }
+    },
+    "saveas": "facts"
 }

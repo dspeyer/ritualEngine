@@ -8,9 +8,12 @@ right = 1
 
 class CrossWords(object):
 
-    def __init__(self, ritual, boxColors, image, size, **ignore):
+    def __init__(self, ritual, boxColors, image, size, saveas=None, **ignore):
         self.boxColors = boxColors
 
+        if saveas:
+            self.saveto = ritual.__dict__[saveas] = []
+        
         target = cv2.imread('examples/%s/%s'%(ritual.script,image))[:,:,::-1]
         (w,h,c) = target.shape
         r = max(w,h) / size
@@ -29,6 +32,8 @@ class CrossWords(object):
 
     def from_client(self, data, users):
         rawname = data['name']
+        if hasattr(self,'saveto'):
+            self.saveto.append(rawname)
         name = [ ord(c) for c in rawname ]
         name = np.array(name)
         best = (-1, -1, down, -inf)

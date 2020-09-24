@@ -1,6 +1,6 @@
 {
     "widget": "PhotoCollage",
-    "boxcolor": "#980000",
+    "boxcolor": "#00ffff",
     "bigimage": "radwarning.png",
     "saveas": "flames"
 }

@@ -105,13 +105,17 @@ def intt(x):
     return tuple((int(i) for i in x))
 
 class Trivia(object):
-    def __init__(self, ritual, boxColors, **ignore):
+    def __init__(self, ritual, boxColors, saveas=None, **ignore):
         self.ritual = ritual
         self.boxColors = boxColors
         self.data = []
+        if saveas:
+            self.saveto = ritual.__dict__[saveas] = []
 
     def from_client(self, data, users):
         txt = data['txt']
+        if hasattr(self,'saveto'):
+            self.saveto.append(txt)
         tw = sum([ cws.get(c, 1) for c in txt ])
         lines = max(int(tw / 20) + int(random()*2), 1)
         w = tw / lines
