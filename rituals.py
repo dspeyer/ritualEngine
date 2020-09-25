@@ -41,12 +41,13 @@ async def nextOrPrevPage(req):
     if name not in active:
         return web.Response(status=404)
     isnext = req.url.path.endswith('/nextPage')
-    if active[name].state and hasattr(active[name].state,'destroy'):
-        active[name].state.destroy()
+    if active[name].state:
+        if hasattr(active[name].state,'destroy'):
+            active[name].state.destroy()
+    elif isnext:
+        active[name].rotateSpeakers()
     active[name].state = None
     active[name].page += (isnext and 1 or -1)
-    if isnext:
-        active[name].rotateSpeakers()
     for i,task in active[name].reqs.items():
         print("Cancelling %d"%i)
         task.cancel()
