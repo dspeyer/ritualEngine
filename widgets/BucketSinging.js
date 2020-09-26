@@ -67,8 +67,11 @@ async function calibrate() {
     $('<h4>').text('Please place your microphone so it can hear your speakers').appendTo(div);
     $('<h4>').text('Or tap your microphone in time with the clicks').appendTo(div);
     let clickElem = $('<p>').text('Heard 0 clicks so far').appendTo(div);
+    let button = $('<input type=button value="Don\'t bother; just stick me where no one will hear">').appendTo(div);
     let res;
+    let cancelled = false;
     let p = new Promise((r)=>{res=r;});
+    button.on('click', ()=>{ cancelled=true; res(); });
     bbs.learned_latency_hooks.push((msg)=>{
         clickElem.text("Heard " + msg.samples + " clicks so far.");
         clearTimeout(louderTimeout);
@@ -80,6 +83,7 @@ async function calibrate() {
     bbs.set_estimate_latency_mode(false);
     div.remove();
     calibrated = true;
+    return cancelled;
 }
 
 
@@ -144,9 +148,14 @@ export class BucketSinging {
     let audio_offset = Math.floor(Math.log(pos + 2) / Math.log(2)) * bbs.minimum_safe_offset_delta_s + 2;
     
     await init_audio({audio_offset, server_url});
-    $('<div>').text('Audio offset: '+audio_offset).css('color','white').appendTo($('body'));
-    await calibrate(this.div);
-
+    let cancelled = await calibrate(this.div);
+    if (cancelled) {
+      bbs.stop();
+      pos = client_ids.length;
+      audio_offset = Math.floor(Math.log(pos + 2) / Math.log(2)) * bbs.minimum_safe_offset_delta_s + 7;
+      await init_audio({audio_offset, server_url});
+    }
+    
     if ( ! this.lyrics.length) {
       bbs.set_mute(true);
       return;
