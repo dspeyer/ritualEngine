@@ -108,6 +108,7 @@ export class BucketSinging {
         "  display: flex; " +
         "  flex-direction: column; " +
         "  justify-content: space-between; " +
+        "  overflow-y: auto; " +
         "} " +
         "div.lyrics span { " +
         "  font-size: 16pt; " +
@@ -168,10 +169,10 @@ export class BucketSinging {
                     'lyricsbox at the beginning of each line.').appendTo(this.div);
       this.div.css('cursor','pointer');
       let cur = 0;
-      this.div.on('click',()=>{
+      this.div.on('click',async ()=>{
         this.div.find('span.current').removeClass('current').addClass('old');
         lyricEls[cur].addClass('current');
-        
+        await this.scrollTo(lyricEls[cur]);
         bbs.declare_event(cur);
         if (cur == 0) {
           for (let i=1; i<=4; i++) {
@@ -186,15 +187,28 @@ export class BucketSinging {
           lyricEls[i].addClass('old');
         }
       }
-      bbs.event_hooks.push( (lid)=>{
+      bbs.event_hooks.push( async (lid)=>{
         this.div.find('span.current').removeClass('current').addClass('old');
         if (lyricEls[lid]) {
           lyricEls[lid].addClass('current');
+          await this.scrollTo(lyricEls[lid]);
         }
       });
     }
   }
 
+  async scrollTo(elem) {
+    let otop = elem.offset().top;
+    while (true) {
+      if (otop < 200) break;
+      this.div[0].scrollTop += 4;
+      let ntop = elem.offset().top;
+      if (ntop == otop) break;
+      otop = ntop;
+      await new Promise( (res)=>{setTimeout(res,16);} );
+    }
+  };
+  
   destroy(){
     if (this.cleanup) {
       bbs.stop();
