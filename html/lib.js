@@ -186,3 +186,5 @@ export function showParticipants(participants) {
         }
     }
 }
+
+export function setZoomMute(v) {} // TODO: something
