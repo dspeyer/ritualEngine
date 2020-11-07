@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp4">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp4)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 12468 17801 L 353292 17801 L 353292 60881 L 12468 60881 Z " fill-opacity=".2291" fill-rule="evenodd"/>
+<text xml:space="preserve" transform="matrix(.75 0 0 .75 24.543309 35.04134)" font-size="49.333333" font-family="ArialMT"><tspan y="56.359998" x="9 39.093336 66.52267 93.952 107.61734 121.28268 154.13867 170.56667 197.996 225.42534 236.37734 263.80668 304.90135 318.56669 351.42268 378.852 389.804 414.47065 441.89997">That Problem Solved</tspan></text>
+<text xml:space="preserve" transform="matrix(.75 0 0 .75 24.543309 35.04134)" font-size="26.666666" font-family="ArialMT"><tspan y="93.6" x="9 26.76 40.093336 47.48 66.73334 81.560009 96.38667 102.30667 117.13334 123.05334 130.44 148.2 163.02667 177.85334 191.18666 206.01334">By Daniel Speyer</tspan></text>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 22278 70330 L 343482 70330 L 343482 202066 L 22278 202066 Z " fill-opacity="0" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#0000ff" d="M 22278 70330 L 343482 70330 L 343482 202066 L 22278 202066 Z "/>
+</g>
+</g>
+</g>
+</svg>

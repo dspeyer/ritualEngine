@@ -33,7 +33,9 @@ async def ritualPage(req):
     return web.Response(body=tpl('html/client.html',
                                  name=name,
                                  cclass=hasattr(active[name],'participants') and 'shrunk' or '',
-                                 islead=str(islead).lower()),
+                                 ratio=str(active[name].ratio),
+                                 islead=str(islead).lower(),
+                                 bkgAll=str(active[name].bkgAll).lower()),
                         content_type='text/html', charset='utf8')
 
 async def nextOrPrevPage(req):
@@ -72,6 +74,14 @@ async def background(req):
     content = open(path,'rb').read()
     return web.Response(body=content, content_type='image/jpeg');   
 
+async def namedimg(req):
+    name = req.match_info.get('name')
+    fn = req.match_info.get('img')
+    sc = active[name].script
+    path = 'examples/%s/%s'%(sc,fn)
+    content = open(path,'rb').read()
+    return web.Response(body=content, content_type='image/jpeg');   
+
 async def mkRitual(req):
     print("mkRitual")
     form = await req.post()
@@ -88,7 +98,7 @@ async def mkRitual(req):
     opts = json.loads(open('examples/%s/index.json'%script).read())
     print("very good")
     active[name] = Ritual(script=script, reqs={}, state=None, page=page, background=opts['background'],
-                          jpgs=[defaultjpg], jpgrats=[1])
+                          bkgAll=opts.get('bkgAll',False), ratio=opts.get('ratio',16/9), jpgs=[defaultjpg], jpgrats=[1])
     if opts['showParticipants']:
         active[name].participants = []
     print("did the thing")
@@ -102,3 +112,4 @@ app.router.add_post('/{name}/prevPage', nextOrPrevPage)
 app.router.add_post('/{name}/skipSpeaker', skipSpeaker)
 app.router.add_post('/mkRitual', mkRitual)
 app.router.add_get('/{name}/bkg.jpg', background)
+app.router.add_get('/{name}/namedimg/{img}', namedimg)

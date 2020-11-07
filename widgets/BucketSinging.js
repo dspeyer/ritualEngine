@@ -1,5 +1,5 @@
 import * as bbs from './BucketSinging/app.js';
-import { putOnBox } from '../../lib.js';
+import { putOnBox, bkgSet, bkgZoom } from '../../lib.js';
 
 
 let initted = false;
@@ -88,7 +88,7 @@ async function calibrate() {
 
 
 export class BucketSinging {
-  constructor({boxColor, lyrics, cleanup}) {
+  constructor({boxColor, lyrics, cleanup, background_opts}) {
     let client_id;
     this.islead = window.location.pathname.endsWith('lead');
     if (this.islead) {
@@ -103,6 +103,7 @@ export class BucketSinging {
     this.page = 'unready';
     this.lyrics = lyrics;
     this.cleanup = cleanup;
+    this.background = background_opts;
 
     $('<style>').text(
       "  div {  " +
@@ -113,6 +114,7 @@ export class BucketSinging {
         "  flex-direction: column; " +
         "  justify-content: space-between; " +
         "  overflow-y: auto; " +
+        "  text-shadow: 1px 1px 2px #777, -1px -1px 2px #777, 1px -1px 2px #777, -1px 1px 2px #777; " +
         "} " +
         "div.lyrics span { " +
         "  font-size: 16pt; " +
@@ -121,10 +123,12 @@ export class BucketSinging {
         "} " +
         "div.lyrics span.current { " +
         "  font-weight: bold; " +
-        "  text-shadow: 0 0 1px yellow; " +
+        "  color: yellow; " +
+        "  text-shadow: 1px 1px 4px black, -1px -1px 4px black, 1px -1px 4px black, -1px 1px 4px black; " +
+        "  font-size: 17pt; " +
         "} " +
         "div.lyrics span.old { " +
-        "  color: grey; " +
+        "  color: #999; " +
         "} "
     ).appendTo($('head'));
   }
@@ -174,14 +178,10 @@ export class BucketSinging {
     }
     if (this.islead) {
       bbs.init_events();
-      $('<p>').text('You are the lead singer.  Begin when ready.  Click anywhere in the '+
-                    'lyricsbox at the beginning of each line.').appendTo(this.div);
       this.div.css('cursor','pointer');
       let cur = 0;
       this.div.on('click',async ()=>{
-        this.div.find('span.current').removeClass('current').addClass('old');
-        lyricEls[cur].addClass('current');
-        await this.scrollTo(lyricEls[cur]);
+        await this.handleLyric(cur, lyricEls);
         bbs.declare_event(cur);
         if (cur == 0) {
           for (let i=1; i<=4; i++) {
@@ -197,21 +197,28 @@ export class BucketSinging {
         }
       }
       bbs.event_hooks.push( async (lid)=>{
-        this.div.find('span.current').removeClass('current').addClass('old');
-        if (lyricEls[lid]) {
-          lyricEls[lid].addClass('current');
-          await this.scrollTo(lyricEls[lid]);
-        }
+        await this.handleLyric(lid, lyricEls);
       });
     }
   }
 
-  async scrollTo(elem) {
-    let otop = elem.offset().top;
+  async handleLyric(lid, lyricEls) {
+    this.div.find('span.current').removeClass('current').addClass('old');
+    let elem = lyricEls[lid];
+    if (! elem ) return;
+    elem.addClass('current');
+    if (this.background.zoomSpeed && lid>=0) {
+      bkgZoom(Math.pow(this.background.zoomSpeed, lid), this.background.zoomCenter);
+    }
+    if (this.background.backgrounds && lid in this.background.backgrounds) {
+      bkgSet('namedimg/'+this.background.backgrounds[lid]);
+    }
+    let otop = elem.position().top;
+    let target = elem.parent().height() / 3;  
     while (true) {
-      if (otop < 200) break;
+      if (otop < target) break;
       this.div[0].scrollTop += 4;
-      let ntop = elem.offset().top;
+      let ntop = elem.position().top;
       if (ntop == otop) break;
       otop = ntop;
       await new Promise( (res)=>{setTimeout(res,16);} );

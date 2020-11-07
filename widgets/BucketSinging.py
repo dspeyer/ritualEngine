@@ -45,12 +45,13 @@ async def copyStdout(proc,port):
 
 
 class BucketSinging(object):
-    def __init__(self, ritual, boxColor, lyrics, last_song=False, **ignore):
+    def __init__(self, ritual, boxColor, lyrics, last_song=False, bsBkg=None, **ignore):
         self.ritual = ritual
         self.boxColor = boxColor
         self.lyrics = lyrics
         self.client_ids = []
         self.own_server = last_song
+        self.background_opts = (bsBkg or {})
             
     async def async_init(self):
         if not hasattr(self.ritual, 'bs_proc'):
@@ -72,7 +73,8 @@ class BucketSinging(object):
                  'boxColor': self.boxColor,
                  'server_url': PORT_FORWARD_TEMPLATE % self.ritual.bs_port,
                  'client_ids': self.client_ids,
-                 'cleanup': self.own_server }
+                 'cleanup': self.own_server,
+                 'background_opts': self.background_opts}
 
     def destroy(self):
         if self.own_server:

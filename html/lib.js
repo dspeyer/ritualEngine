@@ -126,9 +126,10 @@ function fill(div, n) {
         }
     }
     let i=0;
-    for (; i<base_placements.length; i++) {
+    for (; i<base_placements.length-1; i++) {
         if (base_placements[i].length >= n) break;
     }
+    console.log(base_placements[i]);
     let ps = JSON.parse(JSON.stringify(base_placements[i]));
     if (ps.length > n) {
         ps = ps.slice(0,n);
@@ -188,3 +189,38 @@ export function showParticipants(participants) {
 }
 
 export function setZoomMute(v) {} // TODO: something
+
+let bkgElem = null;
+
+export function  bkgInit(par, url) {
+    if ( ! bkgElem) {
+        bkgElem = $('<div>').css({position: 'absolute',
+                                  zIndex: -9999,
+                                  'background-size': 'cover'})
+                            .appendTo(par);
+    }
+    bkgSet(url);
+}
+
+export async function bkgSet(url) {
+    let img = $('<img>').attr('src',url).css({display:'absolute',opacity:0}).appendTo($('body'));
+    if (! img[0].complete) {
+        console.log("awaiting imgload");
+        await new Promise((res)=>{img.on('load',res);});
+        console.log("done waiting");
+    }
+    img.remove();
+    bkgElem.css({backgroundImage: 'url('+url+')',
+                 width: '100%',
+                 height: '100%',
+                 top: '0px',
+                 left: '0px'});
+}
+
+export function bkgZoom(amt,c) {
+    bkgElem.css({width: (100*amt)+'%',
+                 height: (100*amt)+'%',
+                 top: (-100*(amt-1)*c[1])+'%',
+                 left: (-100*(amt-1)*c[0])+'%'});
+}
+    

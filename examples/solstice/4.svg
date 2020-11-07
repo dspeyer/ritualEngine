@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<g enable-background="new">
+<g>
+<clipPath id="cp3">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp3)">
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 12468 17801 L 353292 17801 L 353292 60881 L 12468 60881 Z " fill-opacity=".2291" fill-rule="evenodd"/>
+<text xml:space="preserve" transform="matrix(.75 0 0 .75 24.543309 35.04134)" font-size="49.333333" font-family="ArialMT"><tspan y="56.359998" x="9 54.63333 82.06267 93.01467 125.87067 142.29866 169.728 183.39333 221.72533 249.15467 262.82 290.24934 317.67866 334.10667 361.53599">We Are Gathered</tspan></text>
+<text xml:space="preserve" transform="matrix(.75 0 0 .75 24.543309 35.04134)" font-size="26.666666" font-family="ArialMT"><tspan y="93.6" x="9 26.76 40.093336 47.48 66.73334 81.560009 96.38667 102.30667 117.13334 123.05334 130.44 148.2 163.02667 177.85334 191.18666 206.01334">By Daniel Speyer</tspan></text>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 91296 70330 L 274464 70330 L 274464 202066 L 91296 202066 Z " fill-opacity="0" fill-rule="evenodd"/>
+<path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#0000ff" d="M 91296 70330 L 274464 70330 L 274464 202066 L 91296 202066 Z "/>
+</g>
+</g>
+</g>
+</svg>

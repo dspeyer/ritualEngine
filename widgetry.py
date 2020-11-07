@@ -29,6 +29,7 @@ async def widgetPiece(req):
     # TODO: security
     widget = globals()[req.match_info.get('widget')]
     return widget.piece(req)
+
 sleepid=0
 async def status(req):
     print("status from %s (have %s)"%(req.headers['User-Agent'].strip().split(' ')[-1],req.query.get('have')))
@@ -53,6 +54,7 @@ async def status(req):
             print("sleep %d canceled"%myid)
             pass
         del ritual.reqs[myid]
+
     results={}
     if ritual.page != have:
         fn = 'examples/%s/%d.svg'%(ritual.script,ritual.page)
@@ -63,17 +65,24 @@ async def status(req):
             results['error'] = 'no background'
 
         fn = 'examples/%s/%d.json'%(ritual.script,ritual.page)
-        if not ritual.state and path.exists(fn):
-            try:
-                data = json.loads(open(fn).read())
-                widget = globals()[data['widget']]
-                ritual.state = widget(ritual=ritual, **data)
-                if hasattr(ritual.state,'async_init'):
-                    await ritual.state.async_init()
-            except Exception as e:
-                print("fn='%s"%fn)
-                raise e
+        try:
+            data = json.loads(open(fn).read())
+        except Exception as e:
+            print("fn='%s"%fn)
+            raise e
+
+        if 'widget' in data and not ritual.state:
+            widget = globals()[data['widget']]
+            ritual.state = widget(ritual=ritual, **data)
+            if hasattr(ritual.state,'async_init'):
+                await ritual.state.async_init()
+
+        for key in ['background', 'bkZoom', 'bkZoomCenter']:
+            if key in data:
+                results[key] = data[key]
+                
         results['page'] = ritual.page
+        
     if ritual.state:
         results.update(ritual.state.to_client(req.query.get('internalhave')))
     if hasattr(ritual,'participants'):
