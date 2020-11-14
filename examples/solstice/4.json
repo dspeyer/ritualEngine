@@ -1,4 +1,7 @@
 {
+    "widget": "Youtube",
+    "videoId": "vB3Nwl5vgPc",
+    "boxColor": "#0000ff",
     "bkZoom": 1.5,
     "bkZoomCenter":  [0.5, 0.4]
 }

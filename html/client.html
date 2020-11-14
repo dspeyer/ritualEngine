@@ -102,6 +102,7 @@
                          bkgZoom(data.bkZoom,data.bkZoomCenter);
                      }
                      if (data.widget) {
+                         console.log('Found widget '+data.widget);
                          if ( ! widgetClasses[data.widget] ) {
                              let module = await import('/widgets/'+data.widget+'.js');
                              widgetClasses[data.widget] = module[data.widget];
