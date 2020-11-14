@@ -129,6 +129,7 @@ export class BucketSinging {
         "} " +
         "div.lyrics span.old { " +
         "  color: #999; " +
+        "  text-shadow: 1px 1px 2px #444, -1px -1px 2px #444; " +
         "} "
     ).appendTo($('head'));
   }
