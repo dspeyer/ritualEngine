@@ -48,7 +48,9 @@
     </head>
     <body>
         <div id="everything">
-            <div id="content" class="content %cclass%"></div>
+            <div id="content" class="content %cclass%">
+                <div id="svgwrapper"></div>
+            </div>
             <div id="participants" class="participants"></div>
             <div id="ctrls">
                 <input type="button" id="prev" value="‎◀">
@@ -86,8 +88,8 @@
                          $('#pagenumber').text(page);
                      }
                      if (data.svg) {
-                         $('#content').html(data.svg);
-                         $('#content svg').attr('width','').attr('height','');
+                         $('#svgwrapper').html(data.svg);
+                         $('#svgwrapper svg').attr('width','').attr('height','');
                      }
                      if (data.participants) {
                          let { showParticipants } = await import ('../lib.js');
