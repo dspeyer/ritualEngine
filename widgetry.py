@@ -66,12 +66,15 @@ async def status(req):
             results['error'] = 'no background'
 
         fn = 'examples/%s/%d.json'%(ritual.script,ritual.page)
-        try:
-            data = json.loads(open(fn).read())
-            print(data)
-        except Exception as e:
-            print("fn='%s"%fn)
-            raise e
+        if path.exists(fn):
+            try:
+                data = json.loads(open(fn).read())
+                print(data)
+            except Exception as e:
+                print("fn='%s"%fn)
+                raise e
+        else:
+            data = {}
 
         if 'widget' in data and not ritual.state:
             widget = globals()[data['widget']]
