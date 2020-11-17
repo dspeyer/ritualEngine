@@ -117,7 +117,7 @@ function placements(sf, w, h) {
 }
 
 let base_placements = [];
-function fill(div, n) {
+function fillAsReaderQueue(div, n) {
     let h = div.height();
     let w = div.width();
     if ( ! base_placements.length ) {
@@ -143,20 +143,66 @@ function fill(div, n) {
     }
     if (ps.length < n) {
         for (let i=ps.length; i<n; i++) {
-            ps.push({x: Math.random()*w, y:Math.random()*h, r:13, back:true});
+            ps.push({x: Math.random()*w, y:Math.random()*h, r:13, z:-1});
         }
     }
     div.empty();
     return ps.map(putcircle.bind(null,div));
 }
 
-function putcircle(d,{x,y,r,label,back}) {
+function fillAsAuditorium(div, n) {
+    let h = div.height();
+    let w = div.width();
+    let r0 = h/5; // h = 1/2 r0 + 3/2 sum(r0*(2/3)^i)
+    let rows = [];
+    let left = n;
+    for (let r=r0; left>0; r*=2/3) {
+        let nr = Math.floor(w/r);
+        rows.push(nr);
+        left -= nr;
+    }
+    if (left<0) {
+         let rem = - left / (n - left);
+         for (let i=0; i<rows.length; i++) {
+              let rh = Math.min(Math.round(rows[i]*rem), -left);
+              console.log({rem,rh,i,rowsi:rows[i],left,n});
+              left += rh;
+              rows[i] -= rh;
+             }
+    }
+    if (left!=0) {
+        // Not sure if this will ever happen
+        rows[rows.length-1] += left;
+    }
+    let ps=[];
+    let r = r0;
+    let y = h-r;
+    for (let rn of rows) {
+        let xs = 2*w/rn;
+        let x = xs / 2;
+        for (let i=0; i<rn; i++) {
+            ps.push({x,y,r,z:r});
+            x += xs;
+        }
+        y -= 3*r/2;
+        r *= 2/3;
+    }
+    div.empty();
+    return ps.map(putcircle.bind(null,div));
+}
+
+let fillAsDesired = null;
+export function setParticipantStyle(rotate){
+    fillAsDesired = rotate ? fillAsReaderQueue : fillAsAuditorium;
+}
+
+function putcircle(d,{x,y,r,label,z}) {
     let s = Math.round(2*r) - 2 + 'px';
     let left = Math.round(x-r) + 1 + 'px';
     let top = Math.round(y-r) + 1 + 'px';
     let img = $('<img>').css({position:'absolute', width: s, height: s, left, top})
                         .appendTo(d);
-    if (back) img.css('z-index', -1);
+    if (z) img.css('z-index', z);
     if (label) {
         img.label = $('<span>').text('Daniel Speyer')
                                .css({position: 'absolute',
@@ -178,7 +224,7 @@ let curCircles = [];
 export function showParticipants(participants) {
     let div = $('#participants');
     if (curCircles.length != participants.length) {
-        curCircles = fill(div, participants.length);
+        curCircles = fillAsDesired(div, participants.length);
     }
     for (let i in participants) {
         curCircles[i].attr('src', participants[i].img);
@@ -192,12 +238,13 @@ export function setZoomMute(v) {} // TODO: something
 
 let bkgElem = null;
 
-export function  bkgInit(par, url) {
+export function bkgInit(par, url) {
     if ( ! bkgElem) {
         bkgElem = $('<div>').css({position: 'absolute',
                                   zIndex: -9999,
                                   'background-size': 'cover'})
                             .appendTo(par);
+        console.log({bkgElem});
     }
     bkgSet(url);
 }

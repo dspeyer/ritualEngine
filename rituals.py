@@ -35,7 +35,8 @@ async def ritualPage(req):
                                  cclass=hasattr(active[name],'participants') and 'shrunk' or '',
                                  ratio=str(active[name].ratio),
                                  islead=str(islead).lower(),
-                                 bkgAll=str(active[name].bkgAll).lower()),
+                                 bkgAll=str(active[name].bkgAll).lower(),
+                                 rotate=str(active[name].rotate).lower()),
                         content_type='text/html', charset='utf8')
 
 async def nextOrPrevPage(req):
@@ -98,7 +99,8 @@ async def mkRitual(req):
     opts = json.loads(open('examples/%s/index.json'%script).read())
     print("very good")
     active[name] = Ritual(script=script, reqs={}, state=None, page=page, background=opts['background'],
-                          bkgAll=opts.get('bkgAll',False), ratio=opts.get('ratio',16/9), jpgs=[defaultjpg], jpgrats=[1])
+                          bkgAll=opts.get('bkgAll',False), ratio=opts.get('ratio',16/9), rotate=opts.get('rotate',True),
+                          jpgs=[defaultjpg], jpgrats=[1])
     if opts['showParticipants']:
         active[name].participants = []
     print("did the thing")

@@ -68,6 +68,7 @@
          }
          import('../lib.js').then((lib)=>{
              lib.bkgInit($(%bkgAll% ? '#everything' : '#content'), 'bkg.jpg');
+             lib.setParticipantStyle(%rotate%);
          });
          let name = '%name%';
          document.title = name;

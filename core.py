@@ -8,6 +8,8 @@ class Ritual(struct):
     def __init__(self, **kwargs):
         super(Ritual, self).__init__(**kwargs)
     def rotateSpeakers(self):
+        if not self.rotate:
+            return
         if hasattr(self,'participants') and len(self.participants)>1:
             first = self.participants[0]
             self.participants = self.participants[1:]

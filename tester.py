@@ -13,6 +13,7 @@ parser.add_argument('-n', metavar='namefile', nargs='?', help='Send names from t
 parser.add_argument('-p', metavar='picturedir', nargs='?', help='Send images from the directory')
 parser.add_argument('-a', metavar='avatardir', nargs='?', help='Send avatar images from the directory')
 parser.add_argument('-c', metavar='count', nargs='?', type=int, help='Count to send')
+parser.add_argument('-s', metavar='sleeptime', type=float, default=0.5, help='Sleep between uploads')
 
 args = parser.parse_args()
 print(args)
@@ -24,7 +25,7 @@ if args.n:
         requests.post(args.u+'/widgetData', {'name':name})
         if args.c and i>args.c:
             break
-        sleep(0.4)
+        sleep(args.s)
 
 if args.p:
     fns = glob(args.p+'/*.jpg')
@@ -36,7 +37,7 @@ if args.p:
         requests.post(args.u+'/widgetData', files=files)
         if args.c and i >= args.c-1:
             break
-        sleep(.5)
+        sleep(args.s)
 
 if args.a:
     fns = glob(args.a+'/*.jpg')
@@ -56,4 +57,4 @@ if args.a:
         requests.post(args.u+'/partake', data=data, files=files)
         if args.c and i >= args.c-1:
             break
-        sleep(0.5)
+        sleep(args.s)
