@@ -13,6 +13,7 @@ from widgets.BucketSinging import BucketSinging
 from widgets.Trivia import Trivia
 from widgets.CircleFlames import CircleFlames
 from widgets.Youtube import Youtube
+from widgets.Videoconference import Videoconference
 
 async def lib(req):
     return web.Response(body=open('html/lib.js').read(), content_type='text/javascript')
@@ -89,7 +90,7 @@ async def status(req):
         results['page'] = ritual.page
         
     if ritual.state:
-        results.update(ritual.state.to_client(req.query.get('internalhave')))
+        results.update(ritual.state.to_client(req.query.get('clientId'), req.query.get('internalhave')))
     if hasattr(ritual,'participants'):
         results['participants'] = [ {'name':users[p].name, 'img':'/avatar/%s.png'%p} for p in ritual.participants ]
     print(results.keys())

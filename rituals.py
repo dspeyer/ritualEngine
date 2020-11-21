@@ -5,7 +5,7 @@ from aiohttp import web
 import numpy as np
 import cv2
 
-from core import app, active, users, tpl, Ritual
+from core import app, active, users, tpl, random_token, Ritual
 from users import connectUserRitual
 
 defaultimg = np.zeros((64,64,3),'uint8')
@@ -32,6 +32,7 @@ async def ritualPage(req):
             return res
     return web.Response(body=tpl('html/client.html',
                                  name=name,
+                                 clientId=random_token(),
                                  cclass=hasattr(active[name],'participants') and 'shrunk' or '',
                                  ratio=str(active[name].ratio),
                                  islead=str(islead).lower(),

@@ -34,7 +34,7 @@ class Histogram(object):
             self.ritual.rotateSpeakers();
 
             
-    def to_client(self, have):
+    def to_client(self, clientId, have):
         WF = 15
         wi = int(np.ceil(self.w / WF))
         y = np.zeros(self.w+wi, 'float32')

@@ -4,7 +4,7 @@ class Youtube(object):
         self.videoId = videoId
     def from_client(self, data, users):
         pass
-    def to_client(self, have):
+    def to_client(self, clientId, have):
         return { "widget": "Youtube",
                  "boxColor": self.boxColor,
                  "videoId": self.videoId }

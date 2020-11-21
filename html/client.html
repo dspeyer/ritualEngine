@@ -1,6 +1,7 @@
 <html>
     <head>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://media.twiliocdn.com/sdk/js/video/releases/2.8.0/twilio-video.min.js"></script>
         <style>
          #everything {
              width: 100vw;
@@ -70,6 +71,7 @@
              lib.bkgInit($(%bkgAll% ? '#everything' : '#content'), 'bkg.jpg');
              lib.setParticipantStyle(%rotate%);
          });
+         let clientId = '%clientId%';
          let name = '%name%';
          document.title = name;
          let page = 0;
@@ -77,7 +79,7 @@
          var widgetClasses = {};
          async function ask() {
              $.ajax('status',{
-                 data:{have:page,subhave:(state && state.page)},
+                 data:{clientId,have:page,subhave:(state && state.page)},
                  success: async (data)=>{
                      console.log(data);
                      if (data.page) {

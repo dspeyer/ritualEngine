@@ -67,7 +67,7 @@ class BucketSinging(object):
         print("got registration of %d"%int(data['client_id']))
         self.client_ids.append(int(data['client_id']))
 
-    def to_client(self, have):
+    def to_client(self, clientId, have):
         return { 'widget': 'BucketSinging',
                  'lyrics': self.lyrics,
                  'boxColor': self.boxColor,

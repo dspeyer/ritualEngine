@@ -129,7 +129,7 @@ class Trivia(object):
         self.data.append({'t':txt, 'w':'%.1fem'%w, 'x': x, 'y': y, 'color': color})
         print(self.data)
             
-    def to_client(self, have):
+    def to_client(self, clientId, have):
         return {
             "widget": "Trivia",
             "boxColors": self.boxColors,
