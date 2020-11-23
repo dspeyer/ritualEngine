@@ -8,9 +8,12 @@ from twilio.rest import Client
 
 from core import random_token, secrets
 
+try:
+    twilio_client = Client(username=secrets['TWILIO_API_KEY'],
+                           password=secrets['TWILIO_API_SECRET'], account_sid=secrets['TWILIO_ACCOUNT_SID'])
+except KeyError as e:
+    print("WARNING: Videoconference Widget will not work without secrets")
 
-twilio_client = Client(username=secrets['TWILIO_API_KEY'],
-                       password=secrets['TWILIO_API_SECRET'], account_sid=secrets['TWILIO_ACCOUNT_SID'])
 
 
 def call_async(function, *args):

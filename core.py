@@ -32,12 +32,15 @@ try:
     with open(root_dir / 'secrets.json') as f:
         secrets = json.load(f)
 except FileNotFoundError as e:
-    raise FileNotFoundError('secrets.json not found; see README.md for more info') from e
+    print('WARNING: secrets.json not found; see README.md for more info')
+    secrets = {}
+except json.decoder.JSONDecodeError as e:
+    raise FileNotFoundError('secrets.json malformed') from e
 with open(root_dir / 'secrets.example.json') as f:
     example_secrets = json.load(f)
 missing_secrets = example_secrets.keys() - secrets.keys()
 if missing_secrets:
-    raise KeyError('secrets.json missing keys: ' + ', '.join(missing_secrets))
+    print('WARNING: Missing secrets: ' + ', '.join(missing_secrets) + ' -- some features will not work!')
 
 # TODO: real templating system?
 def tpl(fn, **kwargs):
