@@ -1,91 +1,108 @@
-import * as bbs from './BucketSinging/app.js';
+import {MicEnumerator, openMic, BucketBrigadeContext, SingerClient, VolumeCalibrator, LatencyCalibrator} from './BucketSinging/app.js';
 import { putOnBox, bkgSet, bkgZoom } from '../../lib.js';
 
+let context = null;
+let cssInit = false;
+let css = `
+  div { 
+    color: white;
+  }
+  div.lyrics {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: auto;
+    text-shadow: 1px 1px 2px #777, -1px -1px 2px #777, 1px -1px 2px #777, -1px 1px 2px #777;
+  }
+  div.lyrics span {
+    font-size: 16pt;
+    text-align: center;
+    white-space: pre;
+  }
+  div.lyrics span.current {
+    font-weight: bold;
+    color: yellow;
+    text-shadow: 1px 1px 4px black, -1px -1px 4px black, 1px -1px 4px black, -1px 1px 4px black;
+    font-size: 17pt;
+  }
+  div.lyrics span.old {
+    color: #999;
+    text-shadow: 1px 1px 2px #444, -1px -1px 2px #444;
+  } 
+`;
 
-let initted = false;
-let calibrated = false;
 
-async function init_audio({audio_offset, server_url}){
-    if (initted) {
-        //await bbs.set_offset(audio_offset);
-        bbs.set_mute(false);
-        return;
-    }
-    
-    await bbs.wait_for_mic_permissions();
-    let devices = await navigator.mediaDevices.enumerateDevices();
-    let input_device_id=null, output_device_id=null;
+async function initContext(){
+  let mics = await (new MicEnumerator()).mics();
+  let mic = mics[0]; // TODO: be smarter?
+  console.log('Chose mic: ',mic);
+  let micStream = await openMic(mic.deviceId);
+  context = new BucketBrigadeContext({micStream});
+  await context.start_bucket();
 
-    for (let dev of devices) {
-        if ( ! input_device_id && (dev.kind === 'audioinput')) {
-            input_device_id = dev.deviceId;
-            console.log(dev);
-        }
-        if ( ! output_device_id && (dev.kind === 'audiooutput')) {
-            output_device_id = dev.deviceId;
-            console.log(dev);
-        }
-    }
+  let div = $('<div>').css({background:'rgba(0.5, 0.5, 0.5, 0.6)',
+                            fontSize: '16pt',
+                            textShadow: '0 0 1px black',
+                            position: 'absolute',
+                            top: '20vh',
+                            bottom: '20vh',
+                            left: '20vw',
+                            right: '20vw',
+                            border: '2px outset #777'})
+                      .appendTo($('body'));
+  div.append("First we'll measure the latency of your audio hardware.  Please turn your volume to max and put your " +
+             "headphones where your microphone can hear them.  Or get ready to tap your microphone in time to the beeps.");
+  div.append($('<br>'));
+  let button = $('<input type=button>').attr('value',"I'm ready: start the beeping!").appendTo(div);
+  await new Promise((res)=>{button.on('click',res);});
+  
+  div.empty();
+  div.append('Beeping...');
+  div.append($('<br>'));
+  div.append('Beeps heard: ');
+  let heard = $('<span>').appendTo(div);
+  div.append($('<br>'));
+  button = $('<input type=button>').attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.").appendTo(div);
+  div.append(button);
+  let res;
+  let p = new Promise((res_)=>{res=res_;});
+  let estimator = new LatencyCalibrator({context, clickVolume:100}); // TODO: gradually increasing clickVolume
+  estimator.addEventListener('beep', (ev)=>{
+    console.log(ev);
+    if (ev.detail.done) res();
+    heard.text(ev.detail.samples);
+  });
+  button.on('click', (ev)=>{ estimator.close(); res(); });
+  await p;
 
-    if ( ! ( input_device_id && output_device_id ) ) {
-        alert("Did not find devices: "+devices);
-    }
-
-    await bbs.start({ input_device_id, output_device_id, audio_offset, server_url,
-                      script_prefix: '/widgets/BucketSinging/',
-                      loopback: 'none',
-                      input_opts: {}
-    });
-
-    await new Promise( (res) => {setTimeout(res, 500);} ); // Not sure we need this, but timing with start was weird
-    initted = true;
+  div.empty();
+  div.append($("<p>Now we need to calibrate your volume.  Please sing at the same volume you plan to during the event. "+
+               "For your convenience, here are some lyrics:" +
+               "<blockquote>" +
+               "Mary had a little iamb, little iamb, little iamb<br/>" +
+               "And everywhere that Mary went trochies were sure to come" +
+               "</blockquote></p>"));
+  button = $('<input type=button>').attr('value',"I'm singing").appendTo(div);  
+  await new Promise((res)=>{button.on('click',res);});
+  button.remove();
+  div.append($("<p><i>We're listening...</i></p>"));
+  div.append($("<p>Current volume: <span id=curvol></span>dB</p>"));
+  button = $('<input type=button>').attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.").appendTo(div);
+  div.append(button);
+  p = new Promise((res_)=>{res=res_;});
+  window.reportedVolume = {}; // WHY DO WE NEED THIS?
+  estimator = new VolumeCalibrator({context});
+  estimator.addEventListener('volumeChange', (ev)=>{ $('#curvol').text(ev.detail.volume.toPrecision(3)) });
+  estimator.addEventListener('volumeCalibrated', res);
+  button.on('click', (ev)=>{ estimator.close(); res(); });
+  await p;
+  
+  div.empty();
+  div.append("That's enough singing.  Calibration is done.  On with the main event.");
+  button = $('<input type=button>').attr('value',"Nifty").appendTo(div);
+  await new Promise((res)=>{button.on('click',res);});
+  div.remove();
 }
-
-async function calibrate() {
-    if (calibrated) {
-        return;
-    }
-    let div = $('<div>').css({position: 'absolute',
-                              left: '10vw',
-                              width: '80vw',
-                              top: '30vh',
-                              height: '40vh',
-                              background: 'black',
-                              color: 'white',
-                              border: '2px outset #0ff'}).appendTo($('body'));
-    let clickVolume = 50;
-    bbs.register_click_volume_getter(()=>clickVolume);
-    let louderTimeout, louder;
-    louder = () => {
-        if (clickVolume >= 100) return;
-        clickVolume += 10;
-        bbs.click_volume_change()
-        louderTimeout = setTimeout(louder, 1200);
-    }
-    louder();
-    $('<h2>').text('Calibrating your audio system...').appendTo(div);
-    $('<h4>').text('Please place your microphone so it can hear your speakers').appendTo(div);
-    $('<h4>').text('Or tap your microphone in time with the clicks').appendTo(div);
-    let clickElem = $('<p>').text('Heard 0 clicks so far').appendTo(div);
-    let button = $('<input type=button value="Don\'t bother; just stick me where no one will hear">').appendTo(div);
-    let res;
-    let cancelled = false;
-    let p = new Promise((r)=>{res=r;});
-    button.on('click', ()=>{ cancelled=true; res(); });
-    bbs.learned_latency_hooks.push((msg)=>{
-        clickElem.text("Heard " + msg.samples + " clicks so far.");
-        clearTimeout(louderTimeout);
-        if (msg.samples >= 5) res();
-        else louderTimeout = setTimeout(louder, 2000);
-    });
-    bbs.set_estimate_latency_mode(true);
-    await p;
-    bbs.set_estimate_latency_mode(false);
-    div.remove();
-    calibrated = true;
-    return cancelled;
-}
-
 
 export class BucketSinging {
   constructor({boxColor, lyrics, cleanup, background_opts}) {
@@ -104,66 +121,51 @@ export class BucketSinging {
     this.lyrics = lyrics;
     this.cleanup = cleanup;
     this.background = background_opts;
-
-    $('<style>').text(
-      "  div {  " +
-        "  color: white; " +
-        "} " +
-        "div.lyrics { " +
-        "  display: flex; " +
-        "  flex-direction: column; " +
-        "  justify-content: space-between; " +
-        "  overflow-y: auto; " +
-        "  text-shadow: 1px 1px 2px #777, -1px -1px 2px #777, 1px -1px 2px #777, -1px 1px 2px #777; " +
-        "} " +
-        "div.lyrics span { " +
-        "  font-size: 16pt; " +
-        "  text-align: center; " +
-        "  white-space: pre; " +
-        "} " +
-        "div.lyrics span.current { " +
-        "  font-weight: bold; " +
-        "  color: yellow; " +
-        "  text-shadow: 1px 1px 4px black, -1px -1px 4px black, 1px -1px 4px black, -1px 1px 4px black; " +
-        "  font-size: 17pt; " +
-        "} " +
-        "div.lyrics span.old { " +
-        "  color: #999; " +
-        "  text-shadow: 1px 1px 2px #444, -1px -1px 2px #444; " +
-        "} "
-    ).appendTo($('head'));
+    this.dbg = $('<div>').css({position: 'absolute',
+                               left: '0',
+                               top: '30vh',
+                               background: 'white',
+                               color: 'black'}).appendTo($('body'));
+    
+    if ( ! cssInit ){
+      $('<style>').text(css).appendTo($('head'));
+      cssInit = true;
+    }
+      
   }
 
-  async from_server({client_ids, server_url}) {
+  async from_server({client_ids, server_url, mark_base}) {
+    this.dbg.append('mark_base='+mark_base).append($('<br>'));
     if (this.page == 'ready') return; // We are *not* idempotent
     if (client_ids.indexOf(this.client_id) == -1) return; // If the server hasn't heard us, we aren't ready
     this.page = 'ready';
     
-    // If alarms come through *before* we draw lyrics
-    this.savedAlarms = [];
-    bbs.event_hooks.push( (lid)=>{ this.savedAlarms.push(lid); } );
-    
-    if ( ! initted) {
+    if ( ! context) {
       let button = $('<input type="button" value="Click here to Initialize Singing">').appendTo(this.div);
       await new Promise( (res) => { button.on('click', res); } );
       button.remove();
+      await initContext();
     }
     
     let pos = this.islead ? -1 : client_ids.indexOf(this.client_id);
-    let audio_offset = Math.floor(Math.log(pos + 2) / Math.log(2)) * bbs.minimum_safe_offset_delta_s + 2;
-    
-    await init_audio({audio_offset, server_url});
-    let cancelled = await calibrate(this.div);
-    if (cancelled) {
-      bbs.stop();
-      pos = client_ids.length;
-      audio_offset = Math.floor(Math.log(pos + 2) / Math.log(2)) * bbs.minimum_safe_offset_delta_s + 7;
-      await init_audio({audio_offset, server_url});
+    let offset = Math.floor(Math.log(pos + 2) / Math.log(2)) * 5 + 2;
+
+    this.dbg.append('offset='+offset).append($('<br>'));
+
+    if ( ! this.lyrics.length) {
+      return;
     }
     
-    if ( ! this.lyrics.length) {
-      bbs.set_mute(true);
-      return;
+    let apiUrl = window.location.protocol+'//'+window.location.host+server_url;
+    this.client = new SingerClient({context, offset, apiUrl,
+                                    username:this.client_id, secretId:this.client_id}); // TODO: understand these
+    await new Promise((res)=>{ this.client.addEventListener('connectivityChange',(ev)=>{this.dbg.append('hasConnectivity='+this.client.hasConnectivity);res();}); });
+    if (this.islead) {
+      //TODO: figure out what these actually do
+      //await new Promise((res)=>{setTimeout(res,1000);});
+      //this.client.x_send_metadata("requestedLeadPosition", true);
+      //await new Promise((res)=>{setTimeout(res,2000);});
+      this.client.x_send_metadata("markStartSinging", true);
     }
     
     this.div.addClass('lyrics');
@@ -178,27 +180,21 @@ export class BucketSinging {
       lyricEls[i] = $('<span>').text(this.lyrics[i]).appendTo(this.div);
     }
     if (this.islead) {
-      bbs.init_events();
       this.div.css('cursor','pointer');
       let cur = 0;
       this.div.on('click',async ()=>{
-        await this.handleLyric(cur, lyricEls);
-        bbs.declare_event(cur);
+        this.client.declare_event(mark_base+cur);
         if (cur == 0) {
           for (let i=1; i<=4; i++) {
-            bbs.declare_event(-i, i);
+            this.client.declare_event(mark_base-i, i);
           }
         }
+        await this.handleLyric(cur, lyricEls);
         cur++;
       });
     } else {
-      for (let i of this.savedAlarms) {
-        if (i in lyricEls) {
-          lyricEls[i].addClass('old');
-        }
-      }
-      bbs.event_hooks.push( async (lid)=>{
-        await this.handleLyric(lid, lyricEls);
+      this.client.event_hooks.push( async (lid)=>{
+        await this.handleLyric(lid-mark_base, lyricEls);
       });
     }
   }
@@ -227,10 +223,8 @@ export class BucketSinging {
   };
   
   destroy(){
-    if (this.cleanup) {
-      bbs.stop();
-    } else {
-      bbs.set_mute(true);
+    if (this.client) {
+      this.client.close();
     }
     this.div.remove();
   }

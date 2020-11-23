@@ -12,6 +12,8 @@ PORT_FORWARD_TEMPLATE = os.environ.get('PORT_FORWARD_TEMPLATE', '/%d')
 MIN_PORT = int(os.environ.get('MIN_PORT','8081'))
 MAX_PORT = int(os.environ.get('MIN_PORT','8081'))
 
+mark_base = 1000;
+
 async def launchBBS(ritual):
     for port in range(MIN_PORT, MAX_PORT+1):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -56,7 +58,9 @@ class BucketSinging(object):
         self.client_ids = []
         self.own_server = last_song
         self.background_opts = (bsBkg or {})
-            
+        global mark_base
+        mark_base += 1000
+        
     async def async_init(self):
         if not hasattr(self.ritual, 'bs_proc'):
             await launchBBS(self.ritual)
@@ -78,7 +82,8 @@ class BucketSinging(object):
                  'server_url': PORT_FORWARD_TEMPLATE % self.ritual.bs_port,
                  'client_ids': self.client_ids,
                  'cleanup': self.own_server,
-                 'background_opts': self.background_opts}
+                 'background_opts': self.background_opts,
+                 'mark_base': mark_base }
 
     def destroy(self):
         if self.own_server:

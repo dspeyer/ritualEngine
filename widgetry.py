@@ -4,7 +4,7 @@ from asyncio import create_task, sleep, CancelledError
 
 from aiohttp import web
 
-from core import app, active, users
+from core import app, active, users, struct
 
 from widgets.PhotoCollage import PhotoCollage
 from widgets.Histogram import Histogram
@@ -31,6 +31,13 @@ async def widgetPiece(req):
     # TODO: security
     widget = globals()[req.match_info.get('widget')]
     return widget.piece(req)
+
+# audioCtx.audioWorklet.addModule does not handle relative paths correctly
+# So audio-worklet.js always shows up under the ritual directory
+# And not the widget directory where it belongs
+# There was a workaround for this in app.js, but it got lost in the Great Refactoring
+async def hideousHackAudioWorklet(req):
+    return BucketSinging.piece(req)
 
 sleepid=0
 async def status(req):
@@ -121,15 +128,20 @@ async def widgetData(req):
         task.cancel()
     return web.Response(status=204)    
 
+
+
 async def stateDbg(req):
     name = req.match_info.get('name','')
     state = active[name].state
     return web.Response(body=state.get_dbg(),content_type="image/png")
+
+    
 
 app.router.add_get('/lib.js', lib)
 app.router.add_get('/widgets/{fn}', getJs)
 app.router.add_get('/{name}/status', status)
 app.router.add_post('/{name}/widgetData', widgetData)
 app.router.add_get('/widgets/{widget}/{fn}', widgetPiece)
+app.router.add_get(r'/{name:[^/]*}/{fn:audio-worklet.js|audiochunk.js|lib.js|worker-encoder.js|worker-decoder.js|opusjs/.*}', hideousHackAudioWorklet)
 app.router.add_get('/{name}/img/{id}.jpg', jpg)
 app.router.add_get('/{name}/dbg.png', stateDbg)
