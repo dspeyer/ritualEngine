@@ -1,5 +1,6 @@
 import sys
 import os
+from copy import copy
 import socket
 import asyncio
 from asyncio.subprocess import PIPE, STDOUT, DEVNULL
@@ -9,7 +10,7 @@ from aiohttp import web
 BUCKET_PATH = os.environ.get('BUCKET_PATH','../solstice-audio-test')
 PORT_FORWARD_TEMPLATE = os.environ.get('PORT_FORWARD_TEMPLATE', '/%d')
 MIN_PORT = int(os.environ.get('MIN_PORT','8081'))
-MAX_PORT = int(os.environ.get('MIN_PORT','8083'))
+MAX_PORT = int(os.environ.get('MIN_PORT','8081'))
 
 async def launchBBS(ritual):
     for port in range(MIN_PORT, MAX_PORT+1):
@@ -23,9 +24,12 @@ async def launchBBS(ritual):
     else:
         raise ValueError('Out of ports')
     print("Starting subserver on port %d"%port)
-    proc = await asyncio.create_subprocess_exec(os.path.join(BUCKET_PATH,'server.py'), '%d'%port,
+    env = copy(os.environ)
+    env['PYTHONUNBUFFERED'] = '1'
+    proc = await asyncio.create_subprocess_exec('/usr/bin/env', 'python', 
+                                                os.path.join(BUCKET_PATH,'server_wrapper.py'), '%d'%port,
                                                 stdin=DEVNULL, stdout=PIPE, stderr=STDOUT,
-                                                env={'PYTHONUNBUFFERED': '1'})
+                                                env=env)
     print("Subserver on pid %d" % proc.pid)
     asyncio.create_task(copyStdout(proc, port))
     ritual.bs_proc = proc
