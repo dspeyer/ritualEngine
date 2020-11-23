@@ -7,6 +7,8 @@ from asyncio.subprocess import PIPE, STDOUT, DEVNULL
 
 from aiohttp import web
 
+from users import getUserByEmail
+
 BUCKET_PATH = os.environ.get('BUCKET_PATH','../solstice-audio-test')
 PORT_FORWARD_TEMPLATE = os.environ.get('PORT_FORWARD_TEMPLATE', '/%d')
 MIN_PORT = int(os.environ.get('MIN_PORT','8081'))
@@ -51,13 +53,18 @@ async def copyStdout(proc,port):
 
 
 class BucketSinging(object):
-    def __init__(self, ritual, boxColor, lyrics, last_song=False, bsBkg=None, **ignore):
+    def __init__(self, ritual, boxColor, lyrics, last_song=False, bsBkg=None, leader=None, **ignore):
         self.ritual = ritual
         self.boxColor = boxColor
         self.lyrics = lyrics
         self.client_ids = []
         self.own_server = last_song
         self.background_opts = (bsBkg or {})
+        leader = getUserByEmail(leader)
+        if leader:
+            self.leader = leader.rid
+        else:
+            self.leader = None
         global mark_base
         mark_base += 1000
         
@@ -83,7 +90,8 @@ class BucketSinging(object):
                  'client_ids': self.client_ids,
                  'cleanup': self.own_server,
                  'background_opts': self.background_opts,
-                 'mark_base': mark_base }
+                 'mark_base': mark_base,
+                 'leader': self.leader }
 
     def destroy(self):
         if self.own_server:

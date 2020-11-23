@@ -45,5 +45,6 @@
   "bsBkg": {
     "zoomSpeed": 1.01,
     "zoomCenter": [0.5, 0.4]
-  }
+  },
+  "leader": "dspeyer+dancing@gmail.com"
 }

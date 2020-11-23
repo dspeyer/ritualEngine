@@ -61,7 +61,7 @@ async def login(req):
     name = form['name']
     rid = np.base_repr(hash(email), 36)
     img = await getAvatar(form, rid)
-    users[rid] = struct(name=name, img=img, email=email)
+    users[rid] = struct(name=name, img=img, email=email, rid=rid)
     logins = req.cookies.get('ritLogin')
     if logins:
         logins = logins.split('__')
@@ -78,6 +78,10 @@ async def login(req):
     res = web.HTTPFound(url)
     res.set_cookie('ritLogin', '__'.join(logins))
     return res
+
+def getUserByEmail(email):
+    rid = np.base_repr(hash(email), 36)
+    return users.get(rid)
 
 async def userinfo(req):
     rid = req.query.get('id')
