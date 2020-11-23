@@ -221,7 +221,7 @@ function putcircle(d,{x,y,r,label,z}) {
 }
 
 let curCircles = [];
-export function showParticipants(participants) {
+export function showParticipantAvatars(participants) {
     let div = $('#participants');
     if (curCircles.length != participants.length) {
         curCircles = fillAsDesired(div, participants.length);
@@ -232,6 +232,52 @@ export function showParticipants(participants) {
             curCircles[i].label.text(participants[i].name);
         }
     }
+}
+
+export async function showParticipantVideo(roomId, token, useParticipantAudio) {
+    let localVideo = await Twilio.Video.createLocalVideoTrack({ width: 100, height: 100 });
+    addVideoCircle(localVideo);
+    let localTracks = [localVideo];
+    if (useParticipantAudio) {
+        localTracks.push(await Twilio.Video.createLocalAudioTrack());
+    }
+    let room = await Twilio.Video.connect(token, { name: roomId, tracks: localTracks });
+    addEventListener('beforeunload', () => {
+        room.disconnect();
+    });
+    for (let { videoTracks, audioTracks } of room.participants.values()) {
+        for (let { track } of videoTracks.values()) {
+            if (track) {
+                addVideoCircle(track);
+            }
+        }
+        if (useParticipantAudio) {
+            for (let { track } of audioTracks.values()) {
+                if (track) {
+                    $(track.attach()).appendTo('body');
+                }
+            }
+        }
+    }
+    room.on('trackSubscribed', (track) => {
+        switch (track.kind) {
+            case 'video':
+                addVideoCircle(track);
+                break;
+            case 'audio':
+                if (useParticipantAudio) {
+                    $(track.attach()).appendTo('body');
+                }
+                break;
+        }
+    });
+    room.on('trackUnsubscribed', (track) => {
+        $(track.detach()).remove();
+    });
+}
+
+function addVideoCircle(track) {
+    $(track.attach()).addClass('participant-video').appendTo('#participants');
 }
 
 export function setZoomMute(v) {} // TODO: something
