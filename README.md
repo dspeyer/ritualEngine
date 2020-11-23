@@ -103,7 +103,7 @@ class must have three functions:
   This function does not return data to the client.  It modifies the
   widget's state for when `to_client` gets called.
 
-**`to_client`** which sends data.  It returns a python object which
+**`to_client`** which sends data.  It asynchronously returns a python object which
   will go to the client side.  The object must be json-encodable.
 
 A widget class may also define:

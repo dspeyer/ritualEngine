@@ -110,7 +110,7 @@ class CrossWords(object):
         rc = (np.random.random(3)*32).astype('uint8')
         self.outcolor[ori][sx,sy:ey] = color + rc + 95
 
-    def to_client(self, have):
+    def to_client(self, clientId, have):
         data = []
         for i in range(self.table[right].shape[0]):
             data.append([])

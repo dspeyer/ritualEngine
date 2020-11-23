@@ -20,7 +20,7 @@ class PhotoCollage(object):
         raw = cv2.imread(fn)
         self.bigimage = cv2.resize(raw, dsize=(self.gs*CS,self.gs*CS))
         
-    def to_client(self, have):
+    def to_client(self, clientId, have):
         return { 'widget': 'PhotoCollage',
                  'boxcolor': self.boxcolor,
                  'gridsize': self.gs,

@@ -12,7 +12,7 @@ class CircleFlames(object):
         self.ritual.state = None
         self.ritual.page += 1
         
-    def to_client(self, have):
+    def to_client(self, clientId, have):
         return {
             "widget": "CircleFlames",
             "victims": self.victims,
