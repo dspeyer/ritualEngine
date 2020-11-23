@@ -1,16 +1,32 @@
+import asyncio
 from glob import glob
 import json
 
 from aiohttp import web
 import numpy as np
 import cv2
+from twilio import rest as twilio_rest
+from twilio.jwt import access_token as twilio_access_token
+from twilio.jwt.access_token import grants as twilio_grants
 
-from core import app, active, users, tpl, random_token, Ritual
+from core import app, active, users, tpl, random_token, Ritual, secrets
 from users import connectUserRitual
 
 defaultimg = np.zeros((64,64,3),'uint8')
 cv2.circle(defaultimg, (32,32), 24, (0,255,255), thickness=-1)
 defaultjpg = bytes(cv2.imencode('.JPG', defaultimg)[1])
+
+
+try:
+    twilio_client_kwargs = {
+        'username': secrets['TWILIO_API_KEY'],
+        'password': secrets['TWILIO_API_SECRET'],
+        'account_sid': secrets['TWILIO_ACCOUNT_SID'],
+    }
+except KeyError:
+    twilio_client = None
+else:
+    twilio_client = twilio_rest.Client(**twilio_client_kwargs)
 
 
 async def homepage(req):
@@ -30,10 +46,33 @@ async def ritualPage(req):
             res = web.Response(body=open('html/login.html').read(), content_type='text/html')
             res.set_cookie('LastRitual', name)
             return res
+    if hasattr(active[name], 'video_room'):
+        video_room_id = active[name].video_room.unique_name
+        token_builder = twilio_access_token.AccessToken(
+            account_sid=secrets['TWILIO_ACCOUNT_SID'],
+            signing_key_sid=secrets['TWILIO_API_KEY'],
+            secret=secrets['TWILIO_API_SECRET'],
+            identity=random_token(),
+        )
+        token_builder.add_grant(twilio_grants.VideoGrant(room=video_room_id))
+        video_token = token_builder.to_jwt().decode()
+        use_participant_audio = str(active[name].use_participant_audio).lower()
+    else:
+        video_room_id = ''
+        video_token = ''
+        use_participant_audio = 'null'
     return web.Response(body=tpl('html/client.html',
                                  name=name,
                                  clientId=random_token(),
-                                 cclass=hasattr(active[name],'participants') and 'shrunk' or '',
+                                 videoRoomId=video_room_id,
+                                 videoToken=video_token,
+                                 useParticipantAudio=use_participant_audio,
+                                 cclass=(
+                                     'shrunk'
+                                     if hasattr(active[name], 'participants')
+                                     or video_room_id
+                                     else ''
+                                 ),
                                  ratio=str(active[name].ratio),
                                  islead=str(islead).lower(),
                                  bkgAll=str(active[name].bkgAll).lower(),
@@ -102,8 +141,15 @@ async def mkRitual(req):
     active[name] = Ritual(script=script, reqs={}, state=None, page=page, background=opts['background'],
                           bkgAll=opts.get('bkgAll',False), ratio=opts.get('ratio',16/9), rotate=opts.get('rotate',True),
                           jpgs=[defaultjpg], jpgrats=[1])
-    if opts['showParticipants']:
+    if opts['showParticipants'] == 'avatars':
         active[name].participants = []
+    elif opts['showParticipants'] == 'video':
+        try:
+            video_client = twilio_client.video
+        except AttributeError:
+            raise KeyError('participant video requires Twilio secrets')
+        active[name].video_room = await asyncio.get_event_loop().run_in_executor(None, video_client.rooms.create)
+        active[name].use_participant_audio = opts['useParticipantAudio']
     print("did the thing")
     return web.HTTPFound('/'+name+'/partake')
 

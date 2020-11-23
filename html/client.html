@@ -29,6 +29,11 @@
              position: absolute;
              bottom: 0;
          }
+         .participant-video {
+             width: 100px;
+             height: 100px;
+             border-radius: 50%;
+         }
          body {
              background-color: black;
          }
@@ -73,6 +78,12 @@
          });
          let clientId = '%clientId%';
          let name = '%name%';
+         let videoRoomId = '%videoRoomId%';
+         if (videoRoomId) {
+             import('../lib.js').then(({ showParticipantVideo }) => {
+                 showParticipantVideo(videoRoomId, '%videoToken%', %useParticipantAudio%);
+             });
+         }
          document.title = name;
          let page = 0;
          let state = null;
@@ -95,8 +106,8 @@
                          $('#svgwrapper svg').attr('width','').attr('height','');
                      }
                      if (data.participants) {
-                         let { showParticipants } = await import ('../lib.js');
-                         showParticipants(data.participants);
+                         let { showParticipantAvatars } = await import ('../lib.js');
+                         showParticipantAvatars(data.participants);
                      }
                      if (data.background) {
                          let { bkgSet } = await import ('../lib.js');
