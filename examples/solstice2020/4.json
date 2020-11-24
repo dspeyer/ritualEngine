@@ -1,0 +1,7 @@
+{
+  "widget": "Trivia",
+  "boxColors": {
+      "controls": "#00ffff",
+      "results": "#0000ff"
+  }
+}
