@@ -159,6 +159,7 @@ export class BucketSinging {
     this.dbg.append('offset='+offset).append($('<br>'));
 
     if ( ! this.lyrics.length) {
+      setTwillioMute(false);
       return;
     }
     
