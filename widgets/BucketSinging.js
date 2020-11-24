@@ -1,5 +1,5 @@
 import {MicEnumerator, openMic, BucketBrigadeContext, SingerClient, VolumeCalibrator, LatencyCalibrator} from './BucketSinging/app.js';
-import { putOnBox, bkgSet, bkgZoom } from '../../lib.js';
+import { putOnBox, bkgSet, bkgZoom, setTwillioMute } from '../../lib.js';
 
 let context = null;
 let cssInit = false;
@@ -144,6 +144,7 @@ export class BucketSinging {
     if (this.page == 'ready') return; // We are *not* idempotent
     if (client_ids.indexOf(this.client_id) == -1) return; // If the server hasn't heard us, we aren't ready
     this.page = 'ready';
+    setTwillioMute(true);
     
     if ( ! context) {
       let button = $('<input type="button" value="Click here to Initialize Singing">').appendTo(this.div);
@@ -234,6 +235,7 @@ export class BucketSinging {
       this.client.close();
     }
     this.div.remove();
+    setTwillioMute(false);
   }
   
 }
