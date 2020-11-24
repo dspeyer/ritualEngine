@@ -7,6 +7,8 @@ from asyncio.subprocess import PIPE, STDOUT, DEVNULL
 
 from aiohttp import web
 
+from users import getUserByEmail
+
 BUCKET_PATH = os.environ.get('BUCKET_PATH','../solstice-audio-test')
 PORT_FORWARD_TEMPLATE = os.environ.get('PORT_FORWARD_TEMPLATE', '/%d')
 MIN_PORT = int(os.environ.get('MIN_PORT','8081'))
@@ -28,10 +30,14 @@ async def launchBBS(ritual):
     print("Starting subserver on port %d"%port)
     env = copy(os.environ)
     env['PYTHONUNBUFFERED'] = '1'
-    proc = await asyncio.create_subprocess_exec('/usr/bin/env', 'python', 
-                                                os.path.join(BUCKET_PATH,'server_wrapper.py'), '%d'%port,
-                                                stdin=DEVNULL, stdout=PIPE, stderr=STDOUT,
-                                                env=env)
+    if 'VIRTUAL_ENV' in env:
+        cmd = ['/usr/bin/env', 'python']
+    else:
+        cmd = ['/usr/bin/python3']
+    cmd += [os.path.join(BUCKET_PATH,'server_wrapper.py'), '%d'%port]
+    kwargs = {'stdin':DEVNULL, 'stdout':PIPE, 'stderr':STDOUT, 'env':env)
+    proc = await asyncio.create_subprocess_exec(*cmd, **kwargs)
+                                                
     print("Subserver on pid %d" % proc.pid)
     asyncio.create_task(copyStdout(proc, port))
     ritual.bs_proc = proc
@@ -51,13 +57,18 @@ async def copyStdout(proc,port):
 
 
 class BucketSinging(object):
-    def __init__(self, ritual, boxColor, lyrics, last_song=False, bsBkg=None, **ignore):
+    def __init__(self, ritual, boxColor, lyrics, last_song=False, bsBkg=None, leader=None, **ignore):
         self.ritual = ritual
         self.boxColor = boxColor
         self.lyrics = lyrics
         self.client_ids = []
         self.own_server = last_song
         self.background_opts = (bsBkg or {})
+        leader = getUserByEmail(leader)
+        if leader:
+            self.leader = leader.rid
+        else:
+            self.leader = None
         global mark_base
         mark_base += 1000
         
@@ -83,7 +94,8 @@ class BucketSinging(object):
                  'client_ids': self.client_ids,
                  'cleanup': self.own_server,
                  'background_opts': self.background_opts,
-                 'mark_base': mark_base }
+                 'mark_base': mark_base,
+                 'leader': self.leader }
 
     def destroy(self):
         if self.own_server:

@@ -1,6 +1,6 @@
 {
-  "background": "light.jpg",
-  "showParticipants": true,
-  "rotate": false,
-  "bkgAll": true
+    "background": "light.jpg",
+    "showParticipants": "video",
+    "useParticipantAudio": true,
+    "bkgAll": true
 }

@@ -1,5 +1,5 @@
 import {MicEnumerator, openMic, BucketBrigadeContext, SingerClient, VolumeCalibrator, LatencyCalibrator} from './BucketSinging/app.js';
-import { putOnBox, bkgSet, bkgZoom } from '../../lib.js';
+import { putOnBox, bkgSet, bkgZoom, setMuted } from '../../lib.js';
 
 let context = null;
 let cssInit = false;
@@ -44,13 +44,13 @@ async function initContext(){
                             fontSize: '16pt',
                             textShadow: '0 0 1px black',
                             position: 'absolute',
-                            top: '20vh',
-                            bottom: '20vh',
+                            top: 'calc( 50vh - 8em )',
+                            height: '16em',
                             left: '20vw',
                             right: '20vw',
                             border: '2px outset #777'})
                       .appendTo($('body'));
-  div.append("First we'll measure the latency of your audio hardware.  Please turn your volume to max and put your " +
+  div.append("First we'll measure the <b>latency</b> of your audio hardware. Please turn your volume to max and put your "+
              "headphones where your microphone can hear them.  Or get ready to tap your microphone in time to the beeps.");
   div.append($('<br>'));
   let button = $('<input type=button>').attr('value',"I'm ready: start the beeping!").appendTo(div);
@@ -76,23 +76,23 @@ async function initContext(){
   await p;
 
   div.empty();
-  div.append($("<p>Now we need to calibrate your volume.  Please sing at the same volume you plan to during the event. "+
-               "For your convenience, here are some lyrics:" +
-               "<blockquote>" +
+  div.append($("<p>Now we need to calibrate your <b>volume</b>.  Please sing at the same volume you plan to during "+
+               "the event. For your convenience, here are some lyrics:" +
+               "<blockquote><i>" +
                "Mary had a little iamb, little iamb, little iamb<br/>" +
                "And everywhere that Mary went trochies were sure to come" +
-               "</blockquote></p>"));
+               "</i></blockquote></p>"));
   button = $('<input type=button>').attr('value',"I'm singing").appendTo(div);  
   await new Promise((res)=>{button.on('click',res);});
   button.remove();
   div.append($("<p><i>We're listening...</i></p>"));
-  div.append($("<p>Current volume: <span id=curvol></span>dB</p>"));
+  div.append($("<p>Current volume: <span id=curvol></span> unhelpful volume units</p>"));
   button = $('<input type=button>').attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.").appendTo(div);
   div.append(button);
   p = new Promise((res_)=>{res=res_;});
   window.reportedVolume = {}; // WHY DO WE NEED THIS?
   estimator = new VolumeCalibrator({context});
-  estimator.addEventListener('volumeChange', (ev)=>{ $('#curvol').text(ev.detail.volume.toPrecision(3)) });
+  estimator.addEventListener('volumeChange', (ev)=>{ $('#curvol').text((ev.detail.volume*1000).toPrecision(3)) });
   estimator.addEventListener('volumeCalibrated', res);
   button.on('click', (ev)=>{ estimator.close(); res(); });
   await p;
@@ -105,9 +105,13 @@ async function initContext(){
 }
 
 export class BucketSinging {
-  constructor({boxColor, lyrics, cleanup, background_opts}) {
+  constructor({boxColor, lyrics, cleanup, background_opts, leader}) {
     let client_id;
-    this.islead = window.location.pathname.endsWith('lead');
+    if (leader) {
+      this.islead = (document.cookie.indexOf(leader) != -1);
+    } else {
+      this.islead = window.location.pathname.endsWith('lead');
+    }
     if (this.islead) {
       client_id = 0;
     } else {
@@ -126,6 +130,7 @@ export class BucketSinging {
                                top: '30vh',
                                background: 'white',
                                color: 'black'}).appendTo($('body'));
+    this.dbg.append('Debugging info:').append($('<br>'));
     
     if ( ! cssInit ){
       $('<style>').text(css).appendTo($('head'));
@@ -135,10 +140,11 @@ export class BucketSinging {
   }
 
   async from_server({client_ids, server_url, mark_base}) {
-    this.dbg.append('mark_base='+mark_base).append($('<br>'));
+    //this.dbg.append('mark_base='+mark_base).append($('<br>'));
     if (this.page == 'ready') return; // We are *not* idempotent
     if (client_ids.indexOf(this.client_id) == -1) return; // If the server hasn't heard us, we aren't ready
     this.page = 'ready';
+    setMuted(true);
     
     if ( ! context) {
       let button = $('<input type="button" value="Click here to Initialize Singing">').appendTo(this.div);
@@ -146,31 +152,34 @@ export class BucketSinging {
       button.remove();
       await initContext();
     }
-    
+
     let pos = this.islead ? -1 : client_ids.indexOf(this.client_id);
     let offset = Math.floor(Math.log(pos + 2) / Math.log(2)) * 5 + 2;
 
     this.dbg.append('offset='+offset).append($('<br>'));
 
     if ( ! this.lyrics.length) {
+      setMuted(false);
       return;
     }
     
     let apiUrl = window.location.protocol+'//'+window.location.host+server_url;
     this.client = new SingerClient({context, offset, apiUrl,
                                     username:this.client_id, secretId:this.client_id}); // TODO: understand these
-    await new Promise((res)=>{ this.client.addEventListener('connectivityChange',(ev)=>{this.dbg.append('hasConnectivity='+this.client.hasConnectivity);res();}); });
+    await new Promise((res)=>{ this.client.addEventListener('connectivityChange',res); });
     if (this.islead) {
-      //TODO: figure out what these actually do
-      //await new Promise((res)=>{setTimeout(res,1000);});
-      //this.client.x_send_metadata("requestedLeadPosition", true);
-      //await new Promise((res)=>{setTimeout(res,2000);});
+      //TODO: figure out what this actually does, and why we need to wait
+      await new Promise((res)=>{setTimeout(res,2000);});
       this.client.x_send_metadata("markStartSinging", true);
     }
     
     this.div.addClass('lyrics');
     let lyricEls = {};
-    if ( ! this.islead) {
+    if (this.islead) {
+      $('<div>').text('You are lead singer.  Begin when ready.  Click anywhere in the lyric area when you reach a new line')
+                .css({background:'black'})
+                .appendTo(this.div);
+    } else {
       let countdown = $('<div>').css('text-align','center').appendTo(this.div);
       for (let i=-4; i<0; i++) {
         lyricEls[i] = $('<span>').text(-i+'... ').appendTo(countdown);
@@ -227,6 +236,7 @@ export class BucketSinging {
       this.client.close();
     }
     this.div.remove();
+    setMuted(false);
   }
   
 }
