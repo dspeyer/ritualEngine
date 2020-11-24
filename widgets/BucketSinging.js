@@ -1,7 +1,7 @@
 import {MicEnumerator, openMic, BucketBrigadeContext, SingerClient, VolumeCalibrator, LatencyCalibrator} from './BucketSinging/app.js';
 import { putOnBox, bkgSet, bkgZoom/*, setTwillioMute*/ } from '../../lib.js';
 
-setTwilioMute=()=>{};
+let setTwillioMute=()=>{};
 let context = null;
 let cssInit = false;
 let css = `

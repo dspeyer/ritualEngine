@@ -30,10 +30,14 @@ async def launchBBS(ritual):
     print("Starting subserver on port %d"%port)
     env = copy(os.environ)
     env['PYTHONUNBUFFERED'] = '1'
-    proc = await asyncio.create_subprocess_exec('/usr/bin/env', 'python', 
-                                                os.path.join(BUCKET_PATH,'server_wrapper.py'), '%d'%port,
-                                                stdin=DEVNULL, stdout=PIPE, stderr=STDOUT,
-                                                env=env)
+    if 'VIRTUAL_ENV' in env:
+        cmd = ['/usr/bin/env', 'python']
+    else:
+        cmd = ['/usr/bin/python3']
+    cmd += [os.path.join(BUCKET_PATH,'server_wrapper.py'), '%d'%port]
+    kwargs = {'stdin':DEVNULL, 'stdout':PIPE, 'stderr':STDOUT, 'env':env)
+    proc = await asyncio.create_subprocess_exec(*cmd, **kwargs)
+                                                
     print("Subserver on pid %d" % proc.pid)
     asyncio.create_task(copyStdout(proc, port))
     ritual.bs_proc = proc
