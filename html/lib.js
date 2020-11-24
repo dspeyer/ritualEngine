@@ -249,6 +249,12 @@ export async function showParticipantVideo(roomId, token, useParticipantAudio) {
     addEventListener('beforeunload', () => {
         room.disconnect();
     });
+    if (useParticipantAudio) {
+        let span = $('<span>').css({background:'white',color:'black',position:'absolute',top:0,left:0}).appendTo($('body'));
+        $('<span id="ismuted">').appendTo(span);
+        $('<a>Change That</a>').css('border','thin blue outset').on('click',()=>{setMuted(!muted);}).appendTo(span);
+        setMuted(false);
+    }
     for (let { videoTracks, audioTracks } of room.participants.values()) {
         for (let { track } of videoTracks.values()) {
             if (track) {
@@ -286,8 +292,10 @@ export function setMuted(mut) {
     if (localAudio) {
         if (mut) {
             localAudio.disable();
+            $('#ismuted').text('Twilio is muted');
         } else {
             localAudio.enable();
+            $('#ismuted').text('Twilio is not muted');
         }
     }
 }
