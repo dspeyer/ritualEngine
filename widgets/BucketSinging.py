@@ -35,7 +35,7 @@ async def launchBBS(ritual):
     else:
         cmd = ['/usr/bin/python3']
     cmd += [os.path.join(BUCKET_PATH,'server_wrapper.py'), '%d'%port]
-    kwargs = {'stdin':DEVNULL, 'stdout':PIPE, 'stderr':STDOUT, 'env':env)
+    kwargs = {'stdin':DEVNULL, 'stdout':PIPE, 'stderr':STDOUT, 'env':env}
     proc = await asyncio.create_subprocess_exec(*cmd, **kwargs)
                                                 
     print("Subserver on pid %d" % proc.pid)
