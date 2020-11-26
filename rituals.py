@@ -61,9 +61,11 @@ async def ritualPage(req):
         video_room_id = ''
         video_token = ''
         use_participant_audio = 'null'
+    clientId = random_token()
+    active[name].clients.append(clientId)
     return web.Response(body=tpl('html/client.html',
                                  name=name,
-                                 clientId=random_token(),
+                                 clientId=clientId,
                                  videoRoomId=video_room_id,
                                  videoToken=video_token,
                                  useParticipantAudio=use_participant_audio,
@@ -140,7 +142,7 @@ async def mkRitual(req):
     print("very good")
     active[name] = Ritual(script=script, reqs={}, state=None, page=page, background=opts['background'],
                           bkgAll=opts.get('bkgAll',False), ratio=opts.get('ratio',16/9), rotate=opts.get('rotate',True),
-                          jpgs=[defaultjpg], jpgrats=[1])
+                          jpgs=[defaultjpg], jpgrats=[1], clients=[])
     if opts['showParticipants'] == 'avatars':
         active[name].participants = []
     elif opts['showParticipants'] == 'video':
@@ -149,7 +151,7 @@ async def mkRitual(req):
         except AttributeError:
             raise KeyError('participant video requires Twilio secrets')
         active[name].video_room = await asyncio.get_event_loop().run_in_executor(None, video_client.rooms.create)
-        active[name].use_participant_audio = opts['useParticipantAudio']
+        active[name].use_participant_audio = opts.get('useParticipantAudio',False)
     print("did the thing")
     return web.HTTPFound('/'+name+'/partake')
 

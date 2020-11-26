@@ -2,6 +2,9 @@ import {MicEnumerator, openMic, BucketBrigadeContext, SingerClient, VolumeCalibr
 import { putOnBox, bkgSet, bkgZoom, setMuted } from '../../lib.js';
 
 let context = null;
+let client = null;
+let calibrationFail = false;
+let mysteryInitPromise = null;
 let cssInit = false;
 let css = `
   div { 
@@ -32,7 +35,8 @@ let css = `
 `;
 
 
-async function initContext(){
+
+async function initContext(server_url){
   let mics = await (new MicEnumerator()).mics();
   let mic = mics[0]; // TODO: be smarter?
   console.log('Chose mic: ',mic);
@@ -72,7 +76,7 @@ async function initContext(){
     if (ev.detail.done) res();
     heard.text(ev.detail.samples);
   });
-  button.on('click', (ev)=>{ estimator.close(); res(); });
+  button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
   await p;
 
   div.empty();
@@ -94,7 +98,7 @@ async function initContext(){
   estimator = new VolumeCalibrator({context});
   estimator.addEventListener('volumeChange', (ev)=>{ $('#curvol').text((ev.detail.volume*1000).toPrecision(3)) });
   estimator.addEventListener('volumeCalibrated', res);
-  button.on('click', (ev)=>{ estimator.close(); res(); });
+  button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
   await p;
   
   div.empty();
@@ -102,26 +106,25 @@ async function initContext(){
   button = $('<input type=button>').attr('value',"Nifty").appendTo(div);
   await new Promise((res)=>{button.on('click',res);});
   div.remove();
+
+  let apiUrl = window.location.protocol+'//'+window.location.host+server_url;
+  client = new SingerClient({context, apiUrl,
+                             offset: 42, // We'll change this before doing anything
+                             username:clientId, secretId:Math.round(Math.random()*1e6)}); // TODO: understand these
+  await new Promise((res)=>{ client.addEventListener('connectivityChange',res); });
+  mysteryInitPromise = new Promise((res)=>{setTimeout(res,2000);});
 }
 
 export class BucketSinging {
-  constructor({boxColor, lyrics, cleanup, background_opts, leader}) {
-    let client_id;
+  constructor({boxColor, lyrics, cleanup, background_opts, leader, server_url}) {
+    let islead;
     if (leader) {
-      this.islead = (document.cookie.indexOf(leader) != -1);
+      islead = (document.cookie.indexOf(leader) != -1);
     } else {
-      this.islead = window.location.pathname.endsWith('lead');
+      islead = window.location.pathname.endsWith('lead');
     }
-    if (this.islead) {
-      client_id = 0;
-    } else {
-      client_id = Math.round(Math.random()*1e5); // Too big for birthday paradox, too small for FP trouble
-    }
-    this.client_id = client_id
-    $.post('widgetData', {client_id});
     this.div = $('<div>').appendTo($('body'));
     putOnBox(this.div, boxColor);
-    this.page = 'unready';
     this.lyrics = lyrics;
     this.cleanup = cleanup;
     this.background = background_opts;
@@ -131,86 +134,98 @@ export class BucketSinging {
                                background: 'white',
                                color: 'black'}).appendTo($('body'));
     this.dbg.append('Debugging info:').append($('<br>'));
-    
     if ( ! cssInit ){
       $('<style>').text(css).appendTo($('head'));
       cssInit = true;
     }
-      
-  }
-
-  async from_server({client_ids, server_url, mark_base}) {
-    //this.dbg.append('mark_base='+mark_base).append($('<br>'));
-    if (this.page == 'ready') return; // We are *not* idempotent
-    if (client_ids.indexOf(this.client_id) == -1) return; // If the server hasn't heard us, we aren't ready
-    this.page = 'ready';
-    setMuted(true);
     
     if ( ! context) {
       let button = $('<input type="button" value="Click here to Initialize Singing">').appendTo(this.div);
-      await new Promise( (res) => { button.on('click', res); } );
-      button.remove();
-      await initContext();
-    }
-
-    let pos = this.islead ? -1 : client_ids.indexOf(this.client_id);
-    let offset = Math.floor(Math.log(pos + 2) / Math.log(2)) * 5 + 2;
-
-    this.dbg.append('offset='+offset).append($('<br>'));
-
-    if ( ! this.lyrics.length) {
-      setMuted(false);
-      return;
-    }
-    
-    let apiUrl = window.location.protocol+'//'+window.location.host+server_url;
-    this.client = new SingerClient({context, offset, apiUrl,
-                                    username:this.client_id, secretId:this.client_id}); // TODO: understand these
-    await new Promise((res)=>{ this.client.addEventListener('connectivityChange',res); });
-    if (this.islead) {
-      //TODO: figure out what this actually does, and why we need to wait
-      await new Promise((res)=>{setTimeout(res,2000);});
-      this.client.x_send_metadata("markStartSinging", true);
-    }
-    
-    this.div.addClass('lyrics');
-    let lyricEls = {};
-    if (this.islead) {
-      $('<div>').text('You are lead singer.  Begin when ready.  Click anywhere in the lyric area when you reach a new line')
-                .css({background:'black'})
-                .appendTo(this.div);
+      button.on('click', ()=>{
+        button.remove();
+        initContext(server_url).then(()=>{
+          this.show_lyrics(lyrics);
+          this.declare_ready(islead);
+        });
+      });
     } else {
-      let countdown = $('<div>').css('text-align','center').appendTo(this.div);
+      this.show_lyrics(lyrics);
+      this.declare_ready(islead);
+    }
+  }
+
+  show_lyrics(lyrics) {
+    this.div.addClass('lyrics');
+    this.lyricEls = {};
+    this.countdown = $('<div>').css('text-align','center').appendTo(this.div);
+    for (let i in this.lyrics) {
+      this.lyricEls[i] = $('<span>').text(this.lyrics[i]).appendTo(this.div);
+    }
+  }
+
+  declare_ready(islead) {
+    this.dbg.append('declaring ready islead='+islead).append($('<br>'));
+    $.post('widgetData', {calibrationFail, clientId, islead});
+  }
+
+  async from_server({mark_base, slot, ready, backing_track, dbginfo}) {
+    this.dbg.append(dbginfo+' ready='+ready).append($('<br>'));
+    if (!ready || !client) return;
+    if (this.slot === slot) return;
+    this.slot = slot;
+    client.micMuted = false;
+    client.speakerMuted = false;
+    setMuted(true);
+    let offset = (slot+1) * 3;
+    client.change_offset(offset);
+    this.dbg.append('slot '+slot+' -> offset '+offset).append($('<br>'));
+
+    
+    if (slot==0) {
+      //TODO: figure out what this actually does, and why we need to wait
+      await mysteryInitPromise;
+      await new Promise((res)=>{setTimeout(res,2000);});
+      if (backing_track) {
+        this.dbg.append('bt='+backing_track).append($('<br>'));
+        client.x_send_metadata("backingTrack", backing_track);
+      }
+      client.x_send_metadata("markStartSinging", true);
+    }
+    
+    if (slot==0) {
+      $('<div>').text('You are lead singer.  '+
+                      (backing_track ? 'Instrumentals will being soon.  ' : 'Sing when ready.  ') + 
+                      'Click anywhere in the lyric area when you begin a new line')
+                .css({background:'#444'})
+                .prependTo(this.div);
+    } else {
       for (let i=-4; i<0; i++) {
-        lyricEls[i] = $('<span>').text(-i+'... ').appendTo(countdown);
+        this.lyricEls[i] = $('<span>').text(-i+'... ').appendTo(this.countdown);
       }
     }
-    for (let i in this.lyrics) {
-      lyricEls[i] = $('<span>').text(this.lyrics[i]).appendTo(this.div);
-    }
-    if (this.islead) {
+    if (slot==0) {
       this.div.css('cursor','pointer');
       let cur = 0;
       this.div.on('click',async ()=>{
-        this.client.declare_event(mark_base+cur);
+        client.declare_event(mark_base+cur);
         if (cur == 0) {
           for (let i=1; i<=4; i++) {
-            this.client.declare_event(mark_base-i, i);
+            client.declare_event(mark_base-i, i);
           }
         }
-        await this.handleLyric(cur, lyricEls);
+        await this.handleLyric(cur);
         cur++;
       });
     } else {
-      this.client.event_hooks.push( async (lid)=>{
-        await this.handleLyric(lid-mark_base, lyricEls);
+      client.event_hooks.push( async (lid)=>{
+        await this.handleLyric(lid-mark_base);
       });
     }
   }
 
-  async handleLyric(lid, lyricEls) {
+  async handleLyric(lid) {
     this.div.find('span.current').removeClass('current').addClass('old');
-    let elem = lyricEls[lid];
+    let elem = this.lyricEls[lid];
     if (! elem ) return;
     elem.addClass('current');
     if (this.background.zoomSpeed && lid>=0) {
@@ -232,8 +247,9 @@ export class BucketSinging {
   };
   
   destroy(){
-    if (this.client) {
-      this.client.close();
+    if (client) {
+      client.micMuted = true;
+      client.speakerMuted = true;
     }
     this.div.remove();
     setMuted(false);
