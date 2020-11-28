@@ -288,7 +288,7 @@ export async function showParticipantVideo(roomId, token, useParticipantAudio) {
 
 export function setMuted(mut) {
     muted = mut;
-    $('.participant-audio').attr('muted', muted);
+    $('.participant-audio').prop('muted', muted);
     if (localAudio) {
         if (mut) {
             localAudio.disable();
@@ -305,7 +305,7 @@ function addVideoCircle(track) {
 }
 
 function listenToAudio(track) {
-    $(track.attach()).addClass('participant-audio').attr('muted', muted).appendTo('body');
+    $(track.attach()).addClass('participant-audio').prop('muted', muted).appendTo('body');
 }
 
 export function setZoomMute(v) {} // TODO: something
