@@ -2,4 +2,5 @@
 *~testdata/*
 *~
 secrets.json
+server.log
 .vscode/*
