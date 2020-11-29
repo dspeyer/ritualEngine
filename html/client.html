@@ -37,6 +37,25 @@
          body {
              background-color: black;
          }
+         #chat {
+             height: 100%;
+             width: 20%;
+             position: fixed;
+             z-index: 1;
+             top: 0;
+             right: 0;
+             background-color: white;
+         }
+         #chat-send {
+             position: fixed;
+             bottom: 0;
+         }
+         .chat-message {
+             color: black;
+         }
+         .chat-sender {
+             font-weight: bold;
+         }
          #ctrls {
              position: absolute;
              right: 0;
@@ -56,6 +75,13 @@
         <div id="everything">
             <div id="content" class="content %cclass%">
                 <div id="svgwrapper"></div>
+                <div id="chat">
+                    <div id="chat-buffer"></div>
+                    <form id="chat-send">
+                        <input id="chat-message" type="text">
+                        <input type="submit" value="Send">
+                    </form>
+                </div>
             </div>
             <div id="participants" class="participants"></div>
             <div id="ctrls">
@@ -135,6 +161,26 @@
              });
          }
          ask();
+         $('#chat-send').submit((event) => {
+             event.preventDefault();
+             let text = $('#chat-message').val();
+             if (text) {
+                $.post('chat/send', {text});
+             }
+             $('#chat-message').val('');
+         });
+         function askChat() {
+             $.ajax('chat/receive', {
+                 data: {clientId},
+                 success({message}) {
+                     if (message) {
+                        $('<div class="chat-message">').append($('<span class="chat-sender">').append(message.sender, ': '), message.text).appendTo('#chat-buffer');
+                     }
+                     askChat();
+                 },
+             });
+         }
+         askChat();
         </script>
     </body>
 </html>

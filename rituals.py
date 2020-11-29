@@ -9,7 +9,7 @@ from twilio import rest as twilio_rest
 from twilio.jwt import access_token as twilio_access_token
 from twilio.jwt.access_token import grants as twilio_grants
 
-from core import app, active, users, tpl, random_token, Ritual, secrets
+from core import app, active, users, tpl, random_token, Ritual, secrets, struct
 from users import connectUserRitual
 
 defaultimg = np.zeros((64,64,3),'uint8')
@@ -69,7 +69,7 @@ async def ritualPage(req):
         video_token = ''
         use_participant_audio = 'null'
     clientId = random_token()
-    active[name].clients.append(clientId)
+    active[name].clients[clientId] = struct(chatQueue=asyncio.Queue())
     return web.Response(body=tpl('html/client.html',
                                  name=name,
                                  clientId=clientId,
@@ -115,6 +115,30 @@ async def skipSpeaker(req):
         task.cancel()
     return web.Response(status=204)
 
+async def chatReceive(req):
+    name = req.match_info.get('name','')
+    if name not in active:
+        return web.Response(status=404)
+    client = active[name].clients.get(req.query.get('clientId'))
+    if not client:
+        return web.Response(status=401)
+    try:
+        message = await asyncio.wait_for(client.chatQueue.get(), timeout=25)
+    except asyncio.TimeoutError:
+        message = None
+    return web.Response(text=json.dumps({'message': message}), content_type='application/json')
+
+async def chatSend(req):
+    name = req.match_info.get('name','')
+    if name not in active:
+        return web.Response(status=404)
+    ritual = active[name]
+    text = (await req.post()).get('text', '')
+    if not isinstance(text, str):
+        return web.Response(status=400)
+    for client in ritual.clients.values():
+        client.chatQueue.put_nowait({'sender': 'Anonymous', 'text': text})
+    return web.Response(status=204)
 
 async def background(req):
     name = req.match_info.get('name')
@@ -149,7 +173,7 @@ async def mkRitual(req):
     print("very good")
     active[name] = Ritual(script=script, reqs={}, state=None, page=page, background=opts['background'],
                           bkgAll=opts.get('bkgAll',False), ratio=opts.get('ratio',16/9), rotate=opts.get('rotate',True),
-                          jpgs=[defaultjpg], jpgrats=[1], clients=[])
+                          jpgs=[defaultjpg], jpgrats=[1], clients={})
     if opts['showParticipants'] == 'avatars':
         active[name].participants = []
     elif opts['showParticipants'] == 'video':
@@ -168,6 +192,8 @@ app.router.add_get('/{name}/lead', ritualPage)
 app.router.add_post('/{name}/nextPage', nextOrPrevPage)
 app.router.add_post('/{name}/prevPage', nextOrPrevPage)
 app.router.add_post('/{name}/skipSpeaker', skipSpeaker)
+app.router.add_get('/{name}/chat/receive', chatReceive)
+app.router.add_post('/{name}/chat/send', chatSend)
 app.router.add_post('/mkRitual', mkRitual)
 app.router.add_get('/{name}/bkg.jpg', background)
 app.router.add_get('/{name}/namedimg/{img}', namedimg)
