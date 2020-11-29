@@ -46,8 +46,15 @@ async def ritualPage(req):
             res = web.Response(body=open('html/login.html').read(), content_type='text/html')
             res.set_cookie('LastRitual', name)
             return res
-    if hasattr(active[name], 'video_room'):
-        video_room_id = active[name].video_room.unique_name
+    if hasattr(active[name], 'current_video_room'):
+        async with active[name].video_room_lock:
+            if not active[name].current_video_room:
+                active[name].current_video_room = await asyncio.get_event_loop().run_in_executor(None, twilio_client.video.rooms.create)
+            video_room_id = active[name].current_video_room.unique_name
+            active[name].population_of_current_video_room += 1
+            if active[name].population_of_current_video_room == 26:
+                active[name].current_video_room = None
+                active[name].population_of_current_video_room = 0
         token_builder = twilio_access_token.AccessToken(
             account_sid=secrets['TWILIO_ACCOUNT_SID'],
             signing_key_sid=secrets['TWILIO_API_KEY'],
@@ -146,11 +153,11 @@ async def mkRitual(req):
     if opts['showParticipants'] == 'avatars':
         active[name].participants = []
     elif opts['showParticipants'] == 'video':
-        try:
-            video_client = twilio_client.video
-        except AttributeError:
+        if not twilio_client:
             raise KeyError('participant video requires Twilio secrets')
-        active[name].video_room = await asyncio.get_event_loop().run_in_executor(None, video_client.rooms.create)
+        active[name].current_video_room = None
+        active[name].population_of_current_video_room = 0
+        active[name].video_room_lock = asyncio.Lock()
         active[name].use_participant_audio = opts.get('useParticipantAudio',False)
     print("did the thing")
     return web.HTTPFound('/'+name+'/partake')
