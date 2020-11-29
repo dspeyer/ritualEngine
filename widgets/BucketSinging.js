@@ -116,7 +116,7 @@ async function initContext(server_url){
 }
 
 export class BucketSinging {
-  constructor({boxColor, lyrics, cleanup, background_opts, leader, server_url}) {
+  constructor({boxColor, lyrics, cleanup, background_opts, videos, leader, server_url}) {
     let islead;
     if (leader) {
       islead = (document.cookie.indexOf(leader) != -1);
@@ -124,10 +124,12 @@ export class BucketSinging {
       islead = window.location.pathname.endsWith('lead');
     }
     this.div = $('<div>').appendTo($('body'));
-    putOnBox(this.div, boxColor);
+    this.video_div = $('<div>').css('z-index',-1).appendTo($('body'));
+    putOnBox([this.div, this.video_div], boxColor);
     this.lyrics = lyrics;
     this.cleanup = cleanup;
     this.background = background_opts;
+      
     this.dbg = $('<div>').css({position: 'absolute',
                                left: '0',
                                top: '30vh',
@@ -139,6 +141,11 @@ export class BucketSinging {
       cssInit = true;
     }
     
+    this.videos = {};
+    if (Object.keys(videos).length>0) {
+      this.init_videos(videos); // Async, we'll wait if we need to
+    }
+      
     if ( ! context) {
       let button = $('<input type="button" value="Click here to Initialize Singing">').appendTo(this.div);
       button.on('click', ()=>{
@@ -154,6 +161,44 @@ export class BucketSinging {
     }
   }
 
+  async init_videos(videos) {
+    let res;
+    this.init_videos_promise = new Promise((res_)=>{res=res_;});
+    if ( ! window.YT) {
+      let script = $('<script>')
+      script.appendTo($('head'));
+      let p = new Promise((res)=>{script.on('load',res);});
+      script.attr('src','https://www.youtube.com/iframe_api');
+      await p;
+    }
+    while ( ! window.YT || ! window.YT.loaded) {
+      this.dbg.append('awaiting YT...').append($('<br>'));
+      await new Promise((res)=>{setTimeout(res,100);});
+    }
+    for (let lid in videos) {
+      let res;
+      let promise = new Promise((r)=>{res=r;});
+      let holder = $('<div><div id=bbs_video'+lid+' style="margin:auto;display:block;"></div></div>')
+        .css({position: 'sticky', zIndex:-999+lid, opacity:0})
+        .prependTo(this.video_div);
+      let player = new YT.Player('bbs_video'+lid, {
+        videoId: videos[lid],
+        events: {
+          'onReady':()=>{console.log('YYYYYYYes Im ready!!!!');res();},
+          'onStateChange':(event)=>{
+            if (event.data == YT.PlayerState.ENDED) {
+              holder.css('opacity', 0);
+            }
+          }
+        }
+      });
+      this.videos[lid] = {holder,player,promise};
+    }
+    this.dbg.append('vids initted').append($('<br>'));
+    res();
+  }
+
+  
   show_lyrics(lyrics) {
     this.div.addClass('lyrics');
     this.lyricEls = {};
@@ -234,6 +279,15 @@ export class BucketSinging {
     if (this.background.backgrounds && lid in this.background.backgrounds) {
       bkgSet('namedimg/'+this.background.backgrounds[lid]);
     }
+    if (lid in this.videos) {
+      await this.init_videos_promise;
+      console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+      await this.videos[lid].promise;
+      console.log(this.videos[lid]);
+      this.videos[lid].holder.animate({opacity:1},500);
+      this.videos[lid].player.playVideo();
+    }
+
     let otop = elem.position().top;
     let target = elem.parent().height() / 3;  
     while (true) {
@@ -252,6 +306,7 @@ export class BucketSinging {
       client.speakerMuted = true;
     }
     this.div.remove();
+    if (this.video_div) this.video_div.remove();
     setMuted(false);
   }
   

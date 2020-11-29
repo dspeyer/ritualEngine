@@ -1,11 +1,13 @@
-export function putOnBox(elem, color) {
+export function putOnBox(elems, color) {
     let box = $('path[stroke="'+color+'"]')
-    console.log({elem,color,box});
     let rect = box[0].getBoundingClientRect();
     box.hide();
-    elem.css('position','absolute');
-    for (let i of ['top','left','width','height']) {
-        elem.css(i,rect[i]);
+    if ( ! Array.isArray(elems)) elems = [ elems ];
+    for (let elem of elems) {
+        elem.css('position','absolute');
+        for (let i of ['top','left','width','height']) {
+            elem.css(i,rect[i]);
+        }
     }
 }    
 
