@@ -1,6 +1,7 @@
 {
   "widget": "BucketSinging",
-  "boxColor": "#0000ff",
+  "boxColor": "#000000",
+  "background": "sunset/sunset-08.jpg",
   "lyrics": [
     "Time Wrote the Rocks",
     "From desert cliff and mountaintop we trace the wide design",
@@ -38,7 +39,7 @@
     "",
     "And we who listen to the stars, or walk the dusty grade,",
     "Or break the very atoms down to see how they are made,",
-    "Seek new stories, seek new song to better guide our hand,",
+    "Or study cells, or living things, seek truth with open hand,",
     "The profoundest act of worship is to try to understand.",
     "",
     "Deep in flower and in flesh, in star and soil and seed,",

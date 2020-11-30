@@ -1,5 +1,6 @@
 {
-    "widget": "BucketSinging",
+    "widget": "trivia",
     "boxColor": "#0000ff",
+    "background": "dusk1.jpg",
     "lyrics": []
 }
