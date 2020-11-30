@@ -241,13 +241,13 @@ let muted = false;
 
 export async function showParticipantVideo(roomId, token, useParticipantAudio) {
     let localVideo = await Twilio.Video.createLocalVideoTrack({ width: 100, height: 100 });
-    addVideoCircle(localVideo);
     let localTracks = [localVideo];
     if (useParticipantAudio) {
         localAudio = await Twilio.Video.createLocalAudioTrack();
         localTracks.push(localAudio);
     }
     let room = await Twilio.Video.connect(token, { name: roomId, tracks: localTracks });
+    addVideoCircle(localVideo, '[me]'+room.localParticipant.identity);
     addEventListener('beforeunload', () => {
         room.disconnect();
     });
@@ -257,10 +257,10 @@ export async function showParticipantVideo(roomId, token, useParticipantAudio) {
         $('<a>Change That</a>').css('border','thin blue outset').on('click',()=>{setMuted(!muted);}).appendTo(span);
         setMuted(false);
     }
-    for (let { videoTracks, audioTracks } of room.participants.values()) {
+    for (let { videoTracks, audioTracks, identity } of room.participants.values()) {
         for (let { track } of videoTracks.values()) {
             if (track) {
-                addVideoCircle(track);
+                addVideoCircle(track, identity);
             }
         }
         if (useParticipantAudio) {
@@ -271,10 +271,10 @@ export async function showParticipantVideo(roomId, token, useParticipantAudio) {
             }
         }
     }
-    room.on('trackSubscribed', (track) => {
+    room.on('trackSubscribed', (track, publication, participant) => {
         switch (track.kind) {
             case 'video':
-                addVideoCircle(track);
+                addVideoCircle(track,'[s]'+participant.identity);
                 break;
             case 'audio':
                 if (useParticipantAudio) {
@@ -302,8 +302,11 @@ export function setMuted(mut) {
     }
 }
 
-function addVideoCircle(track) {
-    $(track.attach()).addClass('participant-video').appendTo('#participants');
+function addVideoCircle(track, name) {
+    $('<div>').addClass('participant-video')
+              .append($(track.attach()))
+              .append($('<div class="video-caption">').text(name))
+              .appendTo('#participants');
 }
 
 function listenToAudio(track) {
