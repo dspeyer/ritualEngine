@@ -150,3 +150,36 @@ will be processed by a separate `from_server` invocation.
 Each widget should have its own documentation, in markdown format.
 Said documentation should cover at minimum the protocol it speaks and
 any deep weirdness in its design.
+
+## Running with Bucketbrigade
+(Ray note: this is copy-pasted from a google doc. TODO: make this more intelligible)
+
+Use https://letsencrypt.org/getting-started/ to get the encryption.  Then have a config file something like:
+
+```
+server {
+    server_name secularsolstice2020.org;
+    location /8081 {
+        proxy_pass http://localhost:8081/;
+    }
+    location / {
+        proxy_pass http://localhost:8080/;
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/secularsolstice2020.org/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/secularsolstice2020.org/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+server {
+    if ($host = secularsolstice2020.org) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+    listen 80;
+    server_name secularsolstice2020.org;
+    return 404; # managed by Certbot
+}
+```
