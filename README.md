@@ -183,3 +183,18 @@ server {
     return 404; # managed by Certbot
 }
 ```
+
+If you're running locally, instead use:
+
+```
+server {
+    listen 8000;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    location /8081 {
+        proxy_pass http://localhost:8081/;
+    }
+    location / {
+        proxy_pass http://localhost:8080/;
+    }
+}
+```
