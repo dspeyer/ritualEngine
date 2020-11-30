@@ -39,14 +39,16 @@
          }
          #chat {
              height: 100vh;
-             width: 20vw;
+             width: 250px;
              position: fixed;
              z-index: 1;
              top: 0;
              right: 0;
-             background-color: rgba(255,255,255,0.7);
+             background-color: rgba(0,0,0,0.5);
+             color: white;
              display: flex;
              flex-direction: column;
+             font-size: 12pt;
          }
          #chat-buffer {
              flex-grow: 1;
@@ -56,19 +58,37 @@
              flex-grow: 0;
          }
          .chat-message {
-             color: black;
+             color: white;
          }
          .chat-sender {
              font-weight: bold;
          }
          .chat-ctrls-sender {
              font-weight: bold;
-             font-size: smaller;
-             color: black;
+             font-size: 8pt;
          }
-         .chat-ctrls-sender input {
-             width: 10em;
-             display: inline;
+         .chat-ctrls-sender input{
+             font-weight: bold;
+             font-size: 8pt;
+             padding: 1px;
+             margin: 3px;
+             width: 200px;
+         }
+         #chat-send input {
+              color: black;
+	      border:none;
+              background: rgba(255,255,255,.25);
+              color: white;
+              border-radius:3px;
+          }
+         #chat-message {
+             width:180px;
+             margin-right:8px;
+             padding:8px;
+         }
+         #chat-submit {
+             width: 50px;
+             padding: 8px;
          }
          #ctrls {
              position: absolute;
@@ -94,7 +114,7 @@
                     <form id="chat-send">
                         <div class="chat-ctrls-sender">From: <input id="chat-sender" name="name" placeholder="Your Name"></div>
                         <input id="chat-message" type="text" placeholder="Message" autocomplete="off">
-                        <input type="submit" value="Send">
+                        <input id="chat-submit" type="submit" value="Send">
                     </form>
                 </div>
             </div>
@@ -176,6 +196,12 @@
              });
          }
          ask();
+         if ($('#chat-sender').val() == '') {
+             let animals = ['Mongoose', 'Lothcat', 'Platypus-Bear', 'Thestral', 'Parameceum',
+                            "Phoera", "Grayrender", "Blink Dog", "Camelopardel", "Shocker Lizard", "Margoyle",
+                            "Cryohydra", "Ashworm", "Lith"]
+             $('#chat-sender').val('Anonymous '+animals[Math.floor(Math.random()*animals.length)]);
+         }
          $('#chat-send').submit((event) => {
              event.preventDefault();
              let text = $('#chat-message').val();
