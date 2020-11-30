@@ -38,23 +38,37 @@
              background-color: black;
          }
          #chat {
-             height: 100%;
-             width: 20%;
+             height: 100vh;
+             width: 20vw;
              position: fixed;
              z-index: 1;
              top: 0;
              right: 0;
-             background-color: white;
+             background-color: rgba(255,255,255,0.7);
+             display: flex;
+             flex-direction: column;
+         }
+         #chat-buffer {
+             flex-grow: 1;
+             overflow: auto;
          }
          #chat-send {
-             position: fixed;
-             bottom: 0;
+             flex-grow: 0;
          }
          .chat-message {
              color: black;
          }
          .chat-sender {
              font-weight: bold;
+         }
+         .chat-ctrls-sender {
+             font-weight: bold;
+             font-size: smaller;
+             color: black;
+         }
+         .chat-ctrls-sender input {
+             width: 10em;
+             display: inline;
          }
          #ctrls {
              position: absolute;
@@ -78,7 +92,8 @@
                 <div id="chat">
                     <div id="chat-buffer"></div>
                     <form id="chat-send">
-                        <input id="chat-message" type="text">
+                        <div class="chat-ctrls-sender">From: <input id="chat-sender" name="name" placeholder="Your Name"></div>
+                        <input id="chat-message" type="text" placeholder="Message" autocomplete="off">
                         <input type="submit" value="Send">
                     </form>
                 </div>
@@ -164,8 +179,9 @@
          $('#chat-send').submit((event) => {
              event.preventDefault();
              let text = $('#chat-message').val();
+             let sender = $('#chat-sender').val();
              if (text) {
-                $.post('chat/send', {text});
+                $.post('chat/send', {text,sender});
              }
              $('#chat-message').val('');
          });
@@ -174,7 +190,10 @@
                  data: {clientId},
                  success({message}) {
                      if (message) {
-                        $('<div class="chat-message">').append($('<span class="chat-sender">').append(message.sender, ': '), message.text).appendTo('#chat-buffer');
+                         $('<div class="chat-message">')
+                             .append( $('<span class="chat-sender">').append(message.sender, ': '), message.text )
+                             .appendTo('#chat-buffer');
+                         $('#chat-buffer').scrollTop($('#chat-buffer').height());
                      }
                      askChat();
                  },

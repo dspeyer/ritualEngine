@@ -70,6 +70,8 @@ async def ritualPage(req):
         use_participant_audio = 'null'
     clientId = random_token()
     active[name].clients[clientId] = struct(chatQueue=asyncio.Queue())
+    for datum in active[name].allChats[-50:]:
+        active[name].clients[clientId].chatQueue.put_nowait(datum)
     return web.Response(body=tpl('html/client.html',
                                  name=name,
                                  clientId=clientId,
@@ -133,11 +135,15 @@ async def chatSend(req):
     if name not in active:
         return web.Response(status=404)
     ritual = active[name]
-    text = (await req.post()).get('text', '')
-    if not isinstance(text, str):
+    form = await req.post()
+    text = form.get('text', '')
+    if not isinstance(text, str) or text.strip()=='':
         return web.Response(status=400)
+    sender = form.get('sender','Anonymous');
+    datum = {'sender': sender, 'text': text}
     for client in ritual.clients.values():
-        client.chatQueue.put_nowait({'sender': 'Anonymous', 'text': text})
+        client.chatQueue.put_nowait(datum)
+    ritual.allChats.append(datum)
     return web.Response(status=204)
 
 async def background(req):
@@ -173,7 +179,7 @@ async def mkRitual(req):
     print("very good")
     active[name] = Ritual(script=script, reqs={}, state=None, page=page, background=opts['background'],
                           bkgAll=opts.get('bkgAll',False), ratio=opts.get('ratio',16/9), rotate=opts.get('rotate',True),
-                          jpgs=[defaultjpg], jpgrats=[1], clients={})
+                          jpgs=[defaultjpg], jpgrats=[1], clients={}, allChats=[])
     if opts['showParticipants'] == 'avatars':
         active[name].participants = []
     elif opts['showParticipants'] == 'video':
