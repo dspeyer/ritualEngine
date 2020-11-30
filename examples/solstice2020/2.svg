@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
-<g enable-background="new">
-<g>
-<clipPath id="cp1">
-<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
-</clipPath>
-<g clip-path="url(#cp1)">
-<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 12468 17801 L 353292 17801 L 353292 60881 L 12468 60881 Z " fill-opacity=".2291" fill-rule="evenodd"/>
-<text xml:space="preserve" transform="matrix(.75 0 0 .75 24.543309 35.04134)" font-size="49.333333" font-family="ArialMT"><tspan y="56">Secular Solstice</tspan></text>
-<path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 22278 70330 L 343482 70330 L 343482 202066 L 22278 202066 Z " fill-opacity="0" fill-rule="evenodd"/>
-<path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#0000ff" d="M 22278 70330 L 343482 70330 L 343482 202066 L 22278 202066 Z "/>
-</g>
-</g>
-</g>
+  <g enable-background="new">
+    <text y="75" x="360" font-size="50" font-family="Georgia" fill="white" text-anchor="middle">
+        Secular Solstice
+    </text>
+    <path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#000000" d="M 22278 70330 L 343482 70330 L 343482 202066 L 22278 202066 Z "/>
+  </g>
 </svg>
