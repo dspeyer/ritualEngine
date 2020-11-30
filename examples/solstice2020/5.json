@@ -1,6 +1,7 @@
 {
   "widget": "BucketSinging",
-  "boxColor": "#0000ff",
+  "boxColor": "#000000",
+  "background": "sunset/sunset-06.jpg",
   "lyrics": [
     "Bitter Wind Lullaby",
     "",
