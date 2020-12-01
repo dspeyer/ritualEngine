@@ -2,8 +2,6 @@
   "widget": "BucketSinging",
   "boxColor": "#0000ff",
   "lyrics": [ 
-    "",
-    "",
     "Dusty tome, lies forgotten.",
     "Cover worn, pages rotten.",
     "A curious book. I’ll just take a look",
@@ -32,7 +30,7 @@
     "To face unafraid, the plans that we made,",
     "Studying the Necronomicon"
   ],
-  "backing": "Brighter_Than_Today.wav",
-  "videos": {"1": "xvTipCOh_aM"}
+  "backing": "necronomicon.wav",
+  "videos": {"1": "S8Me4Zz7FIM"}
 }
     
