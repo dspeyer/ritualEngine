@@ -60,14 +60,14 @@ async def copyStdout(proc,port):
 
 
 class BucketSinging(object):
-    def __init__(self, ritual, boxColor, lyrics, last_song=False, bsBkg=None, leader=None, backing=None, videos=None, **ignore):
+    def __init__(self, ritual, boxColor, lyrics, last_song=False, bsBkg=None, leader=None, backing=None, videoId=None, **ignore):
         self.ritual = ritual
         self.boxColor = boxColor
         self.lyrics = lyrics
         self.client_ids = []
         self.own_server = last_song
         self.background_opts = (bsBkg or {})
-        self.videos = (videos or {})
+        self.videoId = videoId
         self.backing = backing
         self.slots = {}
         self.slot_sizes = defaultdict(int)
@@ -119,7 +119,7 @@ class BucketSinging(object):
                  'slot': self.slots.get(clientId, 2),
                  'cleanup': self.own_server,
                  'background_opts': self.background_opts,
-                 "videos": self.videos,
+                 "videoId": self.videoId,
                  'mark_base': mark_base,
                  'leader': self.leader,
                  'backing_track': self.backing or False,

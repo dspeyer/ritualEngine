@@ -1,45 +1,12 @@
 import { putOnBox } from '../../lib.js';
 
-let loadedScript = false;
-let loadedScriptCallback = null;
-
-function onYouTubeIframeAPIReadyonPlayerReady() {
-    loadedScript = true;
-    if (loadedScriptCallback) loadedScriptCallback();
-}
-window.onYouTubeIframeAPIReadyonPlayerReady = onYouTubeIframeAPIReadyonPlayerReady;
-
-async function loadScript() {
-    // C+P straight from youtube docs
-    var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    // My addition
-    if (!loadedScript) {
-        await new Promise((res)=>{loadedScriptCallback});
-    }
-}
-
 export class Youtube {
     constructor(args) {
         this.real_constructor(args); // Don't worry about when it finishes
     }
 
     async real_constructor({boxColor, videoId}) {
-        console.log('yt from serveer'); 
-        if (! loadedScript) {
-            let script = $('<script>')
-            script.appendTo($('head'));
-            let p = new Promise((res)=>{script.on('load',res);});
-            script.attr('src','https://www.youtube.com/iframe_api');
-            console.log('waiting for script');
-            await p;
-            console.log('waited for script');
-            loadedScript = true;
-        }
-
-        await new Promise((res)=>{setTimeout(res,200);});
+        await window.youTubeReadyPromise;
         
         this.div = $('<div></div>').appendTo($('body'));
         putOnBox(this.div, boxColor);
