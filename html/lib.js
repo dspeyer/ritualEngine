@@ -303,7 +303,9 @@ export function setMuted(mut) {
 }
 
 function addVideoCircle(track) {
-    $(track.attach()).addClass('participant-video').appendTo('#participants');
+    let wrapper = $('<div>').addClass('participant-video-wrapper')
+    $(track.attach()).addClass('participant-video').appendTo(wrapper);
+    wrapper.appendTo("#participants")
 }
 
 function listenToAudio(track) {
