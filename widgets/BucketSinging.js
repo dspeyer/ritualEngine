@@ -45,8 +45,10 @@ async function initContext(server_url){
   await context.start_bucket();
 
   let div = $('<div>').css({background:'rgba(0.5, 0.5, 0.5, 0.6)',
-                            fontSize: '16pt',
+                            fontSize: '14pt',
                             textShadow: '0 0 1px black',
+                            paddingLeft: 16,
+                            paddingRight: 16,
                             position: 'absolute',
                             top: 'calc( 50vh - 8em )',
                             height: '16em',
@@ -54,18 +56,17 @@ async function initContext(server_url){
                             right: '20vw',
                             border: '2px outset #777'})
                       .appendTo($('body'));
-  div.append("First we'll measure the <b>latency</b> of your audio hardware. Please turn your volume to max and put your "+
-             "headphones where your microphone can hear them.  Or get ready to tap your microphone in time to the beeps.");
+  div.append("<p>First we'll measure the <b>latency</b> of your audio hardware.</p><p>Please turn your volume to max and put your "+
+             "headphones where your microphone can hear them.  Or get ready to tap your microphone in time to the beeps.</p>");
   div.append($('<br>'));
-  let button = $('<input type=button>').attr('value',"I'm ready: start the beeping!").appendTo(div);
+  let button = $('<input type=button>').attr('value',"I'm ready: Start the LOUD beeping!").appendTo(div);
   await new Promise((res)=>{button.on('click',res);});
   
   div.empty();
-  div.append('Beeping...');
-  div.append($('<br>'));
+  div.append('<p>Beeping...</p>');
   div.append('Beeps heard: ');
   let heard = $('<span>').appendTo(div);
-  div.append($('<br>'));
+  div.append($('<br><br>'));
   button = $('<input type=button>').attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.").appendTo(div);
   div.append(button);
   let res;
@@ -102,7 +103,7 @@ async function initContext(server_url){
   await p;
   
   div.empty();
-  div.append("That's enough singing.  Calibration is done.  On with the main event.");
+  div.append("<p>That's enough singing.  Calibration is done.  On with the main event.</p>");
   button = $('<input type=button>').attr('value',"Nifty").appendTo(div);
   await new Promise((res)=>{button.on('click',res);});
   div.remove();
