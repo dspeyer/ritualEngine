@@ -1,8 +1,8 @@
 {
   "widget": "Trivia",
-  "background": "sunset/sunset-04.jpg",
+  "background": "sunset-04.jpg",
   "boxColors": {
-      "controls": "#00ffff",
-      "results": "#0000ff"
+      "controls": "#000000",
+      "results": "#000000"
   }
 }

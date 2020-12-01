@@ -1,6 +1,6 @@
 {
-  "background": "sunset/sunset-03.jpg",
+  "background": "sunset-03.jpg",
   "showParticipants": true,
   "rotate": false,
-  "bkgAll": true
+  "bkgAll": true,
 }
