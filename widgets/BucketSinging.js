@@ -63,11 +63,10 @@ async function initContext(server_url){
   await new Promise((res)=>{button.on('click',res);});
   
   div.empty();
-  div.append('Beeping...');
-  div.append($('<br>'));
+  div.append('<p>Beeping...</p>');
   div.append('Beeps heard: ');
   let heard = $('<span>').appendTo(div);
-  div.append($('<br>'));
+  div.append($('<br><br>'));
   button = $('<input type=button>').attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.").appendTo(div);
   div.append(button);
   let res;
@@ -104,7 +103,7 @@ async function initContext(server_url){
   await p;
   
   div.empty();
-  div.append("That's enough singing.  Calibration is done.  On with the main event.");
+  div.append("<p>That's enough singing.  Calibration is done.  On with the main event.</p>");
   button = $('<input type=button>').attr('value',"Nifty").appendTo(div);
   await new Promise((res)=>{button.on('click',res);});
   div.remove();
