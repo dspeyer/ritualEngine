@@ -46,6 +46,10 @@ async def ritualPage(req):
             res = web.Response(body=open('html/login.html').read(), content_type='text/html')
             res.set_cookie('LastRitual', name)
             return res
+    clientId = random_token()
+    active[name].clients[clientId] = struct(chatQueue=asyncio.Queue())
+    for datum in active[name].allChats[-50:]:
+        active[name].clients[clientId].chatQueue.put_nowait(datum)
     if hasattr(active[name], 'current_video_room'):
         async with active[name].video_room_lock:
             if not active[name].current_video_room:
@@ -59,24 +63,22 @@ async def ritualPage(req):
             account_sid=secrets['TWILIO_ACCOUNT_SID'],
             signing_key_sid=secrets['TWILIO_API_KEY'],
             secret=secrets['TWILIO_API_SECRET'],
-            identity=random_token(),
+            identity=clientId,
         )
         token_builder.add_grant(twilio_grants.VideoGrant(room=video_room_id))
-        video_token = token_builder.to_jwt().decode()
+        active[name].clients[clientId].video_token = token_builder.to_jwt().decode()
+        active[name].clients[clientId].room = video_room_id
         use_participant_audio = str(active[name].use_participant_audio).lower()
     else:
         video_room_id = ''
         video_token = ''
         use_participant_audio = 'null'
-    clientId = random_token()
-    active[name].clients[clientId] = struct(chatQueue=asyncio.Queue())
-    for datum in active[name].allChats[-50:]:
-        active[name].clients[clientId].chatQueue.put_nowait(datum)
+    if hasattr(active[name],'participants') or hasattr(active[name], 'current_video_room'):
+        for i,task in active[name].reqs.items():
+            task.cancel()
     return web.Response(body=tpl('html/client.html',
                                  name=name,
                                  clientId=clientId,
-                                 videoRoomId=video_room_id,
-                                 videoToken=video_token,
                                  useParticipantAudio=use_participant_audio,
                                  cclass=(
                                      'shrunk'

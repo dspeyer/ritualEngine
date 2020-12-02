@@ -149,12 +149,7 @@
          });
          let clientId = '%clientId%';
          let name = '%name%';
-         let videoRoomId = '%videoRoomId%';
-         if (videoRoomId) {
-             import('../lib.js').then(({ showParticipantVideo }) => {
-                 showParticipantVideo(videoRoomId, '%videoToken%', %useParticipantAudio%);
-             });
-         }
+         let useParticipantAudio = %useParticipantAudio%;
          document.title = name;
          let page = 0;
          let state = null;
@@ -176,9 +171,18 @@
                          $('#svgwrapper').html(data.svg);
                          $('#svgwrapper svg').attr('width','').attr('height','');
                      }
+                     if (data.video_token && data.room) {
+                         let { twilioConnect } = await import ('../lib.js');
+                         console.log(data.clients)
+                         await twilioConnect(data.video_token, data.room);
+                     }
+                     if (data.clients) {
+                         let { showParticipantAvatars } = await import ('../lib.js');
+                         showParticipantAvatars(data.clients, /*video=*/true);
+                     }
                      if (data.participants) {
                          let { showParticipantAvatars } = await import ('../lib.js');
-                         showParticipantAvatars(data.participants);
+                         showParticipantAvatars(data.participants, /*video=*/false);
                      }
                      if (data.background) {
                          let { bkgSet } = await import ('../lib.js');

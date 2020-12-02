@@ -154,7 +154,8 @@ function fillAsReaderQueue(div, n) {
 
 function fillAsAuditorium(div, n) {
     let h = div.height();
-    let w = div.width();
+    let w = Math.min(div.width(), window.innerWidth);
+    console.log({h,w});
     let r0 = h/5; // h = 1/2 r0 + 3/2 sum(r0*(2/3)^i)
     let rows = [];
     let left = n;
@@ -180,11 +181,12 @@ function fillAsAuditorium(div, n) {
     let r = r0;
     let y = h-r;
     for (let rn of rows) {
-        let xs = 2*w/rn;
+        let xs = w/rn;
         let x = xs / 2;
         for (let i=0; i<rn; i++) {
             ps.push({x,y,r,z:r});
             x += xs;
+            console.log({w,xs,x,rn});
         }
         y -= 3*r/2;
         r *= 2/3;
@@ -202,11 +204,14 @@ function putcircle(d,{x,y,r,label,z}) {
     let s = Math.round(2*r) - 2 + 'px';
     let left = Math.round(x-r) + 1 + 'px';
     let top = Math.round(y-r) + 1 + 'px';
-    let img = $('<img>').css({position:'absolute', width: s, height: s, left, top})
+    let div = $('<div>').css({position:'absolute', width: s, height: s, left, top})
                         .appendTo(d);
-    if (z) img.css('z-index', z);
+    if (z) div.css('z-index', z);
+    div.img = $('<img>').css({width:'100%',height:'100%',position:'absolute'}).appendTo(div);
+    div.video = $('<video>').css({width:'100%',height:'100%',position:'absolute'}).appendTo(div);
+    div.video.hide();
     if (label) {
-        img.label = $('<span>').text('Daniel Speyer')
+        div.label = $('<span>').text('Placeholder')
                                .css({position: 'absolute',
                                      bottom: '5px',
                                      left,
@@ -219,35 +224,95 @@ function putcircle(d,{x,y,r,label,z}) {
                                     })
                                .appendTo(d);
     }
-    return img;
+    return div;
 }
 
 let curCircles = [];
-export function showParticipantAvatars(participants) {
+let videosToPlace = {};
+export function showParticipantAvatars(participants, video) {
     let div = $('#participants');
     if (curCircles.length != participants.length) {
         curCircles = fillAsDesired(div, participants.length);
     }
-    for (let i in participants) {
-        curCircles[i].attr('src', participants[i].img);
-        if (curCircles[i].label) {
-            curCircles[i].label.text(participants[i].name);
+    if (video) {
+        videosToPlace = {};
+        for (let i in participants) {
+            let client = participants[i];
+            if (curCircles[i].videoOf == client.id) continue;
+            if (curCircles[i].videoOf) {
+                curCircles.video.hide(); // TODO: detatch?  Likewise when n changes?
+                delete curCircles.videoOf;
+            }
+            if (client.id == clientId) {
+                putVideoInCircle(curCircles[i], localVideo, clientId)
+            }
+            if (client.room == currentRoomId) {
+                videosToPlace[client.id] = curCircles[i];
+            }
+            if ( ! curCircles[i].videoOf) {
+                curCircles[i].img.attr('src', 'img/0.jpg'); // TODO: photos
+            }
+            if (curCircles[i].label) {
+                curCircles[i].label.text(client.id); // TODO: names?
+            }
         }
+        attachAllVideos();
+    } else {
+        for (let i in participants) {
+            curCircles[i].img.attr('src', participants[i].img);
+            if (curCircles[i].label) {
+                curCircles[i].label.text(participants[i].name);
+            }
+        }
+    }
+}
+
+function attachAllVideos() {
+    for (let [sid, participant] of room.participants) {
+        if (participant.identity in videosToPlace) {
+            for (let [_, track] of participant.videoTracks) {
+                if (track.track) {
+                    putVideoInCircle(videosToPlace[participant.identity], track, participant.identity);
+                    break
+                }
+            }
+        }
+    }
+}
+
+function putVideoInCircle(circle, track, id) {
+    track.attach(circle.video[0]);
+    circle.video.show();
+    circle.videoOf = id;
+    console.log('ARGGGGHH!!');
+    if (id == clientId) {
+        circle.video.css({transform:'scaleX(-1)', transformOrigin: 'center'});
+    } else {
+        circle.video.css({transform: 'unset', transformOrigin: 'unset'});
+    }
+    if (id in videosToPlace) {
+        delete videosToPlace[id];
     }
 }
 
 let localAudio;
 let muted = false;
+let currentRoomId = null;
+let room = null;
+let localVideo = null;
 
-export async function showParticipantVideo(roomId, token, useParticipantAudio) {
-    let localVideo = await Twilio.Video.createLocalVideoTrack({ width: 100, height: 100 });
+export async function twilioConnect(token, roomId) {
+    if (roomId == currentRoomId) return;
+    if (room) room.disconnect();
+    currentRoomId = roomId;
+    localVideo = await Twilio.Video.createLocalVideoTrack({ width: 100, height: 100 });
     let localTracks = [localVideo];
     if (useParticipantAudio) {
         localAudio = await Twilio.Video.createLocalAudioTrack();
         localTracks.push(localAudio);
     }
-    let room = await Twilio.Video.connect(token, { name: roomId, tracks: localTracks });
-    addVideoCircle(localVideo, '[me]'+room.localParticipant.identity);
+    room = await Twilio.Video.connect(token, { name: roomId, tracks: localTracks });
+    console.log('connected to room '+roomId);
     addEventListener('beforeunload', () => {
         room.disconnect();
     });
@@ -257,35 +322,17 @@ export async function showParticipantVideo(roomId, token, useParticipantAudio) {
         $('<a>Change That</a>').css('border','thin blue outset').on('click',()=>{setMuted(!muted);}).appendTo(span);
         setMuted(false);
     }
-    for (let { videoTracks, audioTracks, identity } of room.participants.values()) {
-        for (let { track } of videoTracks.values()) {
-            if (track) {
-                addVideoCircle(track, identity);
-            }
-        }
-        if (useParticipantAudio) {
-            for (let { track } of audioTracks.values()) {
-                if (track) {
-                    listenToAudio(track);
-                }
-            }
-        }
-    }
-    room.on('trackSubscribed', (track, publication, participant) => {
-        switch (track.kind) {
-            case 'video':
-                addVideoCircle(track,'[s]'+participant.identity);
-                break;
-            case 'audio':
-                if (useParticipantAudio) {
-                    listenToAudio(track);
-                }
-                break;
-        }
-    });
     room.on('trackUnsubscribed', (track) => {
         $(track.detach()).remove();
     });
+    room.on('trackSubscribed', (track, publication, participant) => {
+        if (publication.kind == 'video') {
+            if (participant.identity in videosToPlace) {
+                putVideoInCircle(videosToPlace[participant.identity], track, participant.identity);
+            }
+        }
+    });
+    attachAllVideos();
 }
 
 export function setMuted(mut) {
@@ -300,13 +347,6 @@ export function setMuted(mut) {
             $('#ismuted').text('Twilio is not muted');
         }
     }
-}
-
-function addVideoCircle(track, name) {
-    $('<div>').addClass('participant-video')
-              .append($(track.attach()))
-              .append($('<div class="video-caption">').text(name))
-              .appendTo('#participants');
 }
 
 function listenToAudio(track) {
