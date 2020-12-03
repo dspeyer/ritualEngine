@@ -13,6 +13,7 @@ from widgets.BucketSinging import BucketSinging
 from widgets.Trivia import Trivia
 from widgets.CircleFlames import CircleFlames
 from widgets.Youtube import Youtube
+from widgets.Livestream import Livestream
 
 async def lib(req):
     return web.Response(body=open('html/lib.js').read(), content_type='text/javascript')

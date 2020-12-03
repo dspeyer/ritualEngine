@@ -47,7 +47,10 @@ async def ritualPage(req):
             res.set_cookie('LastRitual', name)
             return res
     clientId = random_token()
-    active[name].clients[clientId] = struct(chatQueue=asyncio.Queue())
+    active[name].clients[clientId] = struct(
+        chatQueue=asyncio.Queue(),
+        isStreamer=('streamer' in req.query),
+    )
     for datum in active[name].allChats[-50:]:
         active[name].clients[clientId].chatQueue.put_nowait(datum)
     if hasattr(active[name], 'current_video_room'):
