@@ -44,7 +44,7 @@ async function initContext(server_url){
   context = new BucketBrigadeContext({micStream});
   await context.start_bucket();
 
-  let div = $('<div>').css({background:'rgba(0.5, 0.5, 0.5, 0.6)',
+  let div = $('<div>').css({background:'rgba(0.5, 0.5, 0.5, 1)',
                             fontSize: '14pt',
                             textShadow: '0 0 1px black',
                             paddingLeft: 16,
