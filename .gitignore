@@ -4,7 +4,3 @@
 secrets.json
 server.log
 .vscode/*
-
-.DS_Store
-examples/.DS_Store
-*~.DS_Store
