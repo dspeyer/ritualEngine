@@ -22,18 +22,21 @@ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISE
 */
 
 import WowzaWebRTCPublish from 'https://cdn.jsdelivr.net/gh/WowzaMediaSystems/webrtc-examples@5e20a7474dfc0dbec0386f6f2ec76587bfc30b58/src/jquery-example/lib/WowzaWebRTCPublish.js';
+import { putOnBox } from '../../lib.js';
 
 export class Livestream {
-    constructor({playerId, playerEmbedCode, sdpURL, applicationName, streamName}) {
-        if (playerEmbedCode) {
+    constructor({boxColor, playbackUrl, sdpURL, applicationName, streamName}) {
+        this.video = $('<video playsinline></video>').appendTo(document.body);
+        putOnBox(this.video, boxColor);
+        if (playbackUrl) {
             this.publishing = false;
-            this.element = $(
-                "<div id='wowza_player'></div>",
-                $("<script id='player_embed'></script>").attr('src', `https://player.cloud.wowza.com/hosted/${player_id}/wowza.js`)).appendTo(document.body);
-            // this.element = $(playerEmbedCode).appendTo(document.body);
+            this.video.addClass('video-js').append($('<source type="application/x-mpegURL">').attr('src', playbackUrl));
+            videojs(this.video[0], /* options= */ {}, function() {
+                this.play();
+            });
         } else {
             this.publishing = true;
-            this.element = $('<video autoplay playsinline muted></video>').appendTo(document.body);
+            this.video.prop('autoplay', true).prop('muted', true);
             WowzaWebRTCPublish.on({
                 onStateChanged(newState) {
                     console.log('WowzaWebRTCPublish.onStateChanged', newState);
@@ -43,7 +46,7 @@ export class Livestream {
                 },
             });
             WowzaWebRTCPublish.set({
-                videoElementPublish: this.element[0],
+                videoElementPublish: this.video[0],
                 sdpURL,
                 applicationName,
                 streamName,
@@ -67,6 +70,6 @@ export class Livestream {
         if (this.publishing) {
             WowzaWebRTCPublish.stop();
         }
-        this.element.remove();
+        this.video.remove();
     }
 }
