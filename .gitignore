@@ -4,3 +4,5 @@
 secrets.json
 server.log
 .vscode/*
+
+*.DS_Store
