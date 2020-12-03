@@ -20,6 +20,12 @@
         </script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://media.twiliocdn.com/sdk/js/video/releases/2.8.0/twilio-video.min.js"></script>
+        <script>
+            window.youTubeReadyPromise = new Promise((resolve) => {
+                window.onYouTubeIframeAPIReady = resolve;
+            });
+        </script>
+        <script async src="https://www.youtube.com/iframe_api"></script>
         <style>
          #everything {
              width: 100vw;

@@ -34,7 +34,10 @@ let css = `
   } 
 `;
 
-
+let backingTrackStartedRes;
+let backingTrackStartedPromise = new Promise((res) => {
+  backingTrackStartedRes = res;
+});
 
 async function initContext(server_url){
   let mics = await (new MicEnumerator()).mics();
@@ -112,12 +115,17 @@ async function initContext(server_url){
   client = new SingerClient({context, apiUrl,
                              offset: 42, // We'll change this before doing anything
                              username:clientId, secretId:Math.round(Math.random()*1e6)}); // TODO: understand these
+  client.addEventListener('markReached', async ({detail: {data}}) => {
+    if (data === 'backingTrackStart') {
+      backingTrackStartedRes();
+    }
+  });
   await new Promise((res)=>{ client.addEventListener('connectivityChange',res); });
   mysteryInitPromise = new Promise((res)=>{setTimeout(res,2000);});
 }
 
 export class BucketSinging {
-  constructor({boxColor, lyrics, cleanup, background_opts, videos, leader, server_url}) {
+  constructor({boxColor, lyrics, cleanup, background_opts, videoId, leader, server_url}) {
     let islead;
     if (leader) {
       islead = (document.cookie.indexOf(leader) != -1);
@@ -142,9 +150,8 @@ export class BucketSinging {
       cssInit = true;
     }
     
-    this.videos = {};
-    if (Object.keys(videos).length>0) {
-      this.init_videos(videos); // Async, we'll wait if we need to
+    if (videoId) {
+      this.init_video(videoId); // Async, we'll wait if we need to
     }
       
     if ( ! context) {
@@ -162,28 +169,15 @@ export class BucketSinging {
     }
   }
 
-  async init_videos(videos) {
-    let res;
-    this.init_videos_promise = new Promise((res_)=>{res=res_;});
-    if ( ! window.YT) {
-      let script = $('<script>')
-      script.appendTo($('head'));
-      let p = new Promise((res)=>{script.on('load',res);});
-      script.attr('src','https://www.youtube.com/iframe_api');
-      await p;
-    }
-    while ( ! window.YT || ! window.YT.loaded) {
-      this.dbg.append('awaiting YT...').append($('<br>'));
-      await new Promise((res)=>{setTimeout(res,100);});
-    }
-    for (let lid in videos) {
-      let res;
-      let promise = new Promise((r)=>{res=r;});
-      let holder = $('<div><div id=bbs_video'+lid+' style="margin:auto;display:block;"></div></div>')
-        .css({position: 'sticky', zIndex:-999+lid, opacity:0})
-        .prependTo(this.video_div);
-      let player = new YT.Player('bbs_video'+lid, {
-        videoId: videos[lid],
+  async init_video(videoId) {
+    await window.youTubeReadyPromise;
+    let holder = $('<div><div id=bbs_video style="margin:auto;display:block;"></div></div>')
+      .css({position: 'sticky', zIndex:-999, opacity:0})
+      .prependTo(this.video_div);
+    let player;
+    await new Promise((res) => {
+      player = new YT.Player('bbs_video', {
+        videoId,
         events: {
           'onReady':()=>{console.log('YYYYYYYes Im ready!!!!');res();},
           'onStateChange':(event)=>{
@@ -193,10 +187,18 @@ export class BucketSinging {
           }
         }
       });
-      this.videos[lid] = {holder,player,promise};
-    }
+    });
     this.dbg.append('vids initted').append($('<br>'));
-    res();
+    await backingTrackStartedPromise;
+    holder.animate({opacity: 1}, 500);
+    player.playVideo();
+    client.addEventListener("x_metadataReceived", ({detail: {metadata}}) => {
+      let elapsedAudioSeconds = (metadata.client_read_clock - metadata.song_start_clock) / metadata.server_sample_rate;
+      console.log(`Sync Status: audio = ${elapsedAudioSeconds}, video = ${player.getCurrentTime()}`);
+      if (Math.abs(elapsedAudioSeconds - player.getCurrentTime()) > 0.1) {
+        player.seekTo(elapsedAudioSeconds, /* allowSeekAhead= */ true);
+      }
+    });
   }
 
   
@@ -279,14 +281,6 @@ export class BucketSinging {
     }
     if (this.background.backgrounds && lid in this.background.backgrounds) {
       bkgSet('namedimg/'+this.background.backgrounds[lid]);
-    }
-    if (lid in this.videos) {
-      await this.init_videos_promise;
-      console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
-      await this.videos[lid].promise;
-      console.log(this.videos[lid]);
-      this.videos[lid].holder.animate({opacity:1},500);
-      this.videos[lid].player.playVideo();
     }
 
     let otop = elem.position().top;
