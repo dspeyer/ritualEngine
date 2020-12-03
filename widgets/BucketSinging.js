@@ -130,7 +130,7 @@ export class BucketSinging {
     this.cleanup = cleanup;
     this.background = background_opts;
       
-    this.dbg = $('<div>').css({position: 'absolute',
+    this.dbg = $('<div>').css({position: 'absolute', display:'none',
                                left: '0',
                                top: '30vh',
                                background: 'white',

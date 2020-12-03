@@ -103,7 +103,8 @@ async def status(req):
     if hasattr(ritual,'current_video_room'):
         results['video_token'] = ritual.clients[clientId].video_token
         results['room'] = ritual.clients[clientId].room
-        results['clients'] = [ { 'id':k, 'room':v.room } for k,v in ritual.clients.items() ] # TODO: ordering?
+        results['clients'] = [ { 'id':k, 'room':v.room, 'hj':hasattr(v,'jpg') }
+                               for k,v in ritual.clients.items() ] # TODO: ordering?
     print(results.keys())
     return web.Response(text=json.dumps(results), content_type='application/json')
 

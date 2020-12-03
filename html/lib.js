@@ -160,7 +160,7 @@ function fillAsAuditorium(div, n) {
     let rows = [];
     let left = n;
     for (let r=r0; left>0; r*=2/3) {
-        let nr = Math.floor(w/r);
+        let nr = Math.floor(w/(2*r));
         rows.push(nr);
         left -= nr;
     }
@@ -180,16 +180,17 @@ function fillAsAuditorium(div, n) {
     let ps=[];
     let r = r0;
     let y = h-r;
+    let br = 0;
     for (let rn of rows) {
         let xs = w/rn;
         let x = xs / 2;
         for (let i=0; i<rn; i++) {
-            ps.push({x,y,r,z:r});
+            ps.push({x,y,r,br,z:r});
             x += xs;
-            console.log({w,xs,x,rn});
         }
-        y -= 3*r/2;
+        y -= (2 - br/200 - 0.25) * r; // TODO: make the Y's still add up with this extra spacing
         r *= 2/3;
+        br = Math.min(br+20,50);
     }
     div.empty();
     return ps.map(putcircle.bind(null,div));
@@ -200,13 +201,14 @@ export function setParticipantStyle(rotate){
     fillAsDesired = rotate ? fillAsReaderQueue : fillAsAuditorium;
 }
 
-function putcircle(d,{x,y,r,label,z}) {
+function putcircle(d,{x,y,r,label,z,br}) {
     let s = Math.round(2*r) - 2 + 'px';
     let left = Math.round(x-r) + 1 + 'px';
     let top = Math.round(y-r) + 1 + 'px';
     let div = $('<div>').css({position:'absolute', width: s, height: s, left, top})
                         .appendTo(d);
     if (z) div.css('z-index', z);
+    if (br) div.css({borderRadius: br+'%', overflow: 'hidden'});
     div.img = $('<img>').css({width:'100%',height:'100%',position:'absolute'}).appendTo(div);
     div.video = $('<video>').css({width:'100%',height:'100%',position:'absolute'}).appendTo(div);
     div.video.hide();
@@ -238,6 +240,7 @@ export function showParticipantAvatars(participants, video) {
         videosToPlace = {};
         for (let i in participants) {
             let client = participants[i];
+            curCircles[i].img.attr('src', 'clientAvatar/'+client.id+'?'+client.hj);
             if (curCircles[i].videoOf == client.id) continue;
             if (curCircles[i].videoOf) {
                 curCircles.video.hide(); // TODO: detatch?  Likewise when n changes?
@@ -248,12 +251,6 @@ export function showParticipantAvatars(participants, video) {
             }
             if (client.room == currentRoomId) {
                 videosToPlace[client.id] = curCircles[i];
-            }
-            if ( ! curCircles[i].videoOf) {
-                curCircles[i].img.attr('src', 'img/0.jpg'); // TODO: photos
-            }
-            if (curCircles[i].label) {
-                curCircles[i].label.text(client.id); // TODO: names?
             }
         }
         attachAllVideos();
@@ -271,8 +268,8 @@ function attachAllVideos() {
     for (let [sid, participant] of room.participants) {
         if (participant.identity in videosToPlace) {
             for (let [_, track] of participant.videoTracks) {
-                if (track.track) {
-                    putVideoInCircle(videosToPlace[participant.identity], track, participant.identity);
+                if (track.kind=='video' && track.track && typeof(track.track.attach)=='function') {
+                    putVideoInCircle(videosToPlace[participant.identity], track.track, participant.identity);
                     break
                 }
             }
@@ -287,6 +284,11 @@ function putVideoInCircle(circle, track, id) {
     console.log('ARGGGGHH!!');
     if (id == clientId) {
         circle.video.css({transform:'scaleX(-1)', transformOrigin: 'center'});
+        localVideoElement = circle.video[0];
+        if ( ! svsRunning) {
+            circle.video.on('loadeddata',sendVideoSnapshot);
+            svsRunning = true;
+        }
     } else {
         circle.video.css({transform: 'unset', transformOrigin: 'unset'});
     }
@@ -333,6 +335,27 @@ export async function twilioConnect(token, roomId) {
         }
     });
     attachAllVideos();
+}
+
+let localVideoElement = null;
+let svsRunning = false;
+async function sendVideoSnapshot(){
+    if ( ! localVideoElement) return;
+    let canvas = $('<canvas width=100 height=100>').css({border:'thick cyan solid'}).appendTo($('body'));
+    let context = canvas[0].getContext('2d');
+    context.drawImage(localVideoElement, 0, 0, 100, 100);
+    let blob = await new Promise( (res) => { canvas[0].toBlob(res,'image/jpeg'); } );
+    canvas.remove();
+    let fd = new FormData();
+    fd.append('img', blob);
+    $.ajax({
+        type: 'POST',
+        url: 'clientAvatar/'+clientId,
+        data: fd,
+        processData: false,
+        contentType: false
+    });
+    setTimeout(sendVideoSnapshot, 5*1000);
 }
 
 export function setMuted(mut) {
