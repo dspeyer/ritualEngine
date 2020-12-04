@@ -234,20 +234,24 @@ let videosToPlace = {};
 export function showParticipantAvatars(participants, video) {
     let div = $('#participants');
     if (curCircles.length != participants.length) {
+        if (video) detachAllVideos();
         curCircles = fillAsDesired(div, participants.length);
     }
     if (video) {
         videosToPlace = {};
         for (let i in participants) {
             let client = participants[i];
-            curCircles[i].img.attr('src', 'clientAvatar/'+client.id+'?'+client.hj);
+            let cachebuster = client.hj + '_' + Math.round(((new Date()).getTime()+(i*10000))/300000);
+            curCircles[i].img.attr('src', 'clientAvatar/'+client.id+'?'+cachebuster);
             if (curCircles[i].videoOf == client.id) continue;
             if (curCircles[i].videoOf) {
-                curCircles.video.hide(); // TODO: detatch?  Likewise when n changes?
+                curCircles[i].video.hide();
+                curCircles[i].track.detach(curCircles[i].video[0]);
                 delete curCircles.videoOf;
+                delete curCircles.track;
             }
             if (client.id == clientId) {
-                putVideoInCircle(curCircles[i], localVideo, clientId)
+                putVideoInCircle(curCircles[i], localVideo, clientId);
             }
             if (client.room == currentRoomId) {
                 videosToPlace[client.id] = curCircles[i];
@@ -277,11 +281,20 @@ function attachAllVideos() {
     }
 }
 
+function detachAllVideos() {
+    for (let circle of curCircles) {
+        if (circle.track) {
+            circle.track.detach(circle.video[0]);
+        }
+    }
+}
+
+
 function putVideoInCircle(circle, track, id) {
     track.attach(circle.video[0]);
     circle.video.show();
     circle.videoOf = id;
-    console.log('ARGGGGHH!!');
+    circle.track = track;
     if (id == clientId) {
         circle.video.css({transform:'scaleX(-1)', transformOrigin: 'center'});
         localVideoElement = circle.video[0];
