@@ -152,9 +152,26 @@ function fillAsReaderQueue(div, n) {
     return ps.map(putcircle.bind(null,div));
 }
 
+function putSimpleAvatar(d) {
+    let div = $('<div class="simple-avatar">').appendTo(d);
+    div.img = $('<img class="simple-avatar-image">').appendTo(div);
+    div.video = $('<video class="simple-avatar-video">').appendTo(div);
+    div.video.hide();
+    return div
+}
+
+function fillAsSimpleAuditorium(div, n) {
+    let ps = []
+    for (let r=0; r<n; r++) {
+        ps.push({})
+    }
+    return ps.map(putSimpleAvatar.bind(null,div));
+}
+
 function fillAsAuditorium(div, n) {
     let h = div.height();
-    let w = Math.min(div.width(), window.innerWidth);
+    let chat_width = 250
+    let w = Math.min(div.width(), window.innerWidth) - chat_width;
     console.log({h,w});
     let r0 = h/5; // h = 1/2 r0 + 3/2 sum(r0*(2/3)^i)
     let rows = [];
@@ -198,7 +215,7 @@ function fillAsAuditorium(div, n) {
 
 let fillAsDesired = null;
 export function setParticipantStyle(rotate){
-    fillAsDesired = rotate ? fillAsReaderQueue : fillAsAuditorium;
+    fillAsDesired = rotate ? fillAsReaderQueue : fillAsSimpleAuditorium;
 }
 
 function putcircle(d,{x,y,r,label,z,br}) {
