@@ -1,6 +1,7 @@
 {
-  "background": "sunset02/sunset-01.jpg",
+  "background": "sunset2-01.jpg",
   "showParticipants": "video",
+  "rotate": false,
   "useParticipantAudio": true,
   "bkgAll": true
 }
