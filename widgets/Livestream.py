@@ -1,32 +1,24 @@
+from datetime import datetime, timezone
+
+import aiohttp
+
 from core import secrets
 
 
 class Livestream(object):
-    def __init__(self, ritual, boxColor, **ignore):
+    def __init__(self, ritual, page, name, boxColor, **ignore):
         self.ritual = ritual
+        self.wowza_data = ritual.livestreams[page]
+        self.name = name
         self.boxColor = boxColor
-        try:
-            self.streamer_data = {
-                'sdpURL': secrets['WOWZA_SDP_URL'],
-                'applicationName': secrets['WOWZA_APPLICATION_NAME'],
-                'streamName': secrets['WOWZA_STREAM_NAME'],
-            }
-            self.viewer_data = {
-                'playbackUrl': secrets['WOWZA_PLAYBACK_URL'],
-            }
-        except KeyError:
-            raise KeyError('livestream requires Wowza secrets')
+        self.ready = False
 
     def to_client(self, clientId, have):
+        common_data = {'widget': 'Livestream', 'boxColor': self.boxColor}
         if self.ritual.clients[clientId].isStreamer:
-            return {
-                'widget': 'Livestream',
-                'boxColor': self.boxColor,
-                **self.streamer_data,
-            }
+            return {**common_data, **self.wowza_data.source_connection_information}
         else:
-            return {
-                'widget': 'Livestream',
-                'boxColor': self.boxColor,
-                **self.viewer_data,
-            }
+            return {**common_data, 'playbackUrl': self.wowza_data.playback_url, 'ready': self.ready}
+
+    def from_client(self, data, users):
+        self.ready = True

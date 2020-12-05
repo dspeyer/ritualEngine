@@ -1,8 +1,10 @@
 import asyncio
+from datetime import datetime, timezone
 from glob import glob
 import json
+from os import path
 
-from aiohttp import web
+from aiohttp import web, ClientSession
 import numpy as np
 import cv2
 from twilio import rest as twilio_rest
@@ -27,6 +29,15 @@ except KeyError:
     twilio_client = None
 else:
     twilio_client = twilio_rest.Client(**twilio_client_kwargs)
+
+
+try:
+    wowza_auth_headers = {
+        'wsc-api-key': secrets['WOWZA_API_KEY'],
+        'wsc-access-key': secrets['WOWZA_ACCESS_KEY'],
+    }
+except KeyError:
+    wowza_auth_headers = None
 
 
 async def homepage(req):
@@ -179,9 +190,73 @@ async def mkRitual(req):
         return web.Response(text='Duplicate',status=400)
     opts = json.loads(open('examples/%s/index.json'%script).read())
     print("very good")
+    livestreams = {}
+    timestamp = datetime.now(timezone.utc).isoformat()
+    async with ClientSession() as session:
+        for slide_path in glob(f'examples/{script}/*.json'):
+            filename = path.basename(slide_path)
+            if filename == 'index.json':
+                continue
+            with open(slide_path) as f:
+                slide = json.load(f)
+            if slide['widget'] == 'Livestream':
+                if not wowza_auth_headers:
+                    raise KeyError('livestream requires Wowza secrets')
+                async with session.post(
+                    'https://api.cloud.wowza.com/api/v1.6/live_streams',
+                    headers=wowza_auth_headers,
+                    json={
+                        'live_stream': {
+                            'name': slide['name'] + '_' + timestamp,
+                            'transcoder_type': 'transcoded',
+                            'billing_mode': 'pay_as_you_go',
+                            'broadcast_location': 'us_west_california',
+                            'encoder': 'other_webrtc',
+                            'aspect_ratio_width': 1920,
+                            'aspect_ratio_height': 1080,
+                            'recording': True,
+                        },
+                    },
+                    ) as resp:
+                    resp.raise_for_status()
+                    livestream_json = await resp.json()
+                livestream_data = livestream_json['live_stream']
+                conn_info = livestream_data['source_connection_information']
+                number, _ = path.splitext(filename)
+                livestream = livestreams[int(number)] = struct(
+                    livestream_id=livestream_data['id'],
+                    playback_url=livestream_data['player_hls_playback_url'],
+                    source_connection_information={
+                        'sdpURL': conn_info['sdp_url'],
+                        'applicationName': conn_info['application_name'],
+                        'streamName': conn_info['stream_name'],
+                    },
+                )
+                async with session.put(
+                    f"https://api.cloud.wowza.com/api/v1.6/live_streams/{livestream.livestream_id}/start",
+                    headers=wowza_auth_headers,
+                    ) as resp:
+                    resp.raise_for_status()
+        async def livestream_started(livestream_id):
+            async with session.get(
+                f"https://api.cloud.wowza.com/api/v1.6/live_streams/{livestream_id}/state",
+                headers=wowza_auth_headers,
+                ) as resp:
+                resp.raise_for_status()
+                livestream_json = await resp.json()
+            state = livestream_json['live_stream']['state']
+            if state == 'starting':
+                return False
+            elif state == 'started':
+                return True
+            else:
+                raise OSError(f'illegal livestream state: {state}')
+        for livestream in livestreams.values():
+            while not await livestream_started(livestream.livestream_id):
+                await asyncio.sleep(1)
     active[name] = Ritual(script=script, reqs={}, state=None, page=page, background=opts['background'],
                           bkgAll=opts.get('bkgAll',False), ratio=opts.get('ratio',16/9), rotate=opts.get('rotate',True),
-                          jpgs=[defaultjpg], jpgrats=[1], clients={}, allChats=[])
+                          jpgs=[defaultjpg], jpgrats=[1], clients={}, allChats=[], livestreams=livestreams)
     if opts['showParticipants'] == 'avatars':
         active[name].participants = []
     elif opts['showParticipants'] == 'video':

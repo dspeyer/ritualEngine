@@ -85,7 +85,7 @@ async def status(req):
 
         if 'widget' in data and not ritual.state:
             widget = globals()[data['widget']]
-            ritual.state = widget(ritual=ritual, **data)
+            ritual.state = widget(ritual=ritual, page=ritual.page, **data)
             if hasattr(ritual.state,'async_init'):
                 await ritual.state.async_init()
 

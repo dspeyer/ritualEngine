@@ -25,17 +25,17 @@ import WowzaWebRTCPublish from 'https://cdn.jsdelivr.net/gh/WowzaMediaSystems/we
 import { putOnBox } from '../../lib.js';
 
 export class Livestream {
-    constructor({boxColor, playbackUrl, sdpURL, applicationName, streamName}) {
-        this.video = $('<video playsinline></video>').appendTo(document.body);
-        putOnBox(this.video, boxColor);
+    constructor({boxColor, ready, playbackUrl, sdpURL, applicationName, streamName}) {
+        this.boxColor = boxColor;
         if (playbackUrl) {
             this.publishing = false;
-            this.video.addClass('video-js').append($('<source type="application/x-mpegURL">').attr('src', playbackUrl));
-            videojs(this.video[0], /* options= */ {}, function() {
-                this.play();
-            });
+            this.playbackUrl = playbackUrl;
+            if (ready) {
+                this.startPlayback();
+            }
         } else {
             this.publishing = true;
+            this.createVideo();
             this.video.prop('autoplay', true).prop('muted', true);
             WowzaWebRTCPublish.on({
                 onStateChanged(newState) {
@@ -60,16 +60,36 @@ export class Livestream {
                 },
             }).then(() => {
                 WowzaWebRTCPublish.start();
+                $.post('widgetData', {});
             });
         }
     }
 
-    async from_server() {}
+    createVideo() {
+        this.video = $('<video playsinline></video>').appendTo(document.body);
+        putOnBox(this.video, this.boxColor);
+    }
+
+    startPlayback() {
+        this.createVideo();
+        this.video.addClass('video-js').append($('<source type="application/x-mpegURL">').attr('src', this.playbackUrl));
+        videojs(this.video[0], /* options= */ {}, function() {
+            this.play();
+        });
+    }
+
+    from_server({ready}) {
+        if (this.playbackUrl && ready) {
+            this.startPlayback();
+        }
+    }
     
     destroy() {
-        if (this.publishing) {
+        if (this.playbackUrl) {
             WowzaWebRTCPublish.stop();
         }
-        this.video.remove();
+        if (this.video) {
+            this.video.remove();
+        }
     }
 }
