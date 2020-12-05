@@ -1,5 +1,5 @@
 import {MicEnumerator, openMic, BucketBrigadeContext, SingerClient, VolumeCalibrator, LatencyCalibrator} from './BucketSinging/app.js';
-import { putOnBox, bkgSet, bkgZoom, setMuted } from '../../lib.js';
+import { putOnBox, bkgSet, bkgZoom } from '../../lib.js';
 
 let context = null;
 let client = null;
@@ -223,7 +223,6 @@ export class BucketSinging {
     this.slot = slot;
     client.micMuted = false;
     client.speakerMuted = false;
-    setMuted(true);
     let offset = (slot+1) * 3;
     client.change_offset(offset);
     this.dbg.append('slot '+slot+' -> offset '+offset).append($('<br>'));
@@ -302,7 +301,6 @@ export class BucketSinging {
     }
     this.div.remove();
     if (this.video_div) this.video_div.remove();
-    setMuted(false);
   }
   
 }
