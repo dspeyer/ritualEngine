@@ -93,6 +93,8 @@ async def status(req):
         for key in ['background', 'bkZoom', 'bkZoomCenter']:
             if key in data:
                 results[key] = data[key]
+
+        results['twilioAudioEnabled'] = data.get('twilioAudioEnabled', False);
                 
         results['page'] = ritual.page
         

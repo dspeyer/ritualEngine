@@ -28,6 +28,7 @@
              height: 250px; /* TODO: 117 fits; flag or something for overlap? */
              position: absolute;
              bottom: 0;
+             z-index: 0;
          }
          .participant-video {
              width: 100px;
@@ -172,9 +173,12 @@
                          $('#svgwrapper svg').attr('width','').attr('height','');
                      }
                      if (data.video_token && data.room) {
-                         let { twilioConnect } = await import ('../lib.js');
+                         let { twilioConnect, setTwilioAudioEnabled } = await import ('../lib.js');
                          console.log(data.clients)
                          await twilioConnect(data.video_token, data.room);
+                         if (data.twilioAudioEnabled !== undefined) {
+                             setTwilioAudioEnabled(data.twilioAudioEnabled);
+                         }
                      }
                      if (data.clients) {
                          let { showParticipantAvatars } = await import ('../lib.js');

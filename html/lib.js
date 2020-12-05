@@ -205,7 +205,8 @@ function putcircle(d,{x,y,r,label,z,br}) {
     let s = Math.round(2*r) - 2 + 'px';
     let left = Math.round(x-r) + 1 + 'px';
     let top = Math.round(y-r) + 1 + 'px';
-    let div = $('<div>').css({position:'absolute', width: s, height: s, left, top})
+    let div = $('<div>').css({position:'absolute', width: s, height: s, left, top,
+                              border: '1px #aff solid'})
                         .appendTo(d);
     if (z) div.css('z-index', z);
     if (br) div.css({borderRadius: br+'%', overflow: 'hidden'});
@@ -243,6 +244,9 @@ export function showParticipantAvatars(participants, video) {
             let client = participants[i];
             let cachebuster = client.hj + '_' + Math.round(((new Date()).getTime()+(i*10000))/300000);
             curCircles[i].img.attr('src', 'clientAvatar/'+client.id+'?'+cachebuster);
+            if (twilioAudioEnabled) {
+                curCircles[i].css({opacity: (hasAudioTrack[client.id] ? 1 : .2)});
+            }
             if (curCircles[i].videoOf == client.id) continue;
             if (curCircles[i].videoOf) {
                 curCircles[i].video.hide();
@@ -315,28 +319,21 @@ let muted = false;
 let currentRoomId = null;
 let room = null;
 let localVideo = null;
+let twilioAudioEnabled = false;
+let hasAudioTrack = {};
 
 export async function twilioConnect(token, roomId) {
     if (roomId == currentRoomId) return;
     if (room) room.disconnect();
     currentRoomId = roomId;
     localVideo = await Twilio.Video.createLocalVideoTrack({ width: 100, height: 100 });
-    let localTracks = [localVideo];
-    if (useParticipantAudio) {
-        localAudio = await Twilio.Video.createLocalAudioTrack();
-        localTracks.push(localAudio);
-    }
-    room = await Twilio.Video.connect(token, { name: roomId, tracks: localTracks });
+    localAudio = await Twilio.Video.createLocalAudioTrack();
+    localAudio.disable();
+    room = await Twilio.Video.connect(token, { name: roomId, tracks: [localAudio, localVideo] });
     console.log('connected to room '+roomId);
     addEventListener('beforeunload', () => {
         room.disconnect();
     });
-    if (useParticipantAudio) {
-        let span = $('<span>').css({background:'white',color:'black',position:'absolute',top:0,left:0}).appendTo($('body'));
-        $('<span id="ismuted">').appendTo(span);
-        $('<a>Change That</a>').css('border','thin blue outset').on('click',()=>{setMuted(!muted);}).appendTo(span);
-        setMuted(false);
-    }
     room.on('trackUnsubscribed', (track) => {
         $(track.detach()).remove();
     });
@@ -346,8 +343,50 @@ export async function twilioConnect(token, roomId) {
                 putVideoInCircle(videosToPlace[participant.identity], track, participant.identity);
             }
         }
+        if (publication.kind == 'audio' && twilioAudioEnabled) {
+            hasAudioTrack[participant.identity] = true;
+            $(track.attach()).appendTo($('body'));
+            for (let circle of circles) {
+                if (circle.videoOf == participant.identity) {
+                    circle.css({opacity:1});
+                }
+            }
+        }
     });
     attachAllVideos();
+}
+
+export function setTwilioAudioEnabled(nv) {
+    if (nv == twilioAudioEnabled) return;
+    hasAudioTrack = {};
+    if (nv) {
+        twilioAudioEnabled = true;
+        localAudio.enable();
+        for (let [sid, participant] of room.participants) {
+            for (let [_, track] of participant.videoTracks) {
+                if (track.kind=='audio' && track.track && typeof(track.track.attach)=='function') {
+                    $(track.track.attach()).appendTo($('body'));
+                    hasAudioTrack[participant.identity] = true;
+                }
+            }
+        }
+        for (let circle of curCircles) {
+            circle.css({opacity: (hasAudioTrack[circle.videoOf] ? 1 : 0.2)});
+        }
+    } else {
+        twilioAudioEnabled = false;
+        localAudio.disable();
+        for (let [sid, participant] of room.participants) {
+            for (let [_, track] of participant.videoTracks) {
+                if (track.kind=='audio' && track.track && typeof(track.track.detach)=='function') {
+                    $(track.track.detach()).remove
+                }
+            }
+        }
+        for (let circle of curCircles) {
+            circle.css({opacity: 1});
+        }
+    }
 }
 
 let localVideoElement = null;
@@ -370,26 +409,6 @@ async function sendVideoSnapshot(){
     });
     setTimeout(sendVideoSnapshot, 5*1000);
 }
-
-export function setMuted(mut) {
-    muted = mut;
-    $('.participant-audio').prop('muted', muted);
-    if (localAudio) {
-        if (mut) {
-            localAudio.disable();
-            $('#ismuted').text('Twilio is muted');
-        } else {
-            localAudio.enable();
-            $('#ismuted').text('Twilio is not muted');
-        }
-    }
-}
-
-function listenToAudio(track) {
-    $(track.attach()).addClass('participant-audio').prop('muted', muted).appendTo('body');
-}
-
-export function setZoomMute(v) {} // TODO: something
 
 let bkgElem = null;
 
