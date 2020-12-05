@@ -60,7 +60,7 @@ async def copyStdout(proc,port):
 
 
 class BucketSinging(object):
-    def __init__(self, ritual, boxColor, lyrics, last_song=False, bsBkg=None, leader=None, backing=None, videoId=None, **ignore):
+    def __init__(self, ritual, boxColor, lyrics, last_song=False, bsBkg=None, leader=None, backing=None, videoId=None, justInit=False, **ignore):
         self.ritual = ritual
         self.boxColor = boxColor
         self.lyrics = lyrics
@@ -73,7 +73,8 @@ class BucketSinging(object):
         self.slot_sizes = defaultdict(int)
         self.nready = 0
         self.first_ready = datetime(9999, 1, 1, 1, 1, 1)
-
+        self.justInit = justInit
+        
         leader = getUserByEmail(leader)
         if leader:
             self.leader = leader.rid
@@ -123,6 +124,7 @@ class BucketSinging(object):
                  'mark_base': mark_base,
                  'leader': self.leader,
                  'backing_track': self.backing or False,
+                 'justInit': self.justInit,
                  'dbginfo': '%d/%d'%(self.nready,len(self.ritual.clients))}
 
     def destroy(self):

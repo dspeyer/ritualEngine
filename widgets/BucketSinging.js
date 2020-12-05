@@ -216,10 +216,14 @@ export class BucketSinging {
     $.post('widgetData', {calibrationFail, clientId, islead});
   }
 
-  async from_server({mark_base, slot, ready, backing_track, dbginfo}) {
+  async from_server({mark_base, slot, ready, backing_track, dbginfo, justInit}) {
     this.dbg.append(dbginfo+' ready='+ready).append($('<br>'));
     if (!ready || !client) return;
     if (this.slot === slot) return;
+    if (justInit) {
+      this.destroy();
+      return;
+    }
     this.slot = slot;
     client.micMuted = false;
     client.speakerMuted = false;
