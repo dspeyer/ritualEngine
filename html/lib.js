@@ -314,7 +314,6 @@ function putVideoInCircle(circle, track, id) {
     }
 }
 
-let localAudio;
 let muted = false;
 let currentRoomId = null;
 let room = null;
@@ -327,9 +326,7 @@ export async function twilioConnect(token, roomId) {
     if (room) room.disconnect();
     currentRoomId = roomId;
     localVideo = await Twilio.Video.createLocalVideoTrack({ width: 100, height: 100 });
-    localAudio = await Twilio.Video.createLocalAudioTrack();
-    localAudio.disable();
-    room = await Twilio.Video.connect(token, { name: roomId, tracks: [localAudio, localVideo] });
+    room = await Twilio.Video.connect(token, { name: roomId, tracks: [localVideo] });
     console.log('connected to room '+roomId);
     addEventListener('beforeunload', () => {
         room.disconnect();
@@ -346,7 +343,7 @@ export async function twilioConnect(token, roomId) {
         if (publication.kind == 'audio' && twilioAudioEnabled) {
             hasAudioTrack[participant.identity] = true;
             $(track.attach()).appendTo($('body'));
-            for (let circle of circles) {
+            for (let circle of curCircles) {
                 if (circle.videoOf == participant.identity) {
                     circle.css({opacity:1});
                 }
@@ -356,12 +353,18 @@ export async function twilioConnect(token, roomId) {
     attachAllVideos();
 }
 
+let localAudioTrack = null;
 export function setTwilioAudioEnabled(nv) {
     if (nv == twilioAudioEnabled) return;
     hasAudioTrack = {};
     if (nv) {
         twilioAudioEnabled = true;
-        localAudio.enable();
+        console.log('trying to get local audio');
+        Twilio.Video.createLocalAudioTrack().then(function(lat) { // Don't await this. If it hangs, let it hang
+            console.log('got local audio');
+            room.localParticipant.publishTrack(lat);
+            localAudioTrack = lat;
+        });
         for (let [sid, participant] of room.participants) {
             for (let [_, track] of participant.videoTracks) {
                 if (track.kind=='audio' && track.track && typeof(track.track.attach)=='function') {
@@ -375,7 +378,10 @@ export function setTwilioAudioEnabled(nv) {
         }
     } else {
         twilioAudioEnabled = false;
-        localAudio.disable();
+        if (localAudioTrack) {
+            localAudioTrack.stop();
+            localAudioTrack = null;
+        }
         for (let [sid, participant] of room.participants) {
             for (let [_, track] of participant.videoTracks) {
                 if (track.kind=='audio' && track.track && typeof(track.track.detach)=='function') {
