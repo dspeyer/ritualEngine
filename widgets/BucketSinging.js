@@ -47,7 +47,7 @@ async function initContext(server_url){
   context = new BucketBrigadeContext({micStream});
   await context.start_bucket();
 
-  let div = $('<div>').css({background:'rgba(0.5, 0.5, 0.5, 1)',
+  let div = $('<div>').css({background:'rgba(0.5, 0.5, 0.5, .5)',
                             fontSize: '14pt',
                             textShadow: '0 0 1px black',
                             paddingLeft: 16,
@@ -55,8 +55,8 @@ async function initContext(server_url){
                             position: 'absolute',
                             top: 'calc( 50vh - 8em )',
                             height: '16em',
-                            left: '20vw',
-                            right: '20vw',
+                            left: '15vw',
+                            right: '300px',
                             border: '2px outset #777'})
                       .appendTo($('body'));
   div.append("<p>First we'll measure the <b>latency</b> of your audio hardware.</p><p>Please turn your volume to max and put your "+
@@ -155,7 +155,7 @@ export class BucketSinging {
     }
       
     if ( ! context) {
-      let button = $('<input type="button" value="Click here to Initialize Singing">').appendTo(this.div);
+      let button = $('<div><h3>Welcome! First, please calibrate your audio.</h3><input type="button" class="initialize-button" value="Click here to Initialize Singing"></div>').appendTo(this.div);
       button.on('click', ()=>{
         button.remove();
         initContext(server_url).then(()=>{
