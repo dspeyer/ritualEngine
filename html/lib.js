@@ -160,7 +160,7 @@ function putSimpleAvatar(d) {
     return div
 }
 
-function fillAsSimpleAuditorium(div, n) {
+function fillAsSimple(div, n) {
     let ps = []
     for (let r=0; r<n; r++) {
         ps.push({})
@@ -214,7 +214,7 @@ function fillAsAuditorium(div, n) {
 
 let fillAsDesired = null;
 export function setParticipantStyle(rotate){
-    fillAsDesired = rotate ? fillAsReaderQueue : fillAsAuditorium;
+    fillAsDesired = rotate ? fillAsReaderQueue : fillAsSimple;
 }
 
 function putcircle(d,{x,y,r,label,z,br}) {
