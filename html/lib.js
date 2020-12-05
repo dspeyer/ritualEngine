@@ -170,8 +170,7 @@ function fillAsSimpleAuditorium(div, n) {
 
 function fillAsAuditorium(div, n) {
     let h = div.height();
-    let chat_width = 250
-    let w = Math.min(div.width(), window.innerWidth) - chat_width;
+    let w = Math.min(div.width(), window.innerWidth);
     console.log({h,w});
     let r0 = h/5; // h = 1/2 r0 + 3/2 sum(r0*(2/3)^i)
     let rows = [];
@@ -215,7 +214,7 @@ function fillAsAuditorium(div, n) {
 
 let fillAsDesired = null;
 export function setParticipantStyle(rotate){
-    fillAsDesired = rotate ? fillAsReaderQueue : fillAsSimpleAuditorium;
+    fillAsDesired = rotate ? fillAsReaderQueue : fillAsAuditorium;
 }
 
 function putcircle(d,{x,y,r,label,z,br}) {
@@ -223,7 +222,7 @@ function putcircle(d,{x,y,r,label,z,br}) {
     let left = Math.round(x-r) + 1 + 'px';
     let top = Math.round(y-r) + 1 + 'px';
     let div = $('<div>').css({position:'absolute', width: s, height: s, left, top,
-                              border: '1px rgba(255,255,255,0.7) solid'})
+                              border: '1px rgba(255,255,255,0.5) solid'})
                         .appendTo(d);
     if (z) div.css('z-index', z);
     if (br) div.css({borderRadius: br+'%', overflow: 'hidden'});
