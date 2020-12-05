@@ -259,10 +259,6 @@
                          if ( ! state ) state = new widgetClasses[data.widget](data);
                          await state.from_server(data);
                      }
-                     if (data.error) {
-                         alert(data.error);
-                         return;
-                     }
                      ask();
                  }
              });
