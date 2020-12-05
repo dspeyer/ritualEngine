@@ -68,18 +68,15 @@ async def ritualPage(req):
         token_builder.add_grant(twilio_grants.VideoGrant(room=video_room_id))
         active[name].clients[clientId].video_token = token_builder.to_jwt().decode()
         active[name].clients[clientId].room = video_room_id
-        use_participant_audio = str(active[name].use_participant_audio).lower()
     else:
         video_room_id = ''
         video_token = ''
-        use_participant_audio = 'null'
     if hasattr(active[name],'participants') or hasattr(active[name], 'current_video_room'):
         for i,task in active[name].reqs.items():
             task.cancel()
     return web.Response(body=tpl('html/client.html',
                                  name=name,
                                  clientId=clientId,
-                                 useParticipantAudio=use_participant_audio,
                                  cclass=(
                                      'shrunk'
                                      if hasattr(active[name], 'participants')
@@ -190,7 +187,6 @@ async def mkRitual(req):
         active[name].current_video_room = None
         active[name].population_of_current_video_room = 0
         active[name].video_room_lock = asyncio.Lock()
-        active[name].use_participant_audio = opts.get('useParticipantAudio',False)
     print("did the thing")
     return web.HTTPFound('/'+name+'/partake')
 
