@@ -206,7 +206,7 @@ function putcircle(d,{x,y,r,label,z,br}) {
     let left = Math.round(x-r) + 1 + 'px';
     let top = Math.round(y-r) + 1 + 'px';
     let div = $('<div>').css({position:'absolute', width: s, height: s, left, top,
-                              border: '1px #aff solid'})
+                              border: '1px rgba(255,255,255,0.7) solid'})
                         .appendTo(d);
     if (z) div.css('z-index', z);
     if (br) div.css({borderRadius: br+'%', overflow: 'hidden'});
