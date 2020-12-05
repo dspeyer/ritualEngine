@@ -214,7 +214,7 @@ function fillAsAuditorium(div, n) {
 
 let fillAsDesired = null;
 export function setParticipantStyle(rotate){
-    fillAsDesired = rotate ? fillAsReaderQueue : fillAsSimple;
+    fillAsDesired = rotate ? fillAsReaderQueue : fillAsAuditorium;
 }
 
 function putcircle(d,{x,y,r,label,z,br}) {
