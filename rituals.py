@@ -46,6 +46,10 @@ async def ritualPage(req):
             res = web.Response(body=open('html/login.html').read(), content_type='text/html')
             res.set_cookie('LastRitual', name)
             return res
+    clientId = random_token()
+    active[name].clients[clientId] = struct(chatQueue=asyncio.Queue())
+    for datum in active[name].allChats[-50:]:
+        active[name].clients[clientId].chatQueue.put_nowait(datum)
     if hasattr(active[name], 'current_video_room'):
         async with active[name].video_room_lock:
             if not active[name].current_video_room:
@@ -59,25 +63,20 @@ async def ritualPage(req):
             account_sid=secrets['TWILIO_ACCOUNT_SID'],
             signing_key_sid=secrets['TWILIO_API_KEY'],
             secret=secrets['TWILIO_API_SECRET'],
-            identity=random_token(),
+            identity=clientId,
         )
         token_builder.add_grant(twilio_grants.VideoGrant(room=video_room_id))
-        video_token = token_builder.to_jwt().decode()
-        use_participant_audio = str(active[name].use_participant_audio).lower()
+        active[name].clients[clientId].video_token = token_builder.to_jwt().decode()
+        active[name].clients[clientId].room = video_room_id
     else:
         video_room_id = ''
         video_token = ''
-        use_participant_audio = 'null'
-    clientId = random_token()
-    active[name].clients[clientId] = struct(chatQueue=asyncio.Queue())
-    for datum in active[name].allChats[-50:]:
-        active[name].clients[clientId].chatQueue.put_nowait(datum)
+    if hasattr(active[name],'participants') or hasattr(active[name], 'current_video_room'):
+        for i,task in active[name].reqs.items():
+            task.cancel()
     return web.Response(body=tpl('html/client.html',
                                  name=name,
                                  clientId=clientId,
-                                 videoRoomId=video_room_id,
-                                 videoToken=video_token,
-                                 useParticipantAudio=use_participant_audio,
                                  cclass=(
                                      'shrunk'
                                      if hasattr(active[name], 'participants')
@@ -188,9 +187,43 @@ async def mkRitual(req):
         active[name].current_video_room = None
         active[name].population_of_current_video_room = 0
         active[name].video_room_lock = asyncio.Lock()
-        active[name].use_participant_audio = opts.get('useParticipantAudio',False)
     print("did the thing")
     return web.HTTPFound('/'+name+'/partake')
+
+async def setAvatar(req):
+    name = req.match_info.get('name','')
+    if name not in active:
+        return web.Response(status=404)
+    ritual = active[name]
+    clientId = req.match_info.get('client','')
+    if clientId not in ritual.clients:
+        return web.Response(status=404)
+    client = ritual.clients[clientId]
+    print("Set avatar for ritual %s, client %s"%(name,clientId))
+    form = await req.post()
+    if not hasattr(client,'jpg'):
+        for i,task in active[name].reqs.items():
+            task.cancel()        
+    client.jpg = form['img'].file.read()
+    return web.Response(status=204)    
+
+async def getAvatar(req):
+    name = req.match_info.get('name','')
+    if name not in active:
+        return web.Response(status=404)
+    ritual = active[name]
+    clientId = req.match_info.get('client','')
+    if clientId not in ritual.clients:
+        return web.Response(status=404)
+    client = ritual.clients[clientId]
+    print("Get avatar for ritual %s, client %s"%(name,clientId))
+    if hasattr(client,'jpg'):
+        jpg = client.jpg
+        ma = 300
+    else:
+        jpg = open('unknownface.jpg','rb').read();
+        ma = 0
+    return web.Response(body=jpg, content_type='image/jpg', headers={'Cache-Control': 'max-age=%d'%ma})
 
 app.router.add_get('/', homepage)
 app.router.add_get('/{name}/partake', ritualPage)
@@ -203,3 +236,5 @@ app.router.add_post('/{name}/chat/send', chatSend)
 app.router.add_post('/mkRitual', mkRitual)
 app.router.add_get('/{name}/bkg.jpg', background)
 app.router.add_get('/{name}/namedimg/{img}', namedimg)
+app.router.add_get('/{name}/clientAvatar/{client}', getAvatar)
+app.router.add_post('/{name}/clientAvatar/{client}', setAvatar)

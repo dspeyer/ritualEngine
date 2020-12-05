@@ -46,6 +46,7 @@ async def status(req):
     if name not in active:
         return web.Response(status=404)
     ritual = active[name]
+    clientId = req.query.get('clientId')
     have = int(req.query.get('have'))
     subhave = req.query.get('subhave')
     if ( have==ritual.page and
@@ -92,13 +93,20 @@ async def status(req):
         for key in ['background', 'bkZoom', 'bkZoomCenter']:
             if key in data:
                 results[key] = data[key]
+
+        results['twilioAudioEnabled'] = data.get('twilioAudioEnabled', False);
                 
         results['page'] = ritual.page
         
     if ritual.state:
-        results.update(ritual.state.to_client(req.query.get('clientId'), req.query.get('internalhave')))
+        results.update(ritual.state.to_client(clientId, req.query.get('internalhave')))
     if hasattr(ritual,'participants'):
         results['participants'] = [ {'name':users[p].name, 'img':'/avatar/%s.png'%p} for p in ritual.participants ]
+    if hasattr(ritual,'current_video_room'):
+        results['video_token'] = ritual.clients[clientId].video_token
+        results['room'] = ritual.clients[clientId].room
+        results['clients'] = [ { 'id':k, 'room':v.room, 'hj':hasattr(v,'jpg') }
+                               for k,v in ritual.clients.items() ] # TODO: ordering?
     print(results.keys())
     return web.Response(text=json.dumps(results), content_type='application/json')
 

@@ -5,5 +5,6 @@
   "showParticipants": true,
   "rotate": false,
   "bkgAll": true,
-  "lyrics": []
+  "lyrics": [],
+  "justInit": true
 }

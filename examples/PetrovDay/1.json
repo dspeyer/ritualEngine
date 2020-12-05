@@ -1,5 +1,6 @@
 {
     "widget": "BucketSinging",
     "boxColor": "#0000ff",
-    "lyrics": []
+    "lyrics": [],
+    "justInit": true
 }

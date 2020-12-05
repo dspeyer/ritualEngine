@@ -1,5 +1,5 @@
 import {MicEnumerator, openMic, BucketBrigadeContext, SingerClient, VolumeCalibrator, LatencyCalibrator} from './BucketSinging/app.js';
-import { putOnBox, bkgSet, bkgZoom, setMuted } from '../../lib.js';
+import { putOnBox, bkgSet, bkgZoom } from '../../lib.js';
 
 let context = null;
 let client = null;
@@ -139,7 +139,7 @@ export class BucketSinging {
     this.cleanup = cleanup;
     this.background = background_opts;
       
-    this.dbg = $('<div>').css({position: 'absolute',
+    this.dbg = $('<div>').css({position: 'absolute', display:'none',
                                left: '0',
                                top: '30vh',
                                background: 'white',
@@ -216,14 +216,17 @@ export class BucketSinging {
     $.post('widgetData', {calibrationFail, clientId, islead});
   }
 
-  async from_server({mark_base, slot, ready, backing_track, dbginfo}) {
+  async from_server({mark_base, slot, ready, backing_track, dbginfo, justInit}) {
     this.dbg.append(dbginfo+' ready='+ready).append($('<br>'));
     if (!ready || !client) return;
     if (this.slot === slot) return;
+    if (justInit) {
+      this.destroy();
+      return;
+    }
     this.slot = slot;
     client.micMuted = false;
     client.speakerMuted = false;
-    setMuted(true);
     let offset = (slot+1) * 3;
     client.change_offset(offset);
     this.dbg.append('slot '+slot+' -> offset '+offset).append($('<br>'));
@@ -302,7 +305,6 @@ export class BucketSinging {
     }
     this.div.remove();
     if (this.video_div) this.video_div.remove();
-    setMuted(false);
   }
   
 }
