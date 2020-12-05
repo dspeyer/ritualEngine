@@ -169,7 +169,6 @@ function fillAsSimpleAuditorium(div, n) {
 }
 
 function fillAsAuditorium(div, n) {
-    console.log(div, n)
     let h = div.height();
     let chat_width = 250
     let w = Math.min(div.width(), window.innerWidth) - chat_width;
