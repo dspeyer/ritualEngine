@@ -1,5 +1,6 @@
 from os import path
 import json
+from datetime import datetime, timedelta
 from asyncio import create_task, sleep, CancelledError
 
 from aiohttp import web
@@ -47,6 +48,7 @@ async def status(req):
         return web.Response(status=404)
     ritual = active[name]
     clientId = req.query.get('clientId')
+    ritual.clients[clientId].lastSeen = datetime.now()
     have = int(req.query.get('have'))
     subhave = req.query.get('subhave')
     if ( have==ritual.page and
@@ -103,8 +105,10 @@ async def status(req):
     if hasattr(ritual,'current_video_room'):
         results['video_token'] = ritual.clients[clientId].video_token
         results['room'] = ritual.clients[clientId].room
+        seenThresh = datetime.now() - timedelta(seconds=30)
         results['clients'] = [ { 'id':k, 'room':v.room, 'hj':hasattr(v,'jpg') }
-                               for k,v in ritual.clients.items() ] # TODO: ordering?
+                               for k,v in ritual.clients.items()
+                               if v.lastSeen > seenThresh] # TODO: ordering?
     print(results.keys())
     return web.Response(text=json.dumps(results), content_type='application/json')
 
