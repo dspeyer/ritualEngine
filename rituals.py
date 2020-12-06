@@ -62,7 +62,7 @@ async def ritualPage(req):
     clientId = random_token()
     active[name].clients[clientId] = struct(
         chatQueue=asyncio.Queue(),
-        lastSeen=datetime.now()
+        lastSeen=datetime.now(),
         isStreamer=('streamer' in req.query),
     )
     for datum in active[name].allChats[-50:]:
