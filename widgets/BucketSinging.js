@@ -127,7 +127,7 @@ export class BucketSinging {
   constructor({boxColor, lyrics, background_opts, backing_track, videoUrl, leader, mark_base, justInit}) {
     this.isLead = leader ? document.cookie.indexOf(leader) != -1 : window.location.pathname.endsWith('lead');
     this.div = $('<div>').appendTo($('body'));
-    this.video_div = $('<div>').css('z-index',-1).appendTo($('body'));
+    this.video_div = $('<div class="bucket-video">').css('z-index',-1).appendTo($('body'));
     putOnBox([this.div, this.video_div], boxColor);
     this.lyrics = lyrics;
     this.background = background_opts;
