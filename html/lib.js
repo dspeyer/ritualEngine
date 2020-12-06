@@ -196,7 +196,7 @@ function fillAsAuditorium(div, n) {
     let ps=[];
     let r = r0;
     let y = h-r;
-    let br = 0;
+    let br = 50;
     for (let rn of rows) {
         let xs = w/rn;
         let x = xs / 2;
@@ -206,7 +206,7 @@ function fillAsAuditorium(div, n) {
         }
         y -= (2 - br/200 - 0.25) * r; // TODO: make the Y's still add up with this extra spacing
         r *= 2/3;
-        br = Math.min(br+20,50);
+        br = 50 //Math.min(br+20,50);
     }
     div.empty();
     return ps.map(putcircle.bind(null,div));
