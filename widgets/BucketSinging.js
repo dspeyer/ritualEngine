@@ -68,7 +68,7 @@ async function initClient() {
   await new Promise((res)=>{button.on('click',res);});
   
   div.empty();
-  div.append('<p>Beeping... </p>');
+  div.append("<p>Beeping... (hold your speakers near mic [near escape key for macbooks] if it's not registering)</p>");
   div.append('Beeps heard: ');
   let heard = $('<span>').appendTo(div);
   div.append($('<br><br>'));
