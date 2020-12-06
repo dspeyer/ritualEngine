@@ -119,7 +119,7 @@ async function initClient() {
 }
 
 export class BucketSinging {
-  constructor({boxColor, lyrics, background_opts, backing_track, videoUrl, leader, justInit}) {
+  constructor({boxColor, lyrics, background_opts, backing_track, videoUrl, leader, mark_base, justInit}) {
     this.isLead = leader ? document.cookie.indexOf(leader) != -1 : window.location.pathname.endsWith('lead');
     this.div = $('<div>').appendTo($('body'));
     this.video_div = $('<div>').css('z-index',-1).appendTo($('body'));
@@ -127,6 +127,7 @@ export class BucketSinging {
     this.lyrics = lyrics;
     this.background = background_opts;
     this.backing_track = backing_track;
+    this.mark_base = mark_base;
     this.justInit = justInit;
       
     this.dbg = $('<div>').css({position: 'absolute', display:'none',
@@ -220,10 +221,10 @@ export class BucketSinging {
       this.div.css('cursor','pointer');
       let cur = 0;
       this.div.on('click',async ()=>{
-        client.declare_event(mark_base+cur);
+        client.declare_event(this.mark_base+cur);
         if (cur == 0) {
           for (let i=1; i<=4; i++) {
-            client.declare_event(mark_base-i, i);
+            client.declare_event(this.mark_base-i, i);
           }
         }
         await this.handleLyric(cur);
@@ -231,7 +232,7 @@ export class BucketSinging {
       });
     } else {
       client.event_hooks.push( async (lid)=>{
-        await this.handleLyric(lid-mark_base);
+        await this.handleLyric(lid-this.mark_base);
       });
     }
   }
