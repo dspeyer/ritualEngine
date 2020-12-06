@@ -100,7 +100,12 @@ async def ritualPage(req):
                                  ratio=str(active[name].ratio),
                                  islead=str(islead).lower(),
                                  bkgAll=str(active[name].bkgAll).lower(),
-                                 rotate=str(active[name].rotate).lower()),
+                                 rotate=str(active[name].rotate).lower(),
+                                 videos=''.join(
+                                     f'<video class="hidden" src="{video}" muted playsinline preload="auto"></video>'
+                                     for video in active[name].videos
+                                 )
+                        ),
                         content_type='text/html', charset='utf8')
 
 async def nextOrPrevPage(req):
@@ -191,6 +196,7 @@ async def mkRitual(req):
     opts = json.loads(open('examples/%s/index.json'%script).read())
     print("very good")
     livestreams = {}
+    videos = set()
     timestamp = datetime.now(timezone.utc).isoformat()
     async with ClientSession() as session:
         for slide_path in glob(f'examples/{script}/*.json'):
@@ -237,6 +243,8 @@ async def mkRitual(req):
                     headers=wowza_auth_headers,
                     ) as resp:
                     resp.raise_for_status()
+            elif slide['widget'] == 'BucketSinging' and 'videoUrl' in slide:
+                videos.add(slide['videoUrl'])
         async def livestream_started(livestream_id):
             async with session.get(
                 f"https://api.cloud.wowza.com/api/v1.6/live_streams/{livestream_id}/state",
@@ -256,7 +264,7 @@ async def mkRitual(req):
                 await asyncio.sleep(1)
     active[name] = Ritual(script=script, reqs={}, state=None, page=page, background=opts['background'],
                           bkgAll=opts.get('bkgAll',False), ratio=opts.get('ratio',16/9), rotate=opts.get('rotate',True),
-                          jpgs=[defaultjpg], jpgrats=[1], clients={}, allChats=[], livestreams=livestreams)
+                          jpgs=[defaultjpg], jpgrats=[1], clients={}, allChats=[], livestreams=livestreams, videos=videos)
     if opts['showParticipants'] == 'avatars':
         active[name].participants = []
     elif opts['showParticipants'] == 'video':

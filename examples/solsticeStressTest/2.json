@@ -40,6 +40,8 @@
     "Hallelujah, Hallelujah",
     "Hallelujah, Hallelujah",
     "Hallelujah, Hallelujah"
-  ]
+  ],
+  "backing": "hallelujah-backing-track.wav",
+  "videoUrl": "https://solstice2020media.s3-us-west-1.amazonaws.com/hallelujah-silent-medium.mp4"
 }
   
