@@ -198,7 +198,7 @@ export class BucketSinging {
 
   get_slot() {
     if (!calibrationSuccess) return 2
-    return getRandomInt(3)
+    return this.getRandomInt(3)
   }
 
   onClientReady() {
@@ -209,7 +209,7 @@ export class BucketSinging {
     this.show_lyrics();
     client.micMuted = false;
     client.speakerMuted = false;
-    let slot = get_slot()
+    let slot = this.get_slot()
     let offset = (slot+1) * 3;
     client.change_offset(offset);
     this.dbg.append('slot '+slot+' -> offset '+offset).append($('<br>'));
