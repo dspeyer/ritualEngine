@@ -49,7 +49,7 @@ let contextReadyPromise = micAcknowledgedPromise.then(async () => {
 });
 
 async function initClient() {
-  let div = $('<div>').css({background:'rgba(0.5, 0.5, 0.5, 1)',
+  let div = $('<div id="calibrator-popup">').css({background:'rgba(0.5, 0.5, 0.5, 1)',
                             fontSize: '14pt',
                             textShadow: '0 0 1px black',
                             paddingLeft: 16,
@@ -280,6 +280,7 @@ export class BucketSinging {
     }
     this.div.remove();
     this.video_div.remove();
+    $('#calibrator-popup').remove();
   }
   
 }
