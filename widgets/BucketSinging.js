@@ -116,7 +116,6 @@ async function initClient() {
   client = new SingerClient({context, apiUrl,
                              offset: 42, // We'll change this before doing anything
                              username:clientId, secretId:Math.round(Math.random()*1e6)}); // TODO: understand these
-    await context.start_bucket();
 }
 
 export class BucketSinging {
