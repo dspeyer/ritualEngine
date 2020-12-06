@@ -3,6 +3,10 @@ import { putOnBox, bkgSet, bkgZoom } from '../../lib.js';
 
 let context = null;
 let client = null;
+let clientResolve;
+let clientPromise = new Promise((resolve) => {
+  clientResolve = resolve;
+});
 let calibrationFail = false;
 let mysteryInitPromise = null;
 let cssInit = false;
@@ -115,6 +119,7 @@ async function initContext(server_url, video) {
   client = new SingerClient({context, apiUrl,
                              offset: 42, // We'll change this before doing anything
                              username:clientId, secretId:Math.round(Math.random()*1e6)}); // TODO: understand these
+  clientResolve(client);
   await new Promise((res)=>{ client.addEventListener('connectivityChange',res); });
   mysteryInitPromise = new Promise((res)=>{setTimeout(res,2000);});
 }
@@ -145,54 +150,48 @@ export class BucketSinging {
       cssInit = true;
     }
     
-    if (videoUrl) {
-      this.video = $(`video[src='${videoUrl}']`);
-      this.video.removeClass('hidden').addClass('bbs-video').css({opacity: 0}).prependTo(this.video_div);
-    }
-      
     if ( ! context) {
       let button = $('<input type="button" class="initialize-button" value="Click here to Initialize Singing">').appendTo(this.div);
       button.on('click', ()=>{
         button.remove();
         initContext(server_url, this.video).then(()=>{
-          this.init_video();
           this.show_lyrics(lyrics);
           this.declare_ready(islead);
         });
       });
     } else {
-      this.init_video();
       this.show_lyrics(lyrics);
       this.declare_ready(islead);
     }
-  }
 
-  init_video() {
-    if (!this.video) {
-      return;
+    if (videoUrl) {
+      this.video = $(`video[src='${videoUrl}']`);
+      this.video.removeClass('hidden').addClass('bbs-video').css({opacity: 0}).prependTo(this.video_div);
+      clientPromise.then(() => {
+        this.markReachedListener = async ({detail: {data}}) => {
+          if (data !== 'backingTrackStart') {
+            return;
+          }
+          client.removeEventListener('markReached', this.markReachedListener);
+          delete this.markReachedListener;
+          this.video.animate({opacity: 1}, 500);
+          let videoElem = this.video[0];
+          videoElem.play();
+          this.metadataReceivedListener = ({detail: {metadata}}) => {
+            let elapsedAudioSeconds = (metadata.client_read_clock - metadata.song_start_clock) / metadata.server_sample_rate;
+            console.log(`Sync Status: audio = ${elapsedAudioSeconds}, video = ${videoElem.currentTime}`);
+            if (Math.abs(elapsedAudioSeconds - videoElem.currentTime) > 0.1) {
+              videoElem.currentTime = elapsedAudioSeconds;
+            }
+          };
+          client.addEventListener('x_metadataReceived', this.metadataReceivedListener);
+        };
+        client.addEventListener('markReached', this.markReachedListener);
+      });
     }
-    this.markReachedListener = async ({detail: {data}}) => {
-      if (data !== 'backingTrackStart') {
-        return;
-      }
-      client.removeEventListener('markReached', this.markReachedListener);
-      delete this.markReachedListener;
-      this.video.animate({opacity: 1}, 500);
-      let videoElem = this.video[0];
-      videoElem.play();
-      this.metadataReceivedListener = ({detail: {metadata}}) => {
-        let elapsedAudioSeconds = (metadata.client_read_clock - metadata.song_start_clock) / metadata.server_sample_rate;
-        console.log(`Sync Status: audio = ${elapsedAudioSeconds}, video = ${videoElem.currentTime}`);
-        if (Math.abs(elapsedAudioSeconds - videoElem.currentTime) > 0.1) {
-          videoElem.currentTime = elapsedAudioSeconds;
-        }
-      };
-      client.addEventListener('x_metadataReceived', this.metadataReceivedListener);
-    };
-    client.addEventListener('markReached', this.markReachedListener);
   }
-
-  show_lyrics(lyrics) {
+    
+show_lyrics(lyrics) {
     this.div.addClass('lyrics');
     this.lyricEls = {};
     this.countdown = $('<div>').css('text-align','center').appendTo(this.div);
