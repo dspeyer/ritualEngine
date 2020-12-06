@@ -39,6 +39,21 @@ let backingTrackStartedPromise = new Promise((res) => {
   backingTrackStartedRes = res;
 });
 
+const calibrationMessage1 = "<p>First we'll measure the <b>latency</b> of your audio hardware.</p><p>Please turn your volume to max and put your headphones where your microphone can hear them.  Or get ready to tap your microphone in time to the beeps.</p><br>"
+
+async function rayInitContext(server_url){
+  let mics = await (new MicEnumerator()).mics();
+  let mic = mics[0]; // TODO: be smarter?
+  let micStream = await openMic(mic.deviceId);
+  context = new BucketBrigadeContext({micStream});
+  await context.start_bucket();
+
+  let div = $('<div class="bucket-panel">').appendTo($('body'));
+  div.append(calibrationMessage1);
+  let button = $('<input type=button>').attr('value',"I'm ready: Start the LOUD beeping!").appendTo(div);
+  await new Promise((res)=>{button.on('click',res);});
+}
+
 async function initContext(server_url){
   let mics = await (new MicEnumerator()).mics();
   let mic = mics[0]; // TODO: be smarter?
@@ -59,9 +74,7 @@ async function initContext(server_url){
                             right: '20vw',
                             border: '2px outset #777'})
                       .appendTo($('body'));
-  div.append("<p>First we'll measure the <b>latency</b> of your audio hardware.</p><p>Please turn your volume to max and put your "+
-             "headphones where your microphone can hear them.  Or get ready to tap your microphone in time to the beeps.</p>");
-  div.append($('<br>'));
+  div.append(calibrationMessage1);
   let button = $('<input type=button>').attr('value',"I'm ready: Start the LOUD beeping!").appendTo(div);
   await new Promise((res)=>{button.on('click',res);});
   

@@ -152,6 +152,22 @@ function fillAsReaderQueue(div, n) {
     return ps.map(putcircle.bind(null,div));
 }
 
+function putSimpleAvatar(d) {
+    let div = $('<div class="simple-avatar">').appendTo(d);
+    div.img = $('<img class="simple-avatar-image">').appendTo(div);
+    div.video = $('<video class="simple-avatar-video">').appendTo(div);
+    div.video.hide();
+    return div
+}
+
+function fillAsSimple(div, n) {
+    let ps = []
+    for (let r=0; r<n; r++) {
+        ps.push({})
+    }
+    return ps.map(putSimpleAvatar.bind(null,div));
+}
+
 function fillAsAuditorium(div, n) {
     let h = div.height();
     let w = Math.min(div.width(), window.innerWidth);
@@ -206,7 +222,7 @@ function putcircle(d,{x,y,r,label,z,br}) {
     let left = Math.round(x-r) + 1 + 'px';
     let top = Math.round(y-r) + 1 + 'px';
     let div = $('<div>').css({position:'absolute', width: s, height: s, left, top,
-                              border: '1px rgba(255,255,255,0.7) solid'})
+                              border: '1px rgba(255,255,255,0.5) solid'})
                         .appendTo(d);
     if (z) div.css('z-index', z);
     if (br) div.css({borderRadius: br+'%', overflow: 'hidden'});
@@ -322,35 +338,40 @@ let twilioAudioEnabled = false;
 let hasAudioTrack = {};
 
 export async function twilioConnect(token, roomId) {
-    if (roomId == currentRoomId) return;
-    if (room) room.disconnect();
-    currentRoomId = roomId;
-    localVideo = await Twilio.Video.createLocalVideoTrack({ width: 100, height: 100 });
-    room = await Twilio.Video.connect(token, { name: roomId, tracks: [localVideo] });
-    console.log('connected to room '+roomId);
-    addEventListener('beforeunload', () => {
-        room.disconnect();
-    });
-    room.on('trackUnsubscribed', (track) => {
-        $(track.detach()).remove();
-    });
-    room.on('trackSubscribed', (track, publication, participant) => {
-        if (publication.kind == 'video') {
-            if (participant.identity in videosToPlace) {
-                putVideoInCircle(videosToPlace[participant.identity], track, participant.identity);
-            }
-        }
-        if (publication.kind == 'audio' && twilioAudioEnabled) {
-            hasAudioTrack[participant.identity] = true;
-            $(track.attach()).appendTo($('body'));
-            for (let circle of curCircles) {
-                if (circle.videoOf == participant.identity) {
-                    circle.css({opacity:1});
+    try {
+        if (roomId == currentRoomId) return;
+        if (room) room.disconnect();
+        currentRoomId = roomId;
+        localVideo = await Twilio.Video.createLocalVideoTrack({ width: 100, height: 100 });
+        console.log("localVideo", localVideo)
+        room = await Twilio.Video.connect(token, { name: roomId, tracks: [localVideo] });
+        console.log('connected to room '+roomId);
+        addEventListener('beforeunload', () => {
+            room.disconnect();
+        });
+        room.on('trackUnsubscribed', (track) => {
+            $(track.detach()).remove();
+        });
+        room.on('trackSubscribed', (track, publication, participant) => {
+            if (publication.kind == 'video') {
+                if (participant.identity in videosToPlace) {
+                    putVideoInCircle(videosToPlace[participant.identity], track, participant.identity);
                 }
             }
-        }
-    });
-    attachAllVideos();
+            if (publication.kind == 'audio' && twilioAudioEnabled) {
+                hasAudioTrack[participant.identity] = true;
+                $(track.attach()).appendTo($('body'));
+                for (let circle of curCircles) {
+                    if (circle.videoOf == participant.identity) {
+                        circle.css({opacity:1});
+                    }
+                }
+            }
+        });
+        attachAllVideos();
+    } catch (err) {
+        console.log(err)
+    }
 }
 
 let localAudioTrack = null;
