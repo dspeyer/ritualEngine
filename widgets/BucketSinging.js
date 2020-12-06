@@ -197,6 +197,7 @@ export class BucketSinging {
   }
 
   get_slot() {
+    if (this.isLead) return 0
     if (!calibrationSuccess) return 2
     return this.getRandomInt(3)
   }
