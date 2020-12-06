@@ -47,20 +47,20 @@ async function initContext(server_url, video) {
   context = new BucketBrigadeContext({micStream});
   await context.start_bucket();
 
-  let div = $('<div>').css({background:'rgba(0.5, 0.5, 0.5, .5)',
+  let div = $('<div>').css({background:'rgba(0.5, 0.5, 0.5, 1)',
                             fontSize: '14pt',
                             textShadow: '0 0 1px black',
                             paddingLeft: 16,
                             paddingRight: 16,
                             position: 'absolute',
-                            top: 'calc( 50vh - 8em )',
+                            top: '20vh',
                             height: '16em',
                             left: '15vw',
                             right: '300px',
                             border: '2px outset #777'})
                       .appendTo($('body'));
   div.append("<p>First we'll measure the <b>latency</b> of your audio hardware.</p><p>Please turn your volume to max and put your "+
-             "headphones where your microphone can hear them.  Or get ready to tap your microphone in time to the beeps.</p>");
+             "headphones where your microphone can hear them. (On Macbooks this is near the escape key) Or get ready to tap your microphone in time to the beeps.</p>");
   div.append($('<br>'));
   let button = $('<input type=button>').attr('value',"I'm ready: Start the LOUD beeping!").appendTo(div);
   await new Promise((res)=>{button.on('click',res);});
