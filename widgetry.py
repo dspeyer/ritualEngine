@@ -67,11 +67,9 @@ async def status(req):
     results={}
     if ritual.page != have:
         fn = 'examples/%s/%d.svg'%(ritual.script,ritual.page)
-        if path.exists(fn):
-            svg = open(fn).read()
-            results['svg'] = svg
-        else:
-            results['error'] = 'no background'
+        # TODO(#27): Make the error nonfatal if the file doesn't exist
+        svg = open(fn).read()
+        results['svg'] = svg
 
         fn = 'examples/%s/%d.json'%(ritual.script,ritual.page)
         if path.exists(fn):
