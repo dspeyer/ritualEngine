@@ -207,7 +207,7 @@ export class BucketSinging {
     return this.getRandomInt(3)
   }
 
-  onClientReady() {
+  async onClientReady() {
     if (this.justInit) {
       this.destroy();
       return;
@@ -220,6 +220,7 @@ export class BucketSinging {
     client.change_offset(offset);
     this.dbg.append('slot '+slot+' -> offset '+offset).append($('<br>'));
     if (this.isLead) {
+      await new Promise((res)=>{setTimeout(res,2000);}); // TODO: understand why we need this and make it so we don't
       if (this.backing_track) {
         this.dbg.append('bt='+this.backing_track).append($('<br>'));
         client.x_send_metadata("backingTrack", this.backing_track);
