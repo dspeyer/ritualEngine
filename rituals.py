@@ -1,6 +1,7 @@
 import asyncio
 from glob import glob
 import json
+from datetime import datetime
 
 from aiohttp import web
 import numpy as np
@@ -47,7 +48,7 @@ async def ritualPage(req):
             res.set_cookie('LastRitual', name)
             return res
     clientId = random_token()
-    active[name].clients[clientId] = struct(chatQueue=asyncio.Queue())
+    active[name].clients[clientId] = struct(chatQueue=asyncio.Queue(), lastSeen=datetime.now())
     for datum in active[name].allChats[-50:]:
         active[name].clients[clientId].chatQueue.put_nowait(datum)
     if hasattr(active[name], 'current_video_room'):
