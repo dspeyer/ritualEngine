@@ -68,7 +68,7 @@ async function initClient() {
   await new Promise((res)=>{button.on('click',res);});
   
   div.empty();
-  div.append('<p>Beeping...</p>');
+  div.append("<p>Beeping... </p>");
   div.append('Beeps heard: ');
   let heard = $('<span>').appendTo(div);
   div.append($('<br><br>'));
@@ -192,6 +192,15 @@ export class BucketSinging {
 
   async from_server() {}
 
+  getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+  }
+
+  get_slot() {
+    if (!calibrationSuccess) return 2
+    return getRandomInt(3)
+  }
+
   onClientReady() {
     if (this.justInit) {
       this.destroy();
@@ -200,7 +209,7 @@ export class BucketSinging {
     this.show_lyrics();
     client.micMuted = false;
     client.speakerMuted = false;
-    let slot = this.isLead ? 0 : (calibrationSuccess ? 1 : 2);
+    let slot = get_slot()
     let offset = (slot+1) * 3;
     client.change_offset(offset);
     this.dbg.append('slot '+slot+' -> offset '+offset).append($('<br>'));
