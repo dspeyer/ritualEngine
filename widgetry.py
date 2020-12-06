@@ -13,7 +13,7 @@ from widgets.CrossWords import CrossWords
 from widgets.BucketSinging import BucketSinging
 from widgets.Trivia import Trivia
 from widgets.CircleFlames import CircleFlames
-from widgets.Youtube import Youtube
+from widgets.Livestream import Livestream
 
 async def lib(req):
     return web.Response(body=open('html/lib.js').read(), content_type='text/javascript')
@@ -69,11 +69,9 @@ async def status(req):
     results={}
     if ritual.page != have:
         fn = 'examples/%s/%d.svg'%(ritual.script,ritual.page)
-        if path.exists(fn):
-            svg = open(fn).read()
-            results['svg'] = svg
-        else:
-            results['error'] = 'no background'
+        # TODO(#27): Make the error nonfatal if the file doesn't exist
+        svg = open(fn).read()
+        results['svg'] = svg
 
         fn = 'examples/%s/%d.json'%(ritual.script,ritual.page)
         if path.exists(fn):
@@ -88,7 +86,7 @@ async def status(req):
 
         if 'widget' in data and not ritual.state:
             widget = globals()[data['widget']]
-            ritual.state = widget(ritual=ritual, **data)
+            ritual.state = widget(ritual=ritual, page=ritual.page, **data)
             if hasattr(ritual.state,'async_init'):
                 await ritual.state.async_init()
 

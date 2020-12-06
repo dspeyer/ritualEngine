@@ -152,6 +152,22 @@ function fillAsReaderQueue(div, n) {
     return ps.map(putcircle.bind(null,div));
 }
 
+function putSimpleAvatar(d) {
+    let div = $('<div class="simple-avatar">').appendTo(d);
+    div.img = $('<img class="simple-avatar-image">').appendTo(div);
+    div.video = $('<video class="simple-avatar-video">').appendTo(div);
+    div.video.hide();
+    return div
+}
+
+function fillAsSimple(div, n) {
+    let ps = []
+    for (let r=0; r<n; r++) {
+        ps.push({})
+    }
+    return ps.map(putSimpleAvatar.bind(null,div));
+}
+
 function fillAsAuditorium(div, n) {
     let h = div.height();
     let w = Math.min(div.width(), window.innerWidth);
@@ -180,7 +196,7 @@ function fillAsAuditorium(div, n) {
     let ps=[];
     let r = r0;
     let y = h-r;
-    let br = 0;
+    let br = 50;
     for (let rn of rows) {
         let xs = w/rn;
         let x = xs / 2;
@@ -190,7 +206,7 @@ function fillAsAuditorium(div, n) {
         }
         y -= (2 - br/200 - 0.25) * r; // TODO: make the Y's still add up with this extra spacing
         r *= 2/3;
-        br = Math.min(br+20,50);
+        br = 50 //Math.min(br+20,50);
     }
     div.empty();
     return ps.map(putcircle.bind(null,div));
@@ -206,7 +222,7 @@ function putcircle(d,{x,y,r,label,z,br}) {
     let left = Math.round(x-r) + 1 + 'px';
     let top = Math.round(y-r) + 1 + 'px';
     let div = $('<div>').css({position:'absolute', width: s, height: s, left, top,
-                              border: '1px rgba(255,255,255,0.7) solid'})
+                              border: '1px rgba(255,255,255,0.5) solid'})
                         .appendTo(d);
     if (z) div.css('z-index', z);
     if (br) div.css({borderRadius: br+'%', overflow: 'hidden'});

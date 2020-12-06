@@ -4,13 +4,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
   <g enable-background="new" font-family="Georgia" fill="white">
     <text y="75" x="360" font-size="50" font-family="Georgia" fill="white" text-anchor="middle">
-        Secular Solstice
+        Solstice Stress Test
     </text>
-    <g font-size="16" >
-      <text y="200" x="40">
-        Welcome! Before entering the lobby, please calibrate our singing app!
-      </text>
-    </g>
-    <path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#000000" d="M 22278 70330 L 343482 70330 L 343482 202066 L 22278 202066 Z "/>
+    <text y="150" x="50" font-size="15" font-family="Georgia" fill="white">
+        Welcome! For best experience:
+    </text>
+    <text y="175" x="50" font-size="15" font-family="Georgia" fill="white" >
+        • Close other videoconferencing software (Zoom, etc may interfere with solstice)
+    </text>
+    <text y="200" x="50" font-size="15" font-family="Georgia" fill="white" >
+        • Use either a <tspan font-style="italic">wired</tspan> headset (preferably), or <tspan font-style="italic">no</tspan> headset. (No bluetooth)
+    </text>
+    <text y="225" x="50" font-size="15" font-family="Georgia" fill="white" >
+        • Close other browser tabs
+    </text>
+    <!-- <rect y="100" width="700" height="700" fill="rgba(0,255,0,.5)"/> -->
+    <path stroke="#000000" d="M 50 250 L 50 750 L 750 750 L 800 250 Z" fill="none">
+    </path>
+    <!-- <path transform="matrix(.0018,0,0,.0024,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#000000" d="M 22278 70330 L 343482 70330 L 343482 202066 L 22278 202066 Z "/> -->
   </g>
 </svg>
