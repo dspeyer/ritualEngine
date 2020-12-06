@@ -224,6 +224,7 @@
             </div>
         </div>
         <script>
+         window.bucketServerUrl = '%bucketServerUrl%';
          if (%islead%) {
              $('#ctrls').show();
              $('#prev').click(()=>{ $.post('prevPage'); });
