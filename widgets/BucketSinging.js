@@ -39,7 +39,7 @@ let backingTrackStartedPromise = new Promise((res) => {
   backingTrackStartedRes = res;
 });
 
-async function initContext(server_url){
+async function initContext(server_url, video) {
   let mics = await (new MicEnumerator()).mics();
   let mic = mics[0]; // TODO: be smarter?
   console.log('Chose mic: ',mic);
@@ -115,17 +115,12 @@ async function initContext(server_url){
   client = new SingerClient({context, apiUrl,
                              offset: 42, // We'll change this before doing anything
                              username:clientId, secretId:Math.round(Math.random()*1e6)}); // TODO: understand these
-  client.addEventListener('markReached', async ({detail: {data}}) => {
-    if (data === 'backingTrackStart') {
-      backingTrackStartedRes();
-    }
-  });
   await new Promise((res)=>{ client.addEventListener('connectivityChange',res); });
   mysteryInitPromise = new Promise((res)=>{setTimeout(res,2000);});
 }
 
 export class BucketSinging {
-  constructor({boxColor, lyrics, cleanup, background_opts, videoId, leader, server_url}) {
+  constructor({boxColor, lyrics, cleanup, background_opts, videoUrl, leader, server_url}) {
     let islead;
     if (leader) {
       islead = (document.cookie.indexOf(leader) != -1);
@@ -150,58 +145,53 @@ export class BucketSinging {
       cssInit = true;
     }
     
-    if (videoId) {
-      this.init_video(videoId); // Async, we'll wait if we need to
+    if (videoUrl) {
+      this.video = $(`video[src='${videoUrl}']`);
+      this.video.removeClass('hidden').addClass('bbs-video').css({opacity: 0}).prependTo(this.video_div);
     }
       
     if ( ! context) {
       let button = $('<input type="button" class="initialize-button" value="Click here to Initialize Singing">').appendTo(this.div);
       button.on('click', ()=>{
         button.remove();
-        initContext(server_url).then(()=>{
+        initContext(server_url, this.video).then(()=>{
+          this.init_video();
           this.show_lyrics(lyrics);
           this.declare_ready(islead);
         });
       });
     } else {
+      this.init_video();
       this.show_lyrics(lyrics);
       this.declare_ready(islead);
     }
   }
 
-  async init_video(videoId) {
-    await window.youTubeReadyPromise;
-    let holder = $('<div><div id=bbs_video style="margin:auto;display:block;"></div></div>')
-      .css({position: 'sticky', zIndex:-999, opacity:0})
-      .prependTo(this.video_div);
-    let player;
-    await new Promise((res) => {
-      player = new YT.Player('bbs_video', {
-        videoId,
-        events: {
-          'onReady':()=>{console.log('YYYYYYYes Im ready!!!!');res();},
-          'onStateChange':(event)=>{
-            if (event.data == YT.PlayerState.ENDED) {
-              holder.css('opacity', 0);
-            }
-          }
-        }
-      });
-    });
-    this.dbg.append('vids initted').append($('<br>'));
-    await backingTrackStartedPromise;
-    holder.animate({opacity: 1}, 500);
-    player.playVideo();
-    client.addEventListener("x_metadataReceived", ({detail: {metadata}}) => {
-      let elapsedAudioSeconds = (metadata.client_read_clock - metadata.song_start_clock) / metadata.server_sample_rate;
-      console.log(`Sync Status: audio = ${elapsedAudioSeconds}, video = ${player.getCurrentTime()}`);
-      if (Math.abs(elapsedAudioSeconds - player.getCurrentTime()) > 0.1) {
-        player.seekTo(elapsedAudioSeconds, /* allowSeekAhead= */ true);
+  init_video() {
+    if (!this.video) {
+      return;
+    }
+    this.markReachedListener = async ({detail: {data}}) => {
+      if (data !== 'backingTrackStart') {
+        return;
       }
-    });
+      client.removeEventListener('markReached', this.markReachedListener);
+      delete this.markReachedListener;
+      this.video.animate({opacity: 1}, 500);
+      let videoElem = this.video[0];
+      videoElem.play();
+      this.metadataReceivedListener = ({detail: {metadata}}) => {
+        let elapsedAudioSeconds = (metadata.client_read_clock - metadata.song_start_clock) / metadata.server_sample_rate;
+        console.log(`Sync Status: audio = ${elapsedAudioSeconds}, video = ${videoElem.currentTime}`);
+        if (Math.abs(elapsedAudioSeconds - videoElem.currentTime) > 0.1) {
+          videoElem.currentTime = elapsedAudioSeconds;
+        }
+      };
+      client.addEventListener('x_metadataReceived', this.metadataReceivedListener);
+    };
+    client.addEventListener('markReached', this.markReachedListener);
   }
 
-  
   show_lyrics(lyrics) {
     this.div.addClass('lyrics');
     this.lyricEls = {};
@@ -303,8 +293,17 @@ export class BucketSinging {
       client.micMuted = true;
       client.speakerMuted = true;
     }
+    if (this.video) {
+      this.video.removeClass('bbs-video').addClass('hidden').appendTo(document.body);
+      if (this.markReachedListener) {
+        client.removeEventListener('markReached', this.markReachedListener);
+      }
+      if (this.metadataReceivedListener) {
+        client.removeEventListener('x_metadataReceived', this.metadataReceivedListener);
+      }
+    }
     this.div.remove();
-    if (this.video_div) this.video_div.remove();
+    this.video_div.remove();
   }
   
 }

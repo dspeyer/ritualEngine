@@ -20,15 +20,9 @@
         </script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://webrtchacks.github.io/adapter/adapter-latest.js"></script>
-        <script src="https://media.twiliocdn.com/sdk/js/video/releases/2.8.0/twilio-video.min.js"></script>
+        <script src="https://media.twiliocdn.com/sdk/js/video/releases/2.8.0/twilio-video.js"></script>
         <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet">
         <script src="https://vjs.zencdn.net/7.10.2/video.js"></script>
-        <script>
-            window.youTubeReadyPromise = new Promise((resolve) => {
-                window.onYouTubeIframeAPIReady = resolve;
-            });
-        </script>
-        <script async src="https://www.youtube.com/iframe_api"></script>
         <style>
          #everything {
              width: 100vw;
@@ -191,6 +185,15 @@
              color: white;
              text-shadow: 1px 1px 0 black, -1px -1px 0 black;
          }
+         .bbs-video {
+             margin: auto;
+             display: block;
+             position: sticky;
+             z-index: -999;
+         }
+         .hidden {
+             display: none;
+         }
         </style>
     </head>
     <body>
@@ -319,5 +322,6 @@
          }
          askChat();
         </script>
+        %videos%
     </body>
 </html>
