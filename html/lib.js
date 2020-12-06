@@ -240,6 +240,9 @@ export function showParticipantAvatars(participants, video) {
     }
     if (video) {
         videosToPlace = {};
+        let same = participants.filter((x)=>(x.room==currentRoomId));
+        let diff = participants.filter((x)=>(x.room!=currentRoomId));
+        participants = same.concat(diff);
         for (let i in participants) {
             let client = participants[i];
             let cachebuster = client.hj + '_' + Math.round(((new Date()).getTime()+(i*10000))/300000);
