@@ -343,21 +343,26 @@ export async function twilioConnect(token, roomId) {
         if (room) room.disconnect();
         currentRoomId = roomId;
         localVideo = await Twilio.Video.createLocalVideoTrack({ width: 100, height: 100 });
-        console.log("localVideo", localVideo)
         room = await Twilio.Video.connect(token, { name: roomId, tracks: [localVideo] });
         console.log('connected to room '+roomId);
         addEventListener('beforeunload', () => {
             room.disconnect();
         });
+        console.log('RA: added event listener');
         room.on('trackUnsubscribed', (track) => {
             $(track.detach()).remove();
         });
+        console.log('RA: trackUnsubscribed');
         room.on('trackSubscribed', (track, publication, participant) => {
+            console.log('RA: roomOn1');
+
             if (publication.kind == 'video') {
                 if (participant.identity in videosToPlace) {
                     putVideoInCircle(videosToPlace[participant.identity], track, participant.identity);
                 }
             }
+            console.log('RA: roomOn2');
+
             if (publication.kind == 'audio' && twilioAudioEnabled) {
                 hasAudioTrack[participant.identity] = true;
                 $(track.attach()).appendTo($('body'));
@@ -367,8 +372,12 @@ export async function twilioConnect(token, roomId) {
                     }
                 }
             }
+            console.log('RA: roomOn3');
+
         });
+        console.log('RA: after RoomOn');
         attachAllVideos();
+        console.log('RA: after attach all videos')
     } catch (err) {
         console.log(err)
     }

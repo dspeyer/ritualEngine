@@ -188,6 +188,7 @@
                 <input type="button" id="skip" value="‎S">
                 <input type="button" id="next" value="▶">
             </div>
+            <div class="site-errors"></div>
         </div>
         <script>
          if (%islead%) {
@@ -224,12 +225,15 @@
                          $('#svgwrapper svg').attr('width','').attr('height','');
                      }
                      if (data.video_token && data.room) {
+                         console.log("RA: before Twilio connect")
                          let { twilioConnect, setTwilioAudioEnabled } = await import ('../lib.js');
                          console.log(data.clients)
                          await twilioConnect(data.video_token, data.room);
+                         console.log("RA: after Twilio connect")
                          if (data.twilioAudioEnabled !== undefined) {
                              setTwilioAudioEnabled(data.twilioAudioEnabled);
                          }
+                         console.log("RA: after setTwilioAudioEnabled")
                      }
                      if (data.clients) {
                          let { showParticipantAvatars } = await import ('../lib.js');
