@@ -130,11 +130,10 @@ export class BucketSinging {
     this.backing_track = backing_track;
     this.justInit = justInit;
       
-    this.dbg = $('<div>').css({position: 'absolute', display:'none',
+    this.dbg = $('<div>').css({position: 'absolute',
                                left: '0',
                                top: '30vh',
-                               background: 'white',
-                               color: 'black'}).appendTo($('body'));
+                               color: 'white'}).appendTo($('body'));
     this.dbg.append('Debugging info:').append($('<br>'));
     if ( ! cssInit ){
       $('<style>').text(css).appendTo($('head'));
