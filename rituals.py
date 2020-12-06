@@ -62,7 +62,7 @@ async def ritualPage(req):
     clientId = random_token()
     active[name].clients[clientId] = struct(
         chatQueue=asyncio.Queue(),
-        lastSeen=datetime.now()
+        lastSeen=datetime.now(),
         isStreamer=('streamer' in req.query),
     )
     for datum in active[name].allChats[-50:]:
@@ -108,11 +108,7 @@ async def ritualPage(req):
                                      f'<video class="hidden" src="{video}" muted playsinline preload="auto"></video>'
                                      for video in active[name].videos
                                  ),
-                                 bucketServerUrl=(
-                                     PORT_FORWARD_TEMPLATE % active[name].bs_port
-                                     if active[name].bs_port
-                                     else ''
-                                 ),
+                                 bucketServerUrl="/api"
                         ),
                         content_type='text/html', charset='utf8')
 

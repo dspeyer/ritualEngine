@@ -6,6 +6,5 @@
   "rotate": false,
   "bkgAll": true,
   "lyrics": [],
-  "justInit": true,
-  "twilioAudioEnabled": true
+  "justInit": true
 }

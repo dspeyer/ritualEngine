@@ -4,19 +4,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
   <g enable-background="new" font-family="Georgia" fill="white">
     <text y="75" x="360" font-size="50" font-family="Georgia" fill="white" text-anchor="middle">
-        Afterparty
-    </text>
-    <text y="150" x="50" font-size="15" font-family="Georgia" fill="white">
-        Now we can hang out and chat or whatever.
-    </text>
-    <text y="200" x="50" font-size="15" font-family="Georgia" fill="white" >
-        Note: You only expected to hear a subset of the people around you.
-    </text>
-    <text y="220" x="50" font-size="15" font-family="Georgia" fill="white" >
-        You're automatically put into a "room" with up to 26 other people.
-    </text>
-    <text y="240" x="50" font-size="15" font-family="Georgia" fill="white" >
-        Those people should be highlighted.
+        Livestream Testing
     </text>
     <!-- <rect y="100" width="700" height="700" fill="rgba(0,255,0,.5)"/> -->
     <path stroke="#000000" d="M 50 250 L 50 750 L 750 750 L 800 250 Z" fill="none">

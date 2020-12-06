@@ -46,9 +46,9 @@
          }
          .participants {
              width: calc(100vw - 265px);
-             height: 216px;
+             height: 400px;
              position: absolute;
-             bottom: 0;
+             bottom: 5;
              display: flex;
              flex-wrap: wrap-reverse;
              overflow: hidden;
@@ -90,9 +90,24 @@
              font-family: Georgia, 'Times New Roman', Times, serif;
              overflow: hidden;
          }
+         .bucket-video video {
+            width:350px;
+            height:350px;
+            position:relative;
+            left:-350px;
+         }
+
+         .vjs-tech {
+             left: 0 !important;
+             top: 0 !important;
+         }
+         .video-js {
+            left: 0 !important;
+            top: 0 !important;
+         }
          input[type=button], input[type=submit], input[type=reset] {
              padding: 8px;
-             background-color: rgba(255,255,255,.5);
+             background-color: rgba(255,255,255,.75);
              border-radius:3px;
              border:none;
          }
@@ -135,6 +150,10 @@
          .chat-ctrls-sender input{
              font-weight: bold;
 
+         }
+         .medium-button {
+             font-size: 16px;
+             padding: 12px 25px !important;
          }
          input#chat-sender {
             font-size: 8pt;
