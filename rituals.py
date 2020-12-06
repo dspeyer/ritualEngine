@@ -13,6 +13,7 @@ from twilio.jwt.access_token import grants as twilio_grants
 
 from core import app, active, users, tpl, random_token, Ritual, secrets, struct
 from users import connectUserRitual
+from widgets.BucketSinging import launchBBS, PORT_FORWARD_TEMPLATE
 
 defaultimg = np.zeros((64,64,3),'uint8')
 cv2.circle(defaultimg, (32,32), 24, (0,255,255), thickness=-1)
@@ -104,7 +105,12 @@ async def ritualPage(req):
                                  videos=''.join(
                                      f'<video class="hidden" src="{video}" muted playsinline preload="auto"></video>'
                                      for video in active[name].videos
-                                 )
+                                 ),
+                                 bucketServerUrl=(
+                                     PORT_FORWARD_TEMPLATE % active[name].bs_port
+                                     if active[name].bs_port
+                                     else ''
+                                 ),
                         ),
                         content_type='text/html', charset='utf8')
 
@@ -198,6 +204,8 @@ async def mkRitual(req):
     livestreams = {}
     videos = set()
     timestamp = datetime.now(timezone.utc).isoformat()
+    bs_proc = None
+    bs_port = None
     async with ClientSession() as session:
         for slide_path in glob(f'examples/{script}/*.json'):
             filename = path.basename(slide_path)
@@ -243,8 +251,11 @@ async def mkRitual(req):
                     headers=wowza_auth_headers,
                     ) as resp:
                     resp.raise_for_status()
-            elif slide['widget'] == 'BucketSinging' and 'videoUrl' in slide:
-                videos.add(slide['videoUrl'])
+            elif slide['widget'] == 'BucketSinging':
+                if not bs_port:
+                    bs_proc, bs_port = await launchBBS()
+                if 'videoUrl' in slide:
+                    videos.add(slide['videoUrl'])
         async def livestream_started(livestream_id):
             async with session.get(
                 f"https://api.cloud.wowza.com/api/v1.6/live_streams/{livestream_id}/state",
@@ -264,7 +275,8 @@ async def mkRitual(req):
                 await asyncio.sleep(1)
     active[name] = Ritual(script=script, reqs={}, state=None, page=page, background=opts['background'],
                           bkgAll=opts.get('bkgAll',False), ratio=opts.get('ratio',16/9), rotate=opts.get('rotate',True),
-                          jpgs=[defaultjpg], jpgrats=[1], clients={}, allChats=[], livestreams=livestreams, videos=videos)
+                          jpgs=[defaultjpg], jpgrats=[1], clients={}, allChats=[], livestreams=livestreams, videos=videos,
+                          bs_proc=bs_proc, bs_port=bs_port)
     if opts['showParticipants'] == 'avatars':
         active[name].participants = []
     elif opts['showParticipants'] == 'video':
