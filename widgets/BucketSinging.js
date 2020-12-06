@@ -155,7 +155,7 @@ export class BucketSinging {
     }
       
     if ( ! context) {
-      let button = $('<div><h3>Welcome! First, please calibrate your audio.</h3><input type="button" class="initialize-button" value="Click here to Initialize Singing"></div>').appendTo(this.div);
+      let button = $('<input type="button" class="initialize-button" value="Click here to Initialize Singing">').appendTo(this.div);
       button.on('click', ()=>{
         button.remove();
         initContext(server_url).then(()=>{
