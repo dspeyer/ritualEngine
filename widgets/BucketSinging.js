@@ -64,7 +64,7 @@ async function initClient() {
   div.append("<p>First we'll measure the <b>latency</b> of your audio hardware.</p><p>Please turn your volume to max and put your "+
              "headphones where your microphone can hear them. (On Macbooks this is near the escape key) Or get ready to tap your microphone in time to the beeps.</p>");
   div.append($('<br>'));
-  let button = $('<input type=button>').attr('value',"I'm ready: Start the LOUD beeping!").appendTo(div);
+  let button = $('<input type=button class="medium-button">').attr('value',"I'm ready: Start the LOUD beeping!").appendTo(div);
   await new Promise((res)=>{button.on('click',res);});
   
   div.empty();

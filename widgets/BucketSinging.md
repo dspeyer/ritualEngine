@@ -4,7 +4,7 @@ The server spins up a separate BBS server.  The BBS client is then
 downloaded, and the widget here merely commands it.
 
 The BBS server will run on a *different port*, which the main server
-will look for by trying 8081, 8082, etc.  This port must be presented
+will look for by trying "/api".  This port must be presented
 by the reverse proxy using a template described in the environment
 variable `PORT_FORWARD_TEMPLATE` (default `/%d`), rather than as a separate
 port, in order to make relative links work.  As usual, the reverse

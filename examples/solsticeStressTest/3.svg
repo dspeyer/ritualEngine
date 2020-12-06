@@ -9,11 +9,14 @@
     <text y="150" x="50" font-size="15" font-family="Georgia" fill="white">
         Now we can hang out and chat or whatever.
     </text>
-    <text y="175" x="50" font-size="15" font-family="Georgia" fill="white" >
-        You can only hear a subset of the people around you - you're automatically put into a "room"
-    </text>
     <text y="200" x="50" font-size="15" font-family="Georgia" fill="white" >
-        with up to 26 other people
+        Note: You only expected to hear a subset of the people around you.
+    </text>
+    <text y="220" x="50" font-size="15" font-family="Georgia" fill="white" >
+        You're automatically put into a "room" with up to 26 other people.
+    </text>
+    <text y="240" x="50" font-size="15" font-family="Georgia" fill="white" >
+        Those people should be highlighted.
     </text>
     <!-- <rect y="100" width="700" height="700" fill="rgba(0,255,0,.5)"/> -->
     <path stroke="#000000" d="M 50 250 L 50 750 L 750 750 L 800 250 Z" fill="none">
