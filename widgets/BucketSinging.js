@@ -9,6 +9,7 @@ let micAcknowledgedPromise = new Promise((res) => {
 });
 let context = null;
 let client = null;
+let estimator = null;
 let calibrationSuccess;
 let cssInit = false;
 let css = `
@@ -75,13 +76,16 @@ async function initClient() {
   button = $('<input type=button>').attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.").appendTo(div);
   div.append(button);
   calibrationSuccess = await new Promise((res) => {
-    let estimator = new LatencyCalibrator({context, clickVolume:100}); // TODO: gradually increasing clickVolume
+    estimator = new LatencyCalibrator({context, clickVolume:100}); // TODO: gradually increasing clickVolume
     estimator.addEventListener('beep', (ev)=>{
       console.log(ev);
-      if (ev.detail.done) res(true);
+      if (ev.detail.done) {
+        estimator = null;
+        res(true);
+      }
       heard.text(ev.detail.samples);
     });
-    button.on('click', (ev)=>{ estimator.close(); res(false); });
+    button.on('click', (ev)=>{ estimator.close(); estimator = null; res(false); });
   });
   calibrationSuccess = calibrationSuccess && await new Promise(async (res) => {
     div.empty();
@@ -97,11 +101,12 @@ async function initClient() {
     div.append($("<p><i>We're listening...</i></p>"));
     button = $('<input type=button>').attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.").appendTo(div);
     div.append(button);
-    let estimator = new VolumeCalibrator({context});
+    estimator = new VolumeCalibrator({context});
     estimator.addEventListener('volumeCalibrated', () => {
+      estimator = null;
       res(true);
     });
-    button.on('click', (ev)=>{ estimator.close(); res(false); });
+    button.on('click', (ev)=>{ estimator.close(); estimator = null; res(false); });
   });
 
   if (calibrationSuccess) {
@@ -291,6 +296,10 @@ export class BucketSinging {
     this.div.remove();
     this.video_div.remove();
     $('#calibrator-popup').remove();
+    if (estimator) {
+      estimator.close();
+      estimator = null;
+    }
   }
   
 }
