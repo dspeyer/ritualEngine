@@ -6,6 +6,7 @@
     <text y="75" x="360" font-size="45" font-family="Georgia" fill="white" text-anchor="middle">
         Hallelujah
     </text>
-    <path transform="matrix(.0018,0,0,.0024,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#000000" d="M 22278 70330 L 343482 70330 L 343482 202066 L 22278 202066 Z "/>
+    <path stroke="#000000" d="M 50 125 L 50 550 L 650 550 L 650 125 Z" fill="none">
+    </path>
   </g>
 </svg>
