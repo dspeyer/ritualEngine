@@ -133,6 +133,10 @@ export class BucketSinging {
     this.dbg = $('<div>').css({position: 'absolute',
                                left: '0',
                                top: '30vh',
+                               fontSize: "12px",
+                               fontFamily: "Verdana",
+                               opacity: .5,
+                               marginLeft: 10,
                                color: 'white'}).appendTo($('body'));
     this.dbg.append('Debugging info:').append($('<br>'));
     if ( ! cssInit ){
