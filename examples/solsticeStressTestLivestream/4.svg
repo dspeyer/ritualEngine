@@ -4,25 +4,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
   <g enable-background="new" font-family="Georgia" fill="white">
     <text y="75" x="360" font-size="50" font-family="Georgia" fill="white" text-anchor="middle">
-        Solstice Stress Test
+        Afterparty
     </text>
     <text y="150" x="50" font-size="15" font-family="Georgia" fill="white">
-        Welcome! For best experience:
-    </text>
-    <text y="175" x="50" font-size="15" font-family="Georgia" fill="white" >
-        • Close other videoconferencing software (Zoom, etc may interfere with solstice)
+        Now we can hang out and chat or whatever.
     </text>
     <text y="200" x="50" font-size="15" font-family="Georgia" fill="white" >
-        • Use either a <tspan font-style="italic">wired</tspan> headset (preferably), or <tspan font-style="italic">no</tspan> headset. (No bluetooth)
+        Note: You only expected to hear a subset of the people around you.
     </text>
-    <text y="225" x="50" font-size="15" font-family="Georgia" fill="white" >
-        • Close other browser tabs
+    <text y="220" x="50" font-size="15" font-family="Georgia" fill="white" >
+        You're automatically put into a "room" with up to 26 other people.
     </text>
-    <text y="325" x="50" font-size="15" font-family="Georgia" fill="white" >
-        Once you've calibrated, wait for others to finish calibrating. 
-    </text>
-    <text y="350" x="50" font-size="15" font-family="Georgia" fill="white" >
-        We'll start the singing test at roughly 2:05pm
+    <text y="240" x="50" font-size="15" font-family="Georgia" fill="white" >
+        Those people should be highlighted.
     </text>
     <!-- <rect y="100" width="700" height="700" fill="rgba(0,255,0,.5)"/> -->
     <path stroke="#000000" d="M 50 250 L 50 750 L 750 750 L 800 250 Z" fill="none">
