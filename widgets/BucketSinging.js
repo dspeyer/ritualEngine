@@ -45,11 +45,10 @@ let contextReadyPromise = micAcknowledgedPromise.then(async () => {
   console.log('Chose mic: ',mic);
   let micStream = await openMic(mic.deviceId);
   context = new BucketBrigadeContext({micStream});
+  await context.start_bucket();
 });
 
 async function initClient() {
-  await context.start_bucket();
-
   let div = $('<div>').css({background:'rgba(0.5, 0.5, 0.5, 1)',
                             fontSize: '14pt',
                             textShadow: '0 0 1px black',
@@ -117,6 +116,7 @@ async function initClient() {
   client = new SingerClient({context, apiUrl,
                              offset: 42, // We'll change this before doing anything
                              username:clientId, secretId:Math.round(Math.random()*1e6)}); // TODO: understand these
+    await context.start_bucket();
 }
 
 export class BucketSinging {
