@@ -108,11 +108,7 @@ async def ritualPage(req):
                                      f'<video class="hidden" src="{video}" muted playsinline preload="auto"></video>'
                                      for video in active[name].videos
                                  ),
-                                 bucketServerUrl=(
-                                     PORT_FORWARD_TEMPLATE % active[name].bs_port
-                                     if active[name].bs_port
-                                     else ''
-                                 ),
+                                 bucketServerUrl="/api"
                         ),
                         content_type='text/html', charset='utf8')
 
