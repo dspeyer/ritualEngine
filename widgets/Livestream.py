@@ -11,14 +11,10 @@ class Livestream(object):
         self.wowza_data = ritual.livestreams[page]
         self.name = name
         self.boxColor = boxColor
-        self.ready = False
 
     def to_client(self, clientId, have):
         common_data = {'widget': 'Livestream', 'boxColor': self.boxColor}
         if self.ritual.clients[clientId].isStreamer:
             return {**common_data, **self.wowza_data.source_connection_information}
         else:
-            return {**common_data, 'playbackUrl': self.wowza_data.playback_url, 'ready': self.ready}
-
-    def from_client(self, data, users):
-        self.ready = True
+            return {**common_data, 'playbackUrl': self.wowza_data.playback_url}

@@ -25,17 +25,34 @@ import WowzaWebRTCPublish from 'https://cdn.jsdelivr.net/gh/WowzaMediaSystems/we
 import { putOnBox } from '../../lib.js';
 
 export class Livestream {
-    constructor({boxColor, ready, playbackUrl, sdpURL, applicationName, streamName}) {
-        this.boxColor = boxColor;
+    constructor({boxColor, playbackUrl, sdpURL, applicationName, streamName}) {
+        this.video = $('<video playsinline></video>').appendTo(document.body);
+        putOnBox(this.video, boxColor);
         if (playbackUrl) {
-            this.publishing = false;
-            this.playbackUrl = playbackUrl;
-            if (ready) {
-                this.startPlayback();
+            console.warn('You are about to see a bunch of 404 errors in the console. Please ignore them. This is normal.');
+            async function isReady() {
+                let {status} = await fetch(playbackUrl, {mode: 'cors'});
+                switch (status) {
+                    case 200:
+                        return true;
+                    case 404:
+                        return false;
+                    default:
+                        throw new Error(`Unexpected status: ${status}`);
+                }
             }
+            (async () => {
+                while (!await isReady()) {
+                    await new Promise((resolve) => {
+                        setTimeout(resolve, 1000);
+                    })
+                }
+                this.video.addClass('video-js').append($('<source type="application/x-mpegURL">').attr('src', playbackUrl));
+                this.player = videojs(this.video[0], /* options= */ {}, () => {
+                    this.player.play();
+                });
+            })();
         } else {
-            this.publishing = true;
-            this.createVideo();
             this.video.prop('autoplay', true).prop('muted', true);
             WowzaWebRTCPublish.on({
                 onStateChanged(newState) {
@@ -60,36 +77,18 @@ export class Livestream {
                 },
             }).then(() => {
                 WowzaWebRTCPublish.start();
-                $.post('widgetData', {});
             });
         }
     }
 
-    createVideo() {
-        this.video = $('<video playsinline></video>').appendTo(document.body);
-        putOnBox(this.video, this.boxColor);
-    }
+    async from_server() {}
 
-    startPlayback() {
-        this.createVideo();
-        this.video.addClass('video-js').append($('<source type="application/x-mpegURL">').attr('src', this.playbackUrl));
-        videojs(this.video[0], /* options= */ {}, function() {
-            this.play();
-        });
-    }
-
-    from_server({ready}) {
-        if (this.playbackUrl && ready) {
-            this.startPlayback();
-        }
-    }
-    
     destroy() {
-        if (this.playbackUrl) {
+        if (this.player) {
+            this.player.dispose();
+        } else {
             WowzaWebRTCPublish.stop();
         }
-        if (this.video) {
-            this.video.remove();
-        }
+        this.video.remove();
     }
 }
