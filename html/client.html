@@ -348,7 +348,7 @@
                          $('<div class="chat-message">')
                              .append( $('<span class="chat-sender">').append(message.sender, ': '), message.text )
                              .appendTo('#chat-buffer');
-                         $('#chat-buffer').scrollTop($('#chat-buffer').height());
+                         $('#chat-buffer').scrollTop(999999999);
                      }
                      askChat();
                  },
