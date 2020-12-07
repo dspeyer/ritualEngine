@@ -254,6 +254,11 @@ async def mkRitual(req):
                     bs_proc, bs_port = await launchBBS()
                 if 'videoUrl' in slide:
                     videos.add(slide['videoUrl'])
+            elif slide['widget'] == 'Video':
+                if not bs_port:
+                    bs_proc, bs_port = await launchBBS()
+                if 'videoUrl' in slide:
+                    videos.add(slide['videoUrl'])
         async def livestream_started(livestream_id):
             async with session.get(
                 f"https://api.cloud.wowza.com/api/v1.6/live_streams/{livestream_id}/state",
