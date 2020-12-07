@@ -45,10 +45,10 @@
              height: 100%;
          }
          .participants {
-             width: calc(100vw - 265px);
-             height: 400px;
+             width: 100vw;
+             height: 350px;
              position: absolute;
-             bottom: 5;
+             bottom: -5;
              display: flex;
              flex-wrap: wrap-reverse;
              overflow: hidden;
@@ -112,32 +112,34 @@
              border:none;
          }
          #chat {
-             height: 100vh;
+             max-height: calc(100vh - 300px);
              width: 250px;
              position: fixed;
              z-index: 1;
              top: 0;
              right: 0;
-             background-color: rgba(0,0,0,0.5);
              color: white;
              display: flex;
              flex-direction: column;
              font-size: 12px;
              font-family: Verdana, Geneva, Tahoma, sans-serif;
              padding: 6px;
+             scrollbar-width: none;
+             -ms-overflow-style: none;
          }
+         #chat-buffer::-webkit-scrollbar {
+            display: none;
+        }
          #chat-buffer {
              flex-grow: 1;
-             overflow: auto;
+             overflow: auto;    
          }
          #chat-send {
              flex-grow: 0;
          }
          .chat-message {
              color: white;
-             margin-bottom: 6px;
-             background: rgba(0,0,0,.5);
-             padding: 8px;
+             margin-bottom: 16px;
              border-radius:5px;
          }
          .chat-sender {
