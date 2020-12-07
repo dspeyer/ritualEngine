@@ -20,19 +20,3 @@ export class Video {
   }
   
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
