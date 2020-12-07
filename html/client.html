@@ -111,6 +111,9 @@
              border-radius:3px;
              border:none;
          }
+         input::placeholder {
+             color:black;
+         }
          #chat {
              max-height: calc(100vh - 300px);
              width: 250px;
@@ -236,7 +239,7 @@
                         <div id="chat-error"></div>
                         <input id="chat-sender" name="name" placeholder="Your Name">
                         <input id="chat-message" type="text" placeholder="Message" autocomplete="off">
-                        <input id="chat-submit" type="submit" value="Send">
+                        <input id="chat-submit" type="submit" value="Chat">
                     </form>
                 </div>
             </div>
