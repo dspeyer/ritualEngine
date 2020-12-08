@@ -1,15 +1,31 @@
+let elemBoxPairs = [];
+
 export function putOnBox(elems, color) {
     let box = $('path[stroke="'+color+'"]')
+    elemBoxPairs.push({elems,box});
+    realPutOnBox({elems,box});
+}
+
+function realPutOnBox({elems, box}) {
+    box.show();
     let rect = box[0].getBoundingClientRect();
     box.hide();
     if ( ! Array.isArray(elems)) elems = [ elems ];
     for (let elem of elems) {
+        if (elem.parent().length == 0) continue;
         elem.css('position','absolute');
         for (let i of ['top','left','width','height']) {
             elem.css(i,rect[i]);
         }
     }
 }    
+
+$(window).resize(()=>{
+    elemBoxPairs = elemBoxPairs.filter((p)=>(p.box.parent().length));
+    for (let p of elemBoxPairs) {
+        realPutOnBox(p);
+    }
+});
 
 export async function getPhoto(holder, output) {
     let stream = await navigator.mediaDevices.getUserMedia({ video: true });
