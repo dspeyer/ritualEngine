@@ -255,8 +255,12 @@ export class BucketSinging {
         cur++;
       });
     } else {
-      this.client.event_hooks.push( async (lid)=>{
-        await this.handleLyric(lid-mark_base);
+      this.client.addEventListener('markReached', (ev) => {
+        console.log('markreached',ev?.detail);
+        let lid = ev?.detail?.data;
+        if (lid == parseInt(lid)) {
+          this.handleLyric(lid-mark_base);
+        }
       });
     }
   }
@@ -290,6 +294,7 @@ export class BucketSinging {
       this.client.close();
     }
     this.div.remove();
+    this.dbg.remove();
     if (this.video) this.video.removeClass('bbs-video').addClass('hidden').appendTo(document.body);
     if (this.video_div) this.video_div.remove();
   }
