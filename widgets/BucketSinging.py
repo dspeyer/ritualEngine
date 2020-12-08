@@ -80,4 +80,8 @@ class BucketSinging(object):
                  'justInit': self.justInit,
                  'dbginfo': '%d/%d'%(self.nready,len(self.ritual.clients))}
 
-        
+    @staticmethod
+    async def preload(ritual, videoUrl=None, **ignore):
+        if videoUrl:
+            ritual.videos.add(videoUrl)
+

@@ -145,6 +145,12 @@ async def stateDbg(req):
     return web.Response(body=state.get_dbg(),content_type="image/png")
 
     
+async def preload(ritual,slide):
+    if 'widget' in slide:
+        widget = globals()[slide['widget']]
+        if hasattr(widget,'preload'):
+            await widget.preload(ritual=ritual,**slide)
+
 
 app.router.add_get(r'/{fn:lib|avatars}.js', lib)
 app.router.add_get('/widgets/{fn}', getJs)
