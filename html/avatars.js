@@ -1,19 +1,54 @@
+let fillAsDesired = null;
+export function setParticipantStyle(rotate){
+    fillAsDesired = rotate ? fillAsReaderQueue : fillAsAuditorium;
+}
+
+let participants = [];
+let video = false;
+export function setParticipants(p,v) {
+    participants = p;
+    video = v;
+    redraw();
+}
+
+let circles = [];
+export function redraw(force) {
+    let div = $('#participants');
+    if ((circles.length != participants.length) || force) {
+        if (video) detachAllVideos();
+        circles = fillAsDesired(div, participants.length);
+    }
+    if (video) {
+        setVideoAvatars();
+    } else {
+        for (let i in participants) {
+            circles[i].img.attr('src', participants[i].img);
+            if (circles[i].label) {
+                circles[i].label.text(participants[i].name);
+            }
+        }
+    }
+}
+
+
+/*************************** Placement Schemes ******************************/
+
 function square(x) { return x*x; } // The alternatives were uglier
 function sqrt(x) { return x>=0 ? Math.sqrt(x) : 0; }
-         
-function placements(sf, w, h) {
+
+function rq_placements(sf, w, h) {
     let r = h/2;
     let x = r;
     let xf=x, xl=x; // first, last
     let y = r;
     let pc = 1; // per-column
-    let circles = [];
+    let out = [];
     while( x+r <= w ) {
         for (let i=0; i<pc; i++) {
-            circles.push({x: (i==0)?xf:(i==pc-1)?xl:x,
-                          y: y+i*2*r,
-                          r: r,
-                          label: (pc==1)&&((x==r)||(y!=r)) });
+            out.push({x: (i==0)?xf:(i==pc-1)?xl:x,
+                      y: y+i*2*r,
+                      r: r,
+                      label: (pc==1)&&((x==r)||(y!=r)) });
         }
                         
         let nr = Math.max(r*sf , 13);
@@ -44,7 +79,7 @@ function placements(sf, w, h) {
         r = nr;
         pc = npc;
     }
-    return circles;
+    return out;
 }
 
 let base_placements = [];
@@ -53,7 +88,7 @@ function fillAsReaderQueue(div, n) {
     let w = div.width();
     if ( ! base_placements.length ) {
         for (let sf=0.99; sf>0.89; sf-=0.01) {
-            base_placements.push(placements(sf, w, h));
+            base_placements.push(rq_placements(sf, w, h));
         }
     }
     let i=0;
@@ -141,11 +176,6 @@ function fillAsAuditorium(div, n) {
     return ps.map(putcircle.bind(null,div));
 }
 
-let fillAsDesired = null;
-export function setParticipantStyle(rotate){
-    fillAsDesired = rotate ? fillAsReaderQueue : fillAsAuditorium;
-}
-
 function putcircle(d,{x,y,r,label,z,br}) {
     let s = Math.round(2*r) - 2 + 'px';
     let left = Math.round(x-r) + 1 + 'px';
@@ -175,50 +205,45 @@ function putcircle(d,{x,y,r,label,z,br}) {
     return div;
 }
 
-let curCircles = [];
+/*************************** Twilio  ******************************/
+
 let videosToPlace = {};
-export function showParticipantAvatars(participants, video) {
-    let div = $('#participants');
-    if (curCircles.length != participants.length) {
-        if (video) detachAllVideos();
-        curCircles = fillAsDesired(div, participants.length);
-    }
-    if (video) {
-        videosToPlace = {};
-        let same = participants.filter((x)=>(x.room==currentRoomId));
-        let diff = participants.filter((x)=>(x.room!=currentRoomId));
-        participants = same.concat(diff);
-        for (let i in participants) {
-            let client = participants[i];
-            let cachebuster = client.hj + '_' + Math.round(((new Date()).getTime()+(i*10000))/300000);
-            curCircles[i].img.attr('src', 'clientAvatar/'+client.id+'?'+cachebuster);
-            if (twilioAudioEnabled) {
-                curCircles[i].css({opacity: (hasAudioTrack[client.id] ? 1 : .2)});
-            }
-            if (curCircles[i].videoOf == client.id) continue;
-            if (curCircles[i].videoOf) {
-                curCircles[i].video.hide();
-                curCircles[i].track.detach(curCircles[i].video[0]);
-                delete curCircles.videoOf;
-                delete curCircles.track;
-            }
-            if (client.id == clientId) {
-                putVideoInCircle(curCircles[i], localVideo, clientId);
-            }
-            if (client.room == currentRoomId) {
-                videosToPlace[client.id] = curCircles[i];
-            }
+let currentRoomId = null;
+let room = null;
+let localVideo = null;
+let twilioAudioEnabled = false;
+let hasAudioTrack = {};
+let localAudioTrack = null;
+
+function setVideoAvatars() {
+    videosToPlace = {};
+    let same = participants.filter((x)=>(x.room==currentRoomId));
+    let diff = participants.filter((x)=>(x.room!=currentRoomId));
+    participants = same.concat(diff);
+    for (let i in participants) {
+        let client = participants[i];
+        let cachebuster = client.hj + '_' + Math.round(((new Date()).getTime()+(i*10000))/300000);
+        circles[i].img.attr('src', 'clientAvatar/'+client.id+'?'+cachebuster);
+        if (twilioAudioEnabled) {
+            circles[i].css({opacity: (hasAudioTrack[client.id] ? 1 : .2)});
         }
-        attachAllVideos();
-    } else {
-        for (let i in participants) {
-            curCircles[i].img.attr('src', participants[i].img);
-            if (curCircles[i].label) {
-                curCircles[i].label.text(participants[i].name);
-            }
+        if (circles[i].videoOf == client.id) continue;
+        if (circles[i].videoOf) {
+            circles[i].video.hide();
+            circles[i].track.detach(circles[i].video[0]);
+            delete circles.videoOf;
+            delete circles.track;
+        }
+        if (client.id == clientId) {
+            putVideoInCircle(circles[i], localVideo, clientId);
+        }
+        if (client.room == currentRoomId) {
+            videosToPlace[client.id] = circles[i];
         }
     }
+    attachAllVideos();
 }
+
 
 function attachAllVideos() {
     for (let [sid, participant] of room.participants) {
@@ -234,7 +259,7 @@ function attachAllVideos() {
 }
 
 function detachAllVideos() {
-    for (let circle of curCircles) {
+    for (let circle of circles) {
         if (circle.track) {
             circle.track.detach(circle.video[0]);
         }
@@ -262,12 +287,6 @@ function putVideoInCircle(circle, track, id) {
     }
 }
 
-let muted = false;
-let currentRoomId = null;
-let room = null;
-let localVideo = null;
-let twilioAudioEnabled = false;
-let hasAudioTrack = {};
 
 export async function twilioConnect(token, roomId) {
     if (roomId == currentRoomId) return;
@@ -291,7 +310,7 @@ export async function twilioConnect(token, roomId) {
         if (publication.kind == 'audio' && twilioAudioEnabled) {
             hasAudioTrack[participant.identity] = true;
             $(track.attach()).appendTo($('body'));
-            for (let circle of curCircles) {
+            for (let circle of circles) {
                 if (circle.videoOf == participant.identity) {
                     circle.css({opacity:1});
                 }
@@ -301,7 +320,6 @@ export async function twilioConnect(token, roomId) {
     attachAllVideos();
 }
 
-let localAudioTrack = null;
 export function setTwilioAudioEnabled(nv) {
     if (nv == twilioAudioEnabled) return;
     hasAudioTrack = {};
@@ -321,7 +339,7 @@ export function setTwilioAudioEnabled(nv) {
                 }
             }
         }
-        for (let circle of curCircles) {
+        for (let circle of circles) {
             circle.css({opacity: (hasAudioTrack[circle.videoOf] ? 1 : 0.2)});
         }
     } else {
@@ -337,7 +355,7 @@ export function setTwilioAudioEnabled(nv) {
                 }
             }
         }
-        for (let circle of curCircles) {
+        for (let circle of circles) {
             circle.css({opacity: 1});
         }
     }

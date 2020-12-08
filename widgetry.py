@@ -16,7 +16,7 @@ from widgets.CircleFlames import CircleFlames
 from widgets.Livestream import Livestream
 
 async def lib(req):
-    return web.Response(body=open('html/lib.js').read(), content_type='text/javascript')
+    return web.Response(body=open('html/%s.js'%req.match_info['fn']).read(), content_type='text/javascript')
 
 async def getJs(req):
     fn = req.match_info.get('fn')
@@ -146,7 +146,7 @@ async def stateDbg(req):
 
     
 
-app.router.add_get('/lib.js', lib)
+app.router.add_get(r'/{fn:lib|avatars}.js', lib)
 app.router.add_get('/widgets/{fn}', getJs)
 app.router.add_get('/{name}/status', status)
 app.router.add_post('/{name}/widgetData', widgetData)

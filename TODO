@@ -1,5 +1,4 @@
+
+
 wrap long lines in lyrics
-break up status function?
-Youtube: never let grey box be visible
-Youtube: get ready callback rather than timeout
-Solstice-appropriate avatar images
+break up status function?  Move part to rituals.py?

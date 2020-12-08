@@ -260,8 +260,10 @@
              $('#next').click(()=>{ $.post('nextPage'); });
          }
          import('../lib.js').then((lib)=>{
-             lib.bkgInit($(%bkgAll% ? '#everything' : '#content'), 'bkg.jpg');
-             lib.setParticipantStyle(%rotate%);
+           lib.bkgInit($(%bkgAll% ? '#everything' : '#content'), 'bkg.jpg');
+         });
+         import('../avatars.js').then((avatars)=>{
+             avatars.setParticipantStyle(%rotate%);
          });
          let clientId = '%clientId%';
          let name = '%name%';
@@ -287,7 +289,7 @@
                          $('#svgwrapper svg').attr('width','').attr('height','');
                      }
                      if (data.video_token && data.room) {
-                         let { twilioConnect, setTwilioAudioEnabled } = await import ('../lib.js');
+                         let { twilioConnect, setTwilioAudioEnabled } = await import ('../avatars.js');
                          console.log(data.clients)
                          await twilioConnect(data.video_token, data.room);
                          if (data.twilioAudioEnabled !== undefined) {
@@ -295,12 +297,12 @@
                          }
                      }
                      if (data.clients) {
-                         let { showParticipantAvatars } = await import ('../lib.js');
-                         showParticipantAvatars(data.clients, /*video=*/true);
+                         let { setParticipants } = await import ('../avatars.js');
+                         setParticipants(data.clients, /*video=*/true);
                      }
                      if (data.participants) {
-                         let { showParticipantAvatars } = await import ('../lib.js');
-                         showParticipantAvatars(data.participants, /*video=*/false);
+                         let { setParticipants } = await import ('../avatars.js');
+                         setParticipants(data.participants, /*video=*/false);
                      }
                      if (data.background) {
                          let { bkgSet } = await import ('../lib.js');
