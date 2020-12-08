@@ -49,7 +49,7 @@ let contextReadyPromise = micAcknowledgedPromise.then(async () => {
   await context.start_bucket();
 });
 
-async function initClient() {
+async function initClient(serverUrl) {
   let div = $('<div id="calibrator-popup">').css({background:'rgba(0.5, 0.5, 0.5, 1)',
                             fontSize: '14pt',
                             textShadow: '0 0 1px black',
@@ -117,14 +117,14 @@ async function initClient() {
   }
   div.remove();
 
-  let apiUrl = window.location.protocol+'//'+window.location.host+window.bucketServerUrl;
+  let apiUrl = window.location.protocol+'//'+window.location.host+serverUrl;
   client = new SingerClient({context, apiUrl,
                              offset: 42, // We'll change this before doing anything
                              username:clientId, secretId:Math.round(Math.random()*1e6)}); // TODO: understand these
 }
 
 export class BucketSinging {
-  constructor({boxColor, lyrics, background_opts, backing_track, videoUrl, leader, mark_base, justInit}) {
+  constructor({boxColor, lyrics, background_opts, backing_track, videoUrl, leader, mark_base, justInit, serverUrl}) {
     this.isLead = leader ? document.cookie.indexOf(leader) != -1 : window.location.pathname.endsWith('lead');
     this.div = $('<div>').appendTo($('body'));
     this.video_div = $('<div class="bucket-video">').css('z-index',-1).appendTo($('body'));
@@ -154,7 +154,7 @@ export class BucketSinging {
       button.remove();
     });
 
-    this.clientReadyPromise = client ? Promise.resolve() : contextReadyPromise.then(initClient);
+    this.clientReadyPromise = client ? Promise.resolve() : contextReadyPromise.then(initClient.bind(null,serverUrl));
     this.clientReadyPromise.then(() => {
       this.onClientReady();
     });
