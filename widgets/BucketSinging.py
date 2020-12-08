@@ -18,12 +18,11 @@ PORT_FORWARD_PATH = os.environ.get('PORT_FORWARD_PATH', '/api')
 mark_base = 1000;
 
 class BucketSinging(object):
-    def __init__(self, ritual, boxColor, lyrics, last_song=False, bsBkg=None, leader=None, backing=None, videoUrl=None, justInit=False, **ignore):
+    def __init__(self, ritual, boxColor, lyrics, bsBkg=None, leader=None, backing=None, videoUrl=None, justInit=False, **ignore):
         self.ritual = ritual
         self.boxColor = boxColor
         self.lyrics = lyrics
         self.client_ids = []
-        self.own_server = last_song
         self.background_opts = (bsBkg or {})
         self.videoUrl = videoUrl
         self.backing = backing
@@ -73,7 +72,6 @@ class BucketSinging(object):
                  'server_url': PORT_FORWARD_PATH,
                  'ready': ready,
                  'slot': self.slots.get(clientId, 2),
-                 'cleanup': self.own_server,
                  'background_opts': self.background_opts,
                  "videoUrl": self.videoUrl,
                  'mark_base': mark_base,

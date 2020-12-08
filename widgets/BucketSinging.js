@@ -2,7 +2,6 @@ import {MicEnumerator, openMic, BucketBrigadeContext, SingerClient, VolumeCalibr
 import { putOnBox, bkgSet, bkgZoom } from '../../lib.js';
 
 let context = null;
-let client = null;
 let calibrationFail = false;
 let mysteryInitPromise = null;
 let cssInit = false;
@@ -32,6 +31,16 @@ let css = `
     color: #999;
     text-shadow: 1px 1px 2px #444, -1px -1px 2px #444;
   } 
+  div.lyricdbg {
+    position: absolute;
+    left: 0;
+    top: 30vh;
+    color: white;
+    opacity: 0.5;
+  }
+  div.lyricdbg:hover {
+    opacity: 1;
+  }
 `;
 
 let backingTrackStartedRes;
@@ -39,7 +48,7 @@ let backingTrackStartedPromise = new Promise((res) => {
   backingTrackStartedRes = res;
 });
 
-async function initContext(server_url){
+async function initContext(){
   let mics = await (new MicEnumerator()).mics();
   let mic = mics[0]; // TODO: be smarter?
   console.log('Chose mic: ',mic);
@@ -110,22 +119,10 @@ async function initContext(server_url){
   button = $('<input type=button>').attr('value',"Nifty").appendTo(div);
   await new Promise((res)=>{button.on('click',res);});
   div.remove();
-
-  let apiUrl = window.location.protocol+'//'+window.location.host+server_url;
-  client = new SingerClient({context, apiUrl,
-                             offset: 42, // We'll change this before doing anything
-                             username:clientId, secretId:Math.round(Math.random()*1e6)}); // TODO: understand these
-  client.addEventListener('markReached', async ({detail: {data}}) => {
-    if (data === 'backingTrackStart') {
-      backingTrackStartedRes();
-    }
-  });
-  await new Promise((res)=>{ client.addEventListener('connectivityChange',res); });
-  mysteryInitPromise = new Promise((res)=>{setTimeout(res,2000);});
 }
 
 export class BucketSinging {
-  constructor({boxColor, lyrics, cleanup, background_opts, videoId, leader, server_url}) {
+  constructor({boxColor, lyrics, cleanup, background_opts, videoId, leader}) {
     let islead;
     if (leader) {
       islead = (document.cookie.indexOf(leader) != -1);
@@ -139,11 +136,7 @@ export class BucketSinging {
     this.cleanup = cleanup;
     this.background = background_opts;
       
-    this.dbg = $('<div>').css({position: 'absolute', display:'none',
-                               left: '0',
-                               top: '30vh',
-                               background: 'white',
-                               color: 'black'}).appendTo($('body'));
+    this.dbg = $('<div class=lyricdbg>').appendTo($('body'));
     this.dbg.append('Debugging info:').append($('<br>'));
     if ( ! cssInit ){
       $('<style>').text(css).appendTo($('head'));
@@ -158,7 +151,7 @@ export class BucketSinging {
       let button = $('<input type="button" value="Click here to Initialize Singing">').appendTo(this.div);
       button.on('click', ()=>{
         button.remove();
-        initContext(server_url).then(()=>{
+        initContext().then(()=>{
           this.show_lyrics(lyrics);
           this.declare_ready(islead);
         });
@@ -216,36 +209,43 @@ export class BucketSinging {
     $.post('widgetData', {calibrationFail, clientId, islead});
   }
 
-  async from_server({mark_base, slot, ready, backing_track, dbginfo, justInit}) {
+  async from_server({mark_base, slot, ready, backing_track, dbginfo, justInit, server_url}) {
     this.dbg.append(dbginfo+' ready='+ready).append($('<br>'));
-    if (!ready || !client) return;
+    if (!ready || !context) return;
     if (this.slot === slot) return;
     if (justInit) {
       this.destroy();
       return;
     }
     this.slot = slot;
-    client.micMuted = false;
-    client.speakerMuted = false;
-    let offset = (slot+1) * 3;
-    client.change_offset(offset);
+    let offset = (slot+1) * 3 + 1;
     this.dbg.append('slot '+slot+' -> offset '+offset).append($('<br>'));
 
+    let apiUrl = window.location.protocol+'//'+window.location.host+server_url;
+    let username = $('#chat-sender').val() || 'cId='+clientId; // Will show up in mixer console
+    let secretId = Math.round(Math.random()*1e6); // TODO: understand this
+    this.client = new SingerClient({context, apiUrl, offset, username, secretId});
+
+    this.client.addEventListener('markReached', async ({detail: {data}}) => {
+      if (data === 'backingTrackStart') {
+        backingTrackStartedRes();
+      }
+    });
+    await new Promise((res)=>{ this.client.addEventListener('connectivityChange',res); });
     
     if (slot==0) {
       //TODO: figure out what this actually does, and why we need to wait
-      await mysteryInitPromise;
       await new Promise((res)=>{setTimeout(res,2000);});
       if (backing_track) {
         this.dbg.append('bt='+backing_track).append($('<br>'));
-        client.x_send_metadata("backingTrack", backing_track);
+        this.client.x_send_metadata("backingTrack", backing_track);
       }
-      client.x_send_metadata("markStartSinging", true);
+      this.client.x_send_metadata("markStartSinging", true);
     }
     
     if (slot==0) {
       $('<div>').text('You are lead singer.  '+
-                      (backing_track ? 'Instrumentals will being soon.  ' : 'Sing when ready.  ') + 
+                      (backing_track ? 'Instrumentals will begin soon.  ' : 'Sing when ready.  ') + 
                       'Click anywhere in the lyric area when you begin a new line')
                 .css({background:'#444'})
                 .prependTo(this.div);
@@ -258,17 +258,17 @@ export class BucketSinging {
       this.div.css('cursor','pointer');
       let cur = 0;
       this.div.on('click',async ()=>{
-        client.declare_event(mark_base+cur);
+        this.client.declare_event(mark_base+cur);
         if (cur == 0) {
           for (let i=1; i<=4; i++) {
-            client.declare_event(mark_base-i, i);
+            this.client.declare_event(mark_base-i, i);
           }
         }
         await this.handleLyric(cur);
         cur++;
       });
     } else {
-      client.event_hooks.push( async (lid)=>{
+      this.client.event_hooks.push( async (lid)=>{
         await this.handleLyric(lid-mark_base);
       });
     }
@@ -299,9 +299,8 @@ export class BucketSinging {
   };
   
   destroy(){
-    if (client) {
-      client.micMuted = true;
-      client.speakerMuted = true;
+    if (this.client) {
+      this.client.close();
     }
     this.div.remove();
     if (this.video_div) this.video_div.remove();
