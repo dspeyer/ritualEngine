@@ -1,0 +1,9 @@
+{
+  "widget": "Video",
+  "background": "sunset2-01.jpg",
+  "videoUrl": "https://d3vyng54usxcs.cloudfront.net/necronomicon-silent.mp4",
+  "boxColor": "#000000",
+  "showParticipants": true,
+  "rotate": false,
+  "bkgAll": true
+}
