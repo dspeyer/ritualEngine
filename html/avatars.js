@@ -30,6 +30,11 @@ export function redraw(force) {
     }
 }
 
+$(window).resize(()=>{
+    if (circles.length) {
+        redraw(/*force=*/true);
+    }
+});
 
 /*************************** Placement Schemes ******************************/
 
