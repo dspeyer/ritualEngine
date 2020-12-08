@@ -277,7 +277,7 @@ async def mkRitual(req):
         active[name].population_of_current_video_room = 0
         active[name].video_room_lock = asyncio.Lock()
     print("did the thing")
-    return web.HTTPFound('/'+name+'/partake')
+    return web.HTTPFound('/'+name+'/lead')
 
 async def setAvatar(req):
     name = req.match_info.get('name','')
