@@ -1,8 +1,6 @@
 {
-  "widget": "Trivia",
-  "background": "sunset3-03.jpg",
-  "boxColors": {
-      "controls": "#00ffff",
-      "results": "#0000ff"
-  }
+  "widget": "BucketSinging",
+  "boxColor": "#000000",
+  "background": "sunset2-01.jpg",
+  "lyrics": [""]
 }
