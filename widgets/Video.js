@@ -2,7 +2,6 @@ import { putOnBox } from '../../lib.js';
 
 export class Video {
   constructor({boxColor, videoUrl}) {
-    console.log("ASFASFASDF", videoUrl)
     this.video_div = $('<div class="speaker-video">').css('z-index',-1).appendTo($('body'));
     putOnBox([this.video_div], boxColor);
     this.video = $(`video[src='${videoUrl}']`);

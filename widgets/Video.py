@@ -17,3 +17,8 @@ class Video(object):
           'boxColor': self.boxColor,
           'videoUrl': self.videoUrl
         }
+
+    @staticmethod
+    async def preload(ritual, videoUrl=None, **ignore):
+        if videoUrl:
+            ritual.videos.add(videoUrl)
