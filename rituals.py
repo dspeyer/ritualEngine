@@ -95,7 +95,7 @@ async def ritualPage(req):
                                  bkgAll=str(active[name].bkgAll).lower(),
                                  rotate=str(active[name].rotate).lower(),
                                  videos=''.join(
-                                     f'<video class="hidden" src="{video}" muted playsinline preload="auto"></video>'
+                                     f'<video class="hidden" src="{video}" playsinline preload="auto"></video>'
                                      for video in active[name].videos
                                  )
                         ),
