@@ -190,7 +190,8 @@ async def mkRitual(req):
     print("very good")
     timestamp = datetime.now(timezone.utc).isoformat()
     active[name] = Ritual(script=script, reqs={}, state=None, page=page, background=opts['background'],
-                          bkgAll=opts.get('bkgAll',False), ratio=opts.get('ratio',16/9), rotate=opts.get('rotate',True),
+                          bkgAll=opts.get('bkgAll',False), ratio=opts.get('ratio',16/9),
+                          rotate=opts.get('rotate',True), breserve=opts.get('breserve','233px'),
                           jpgs=[defaultjpg], jpgrats=[1], clients={}, allChats=[], videos=set())
     for slide_path in glob(f'examples/{script}/*.json'):
         filename = path.basename(slide_path)

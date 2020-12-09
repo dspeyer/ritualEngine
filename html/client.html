@@ -37,8 +37,8 @@
              overflow: hidden;
          }
          .content.shrunk {
-             max-height: calc( 100vh - 233px );
-             max-width: calc( ( 100vh - 233px ) * %ratio% );
+             max-height: calc( 100vh - %breserve% );
+             max-width: calc( ( 100vh -  %breserve% ) * %ratio% );
              margin: auto;
          }
          .content svg {
@@ -47,7 +47,7 @@
          }
          .participants {
              width: 100vw;
-             height: 233px;
+             height:  %breserve%;
              position: absolute;
              bottom: 0;
              display: flex;
@@ -115,7 +115,7 @@
              color:black;
          }
          #chat {
-             max-height: calc(100vh - 300px);
+             max-height: calc(100vh - 1.5 * %breserve% );
              width: 250px;
              position: fixed;
              z-index: 1;
