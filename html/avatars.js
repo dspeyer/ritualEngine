@@ -146,6 +146,7 @@ function fillAsAuditorium(div, n) {
     let left = n;
     for (let r=r0; left>0; r*=2/3) {
         let nr = Math.floor(w/(2*r));
+        if (r==r0) nr = Math.floor(nr/1.5);
         rows.push(nr);
         left -= nr;
     }
@@ -163,19 +164,26 @@ function fillAsAuditorium(div, n) {
         rows[rows.length-1] += left;
     }
     let ps=[];
-    let r = r0;
-    let y = h-r;
-    let br = 50;
+    let rb = r0;
+    let yb = h-r0;
+    let y,r;
     for (let rn of rows) {
         let xs = w/rn;
         let x = xs / 2;
         for (let i=0; i<rn; i++) {
-            ps.push({x,y,r,br,z:r});
+            let extra = r0 * (Math.pow(1.7, 4*Math.pow((x/w)-.5,2)) - 1);
+            if (yb==h-r0) {
+                y = yb - extra;
+                r = rb + extra;
+            } else {
+                y = yb - 2*extra;
+                r = rb;
+            }
+            ps.push({x,y,r,z:Math.round(r)});
             x += xs;
         }
-        y -= (2 - br/200 - 0.25) * r; // TODO: make the Y's still add up with this extra spacing
-        r *= 2/3;
-        br = 50 //Math.min(br+20,50);
+        yb -= 1.5 * rb;
+        rb *= 2/3;
     }
     div.empty();
     return ps.map(putcircle.bind(null,div));
@@ -185,11 +193,12 @@ function putcircle(d,{x,y,r,label,z,br}) {
     let s = Math.round(2*r) - 2 + 'px';
     let left = Math.round(x-r) + 1 + 'px';
     let top = Math.round(y-r) + 1 + 'px';
+    if (br===undefined) br=50;
     let div = $('<div>').css({position:'absolute', width: s, height: s, left, top,
-                              border: '1px rgba(255,255,255,0.5) solid'})
+                              border: '1px rgba(255,255,255,0.5) solid',
+                              borderRadius: br+'%', overflow: 'hidden'})
                         .appendTo(d);
     if (z) div.css('z-index', z);
-    if (br) div.css({borderRadius: br+'%', overflow: 'hidden'});
     div.img = $('<img>').css({width:'100%',height:'100%',position:'absolute'}).appendTo(div);
     div.video = $('<video>').css({width:'100%',height:'100%',position:'absolute'}).appendTo(div);
     div.video.hide();
