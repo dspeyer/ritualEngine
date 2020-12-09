@@ -129,7 +129,7 @@ async def widgetData(req):
     if login:
         login = login.split('__')
     else:
-        ip = req.headers['X-Forwarded-For']
+        ip = req.headers.get('X-Forwarded-For', '257.257.257.257')
         login = ['anon' + ip]
     active[name].state.from_client(data=data,users=login)
     for i,task in active[name].reqs.items():
