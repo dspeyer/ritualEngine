@@ -17,7 +17,7 @@ from widgets.Livestream import Livestream
 from widgets.Video import Video
 
 async def lib(req):
-    return web.Response(body=open('html/lib.js').read(), content_type='text/javascript')
+    return web.Response(body=open('html/%s.js'%req.match_info['fn']).read(), content_type='text/javascript')
 
 async def getJs(req):
     fn = req.match_info.get('fn')
@@ -130,7 +130,7 @@ async def widgetData(req):
     if login:
         login = login.split('__')
     else:
-        ip = req.headers['X-Forwarded-For']
+        ip = req.headers.get('X-Forwarded-For', '257.257.257.257')
         login = ['anon' + ip]
     active[name].state.from_client(data=data,users=login)
     for i,task in active[name].reqs.items():
@@ -146,8 +146,14 @@ async def stateDbg(req):
     return web.Response(body=state.get_dbg(),content_type="image/png")
 
     
+async def preload(ritual,slide):
+    if 'widget' in slide:
+        widget = globals()[slide['widget']]
+        if hasattr(widget,'preload'):
+            await widget.preload(ritual=ritual,**slide)
 
-app.router.add_get('/lib.js', lib)
+
+app.router.add_get(r'/{fn:lib|avatars}.js', lib)
 app.router.add_get('/widgets/{fn}', getJs)
 app.router.add_get('/{name}/status', status)
 app.router.add_post('/{name}/widgetData', widgetData)
