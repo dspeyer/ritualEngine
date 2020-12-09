@@ -3,6 +3,7 @@ import json
 import os
 import pathlib
 import sys
+import traceback
 
 from aiohttp import web
 
@@ -52,5 +53,14 @@ def tpl(fn, **kwargs):
 def random_token():
     return base64.urlsafe_b64encode(os.urandom(256 // 8)).decode().strip('=')
 
-app = web.Application()
 
+@web.middleware
+async def errorHandler(request, handler):
+    try:
+        return await handler(request)
+    except Exception as e:
+        txt = '%s\n%s\n\n%s'%(type(e).__name__,str(e),traceback.format_exc())
+        print('\n'+txt+'\n')
+        return web.Response(text=txt, status=500, content_type="text/plain")
+
+app = web.Application(middlewares=[errorHandler])
