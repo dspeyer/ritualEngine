@@ -1,4 +1,22 @@
+Avatar stuff:
+* Sizing
+* On your left
+* Make overlap per-ritual configurable
+* Fewer videos
+** Smart?
+*** Measure, either way
+* Rotation with lyrics
+* Names on Avatars
 
+BBS stuff:
+* new-style bucketing
+* lyric timing acquisition
+* assign rooms
+* Don't calibrate volume if we skipped latency
+
+Chat:
+* Going away
+* Avatars in chat?
 
 wrap long lines in lyrics
 break up status function?  Move part to rituals.py?
