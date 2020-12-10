@@ -15,6 +15,10 @@ let css = `
     justify-content: space-between;
     overflow-y: auto;
     text-shadow: 1px 1px 2px #777, -1px -1px 2px #777, 1px -1px 2px #777, -1px 1px 2px #777;
+    scrollbar-width: none;
+  }
+  div.lyrics::-webkit-scrollbar {
+    display: none;
   }
   div.lyrics span {
     font-size: 16pt;
