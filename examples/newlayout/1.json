@@ -3,5 +3,6 @@
   "background": "light.jpg",
   "boxColor": "#00ffff",
   "lyrics": [],
-  "justInit": true
+  "justInit": true,
+  "chatClass": "bow"
 }

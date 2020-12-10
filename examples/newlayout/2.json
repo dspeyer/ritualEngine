@@ -1,6 +1,6 @@
 {
   "widget": "BucketSinging",
-  "background": "light.jpg",
+  "background": "sunset2-01.jpg",
   "boxColors": {
     "lyrics":"#0000ff",
     "video":"#00ff00"
@@ -42,6 +42,7 @@
     "Hallelujah, Hallelujah"
   ],
   "backing": "hallelujah-backing-track.wav",
-  "videoUrl": "https://solstice2020media.s3-us-west-1.amazonaws.com/hallelujah-silent-medium.mp4"
+  "videoUrl": "https://solstice2020media.s3-us-west-1.amazonaws.com/hallelujah-silent-medium.mp4",
+  "chatClass": "normal"
 }
   

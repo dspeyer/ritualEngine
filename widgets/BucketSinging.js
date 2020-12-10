@@ -6,9 +6,6 @@ let calibrationFail = false;
 let mysteryInitPromise = null;
 let cssInit = false;
 let css = `
-  div { 
-    color: white;
-  }
   div.lyrics {
     display: flex;
     flex-direction: column;
@@ -16,6 +13,7 @@ let css = `
     overflow-y: auto;
     text-shadow: 1px 1px 2px #777, -1px -1px 2px #777, 1px -1px 2px #777, -1px 1px 2px #777;
     scrollbar-width: none;
+    color: white;
   }
   div.lyrics::-webkit-scrollbar {
     display: none;
@@ -60,9 +58,10 @@ async function initContext(){
   context = new BucketBrigadeContext({micStream});
   await context.start_bucket();
 
-  let div = $('<div>').css({background:'rgba(0.5, 0.5, 0.5, 1)',
+  let div = $('<div>').css({background:'rgba(127, 127, 127, 0.5)',
                             fontSize: '14pt',
                             textShadow: '0 0 1px black',
+                            color: 'white',
                             paddingLeft: 16,
                             paddingRight: 16,
                             position: 'absolute',

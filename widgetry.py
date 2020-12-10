@@ -91,7 +91,7 @@ async def status(req):
             if hasattr(ritual.state,'async_init'):
                 await ritual.state.async_init()
 
-        for key in ['background', 'bkZoom', 'bkZoomCenter']:
+        for key in ['background', 'bkZoom', 'bkZoomCenter', 'chatClass']:
             if key in data:
                 results[key] = data[key]
 

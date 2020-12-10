@@ -129,6 +129,13 @@
              padding: 6px;
              opacity: .35;
          }
+         #chat.normal {}
+         #chat.hidden {
+             display: none;
+         }
+         #chat.bow {
+             color: black;
+         }
          #chat:hover {
              opacity: 1;
          }
@@ -145,7 +152,6 @@
              flex-grow: 0;
          }
          .chat-message {
-             color: white;
              padding: 8px 0;
              border-radius:5px;
          }
@@ -177,7 +183,10 @@
               color: white;
               border-radius:3px;
               margin-bottom: 8px;
-          }
+         }
+         .bow #chat-send input {
+             color: black;
+         }
          #chat-message {
              width:180px;
              margin-right:8px;
@@ -186,6 +195,9 @@
          #chat-error {
              color:rgba(255,200,200);
              margin-bottom:8px
+         }
+         .bow #chat-error {
+             color: rgba(110,0,0);
          }
          #chat-submit {
              width: 50px;
@@ -360,6 +372,9 @@
                          }
                          if ( ! state ) state = new widgetClasses[data.widget](data);
                          await state.from_server(data);
+                     }
+                     if (data.chatClass) {
+                         $('#chat').removeClass().addClass(data.chatClass);
                      }
                      ask();
                  }
