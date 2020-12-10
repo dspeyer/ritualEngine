@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="16in"
+   height="7in"
+   viewBox="0 0 1152 504"
+   id="svg24"
+   sodipodi:docname="1.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata30">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs28" />
+  <sodipodi:namedview
+     pagecolor="#000000"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1142"
+     inkscape:window-height="741"
+     id="namedview26"
+     showgrid="false"
+     units="in"
+     inkscape:zoom="0.30903185"
+     inkscape:cx="1047.7807"
+     inkscape:cy="41.404776"
+     inkscape:window-x="48"
+     inkscape:window-y="24"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg24" />
+  <text
+     style="font-size:50px;font-family:Georgia;text-anchor:middle;fill:#ffffff;fill-opacity:1"
+     id="text2"
+     font-size="50"
+     x="568.4306"
+     y="51.862347">Solstice Layout Test</text>
+  <text
+     style="font-size:15px;font-family:Georgia;fill:#ffffff;fill-opacity:1"
+     id="text4"
+     font-size="15"
+     x="258.43057"
+     y="126.86234">Welcome! For best experience:</text>
+  <text
+     style="font-size:15px;font-family:Georgia;fill:#ffffff;fill-opacity:1"
+     id="text6"
+     font-size="15"
+     x="258.43057"
+     y="151.86234">• Close other videoconferencing software (Zoom, etc may interfere with solstice)</text>
+  <text
+     style="font-size:15px;font-family:Georgia;fill:#ffffff;fill-opacity:1"
+     id="text12"
+     font-size="15"
+     x="258.43057"
+     y="176.86234">• Use either a <tspan
+   style="font-style:italic;fill:#ffffff;fill-opacity:1"
+   id="tspan8"
+   font-style="italic">wired</tspan>
+ headset (preferably), or <tspan
+   style="font-style:italic;fill:#ffffff;fill-opacity:1"
+   id="tspan10"
+   font-style="italic">no</tspan>
+ headset. (No bluetooth)</text>
+  <text
+     style="font-size:15px;font-family:Georgia;fill:#ffffff;fill-opacity:1"
+     id="text14"
+     font-size="15"
+     x="258.43057"
+     y="201.86234">• Close other browser tabs</text>
+  <text
+     style="font-size:15px;font-family:Georgia;fill:#ffffff;fill-opacity:1"
+     id="text16"
+     font-size="15"
+     x="258.43057"
+     y="301.86237">Once you've calibrated, wait for others to finish calibrating.</text>
+  <text
+     style="font-size:15px;font-family:Georgia;fill:#ffffff;fill-opacity:1"
+     id="text18"
+     font-size="15"
+     x="258.43057"
+     y="326.86237">We'll start the singing test after some discussion in chat</text>
+  <rect
+     style="fill:none;fill-opacity:1;stroke:#00ffff;stroke-width:2.25;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0.80120003;stroke-opacity:1"
+     id="rect869"
+     width="253.125"
+     height="43.760593"
+     x="259.98941"
+     y="225.13348" />
+</svg>
