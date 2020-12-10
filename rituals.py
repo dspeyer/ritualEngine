@@ -91,6 +91,7 @@ async def ritualPage(req):
                                      else ''
                                  ),
                                  ratio=str(active[name].ratio),
+                                 breserve=active[name].breserve,
                                  islead=str(islead).lower(),
                                  bkgAll=str(active[name].bkgAll).lower(),
                                  rotate=str(active[name].rotate).lower(),
