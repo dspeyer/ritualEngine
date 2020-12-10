@@ -132,7 +132,7 @@ export class BucketSinging {
     this.div = $('<div>').appendTo($('body'));
     putOnBox(this.div, boxColors.lyrics);
     if (videoUrl) {
-      this.video_div = $('<div>').css('z-index',-1).appendTo($('body'));
+      this.video_div = $('<div>').css({zIndex:-1,borderRadius:'50%',overflow:'hidden'}).appendTo($('body'));
       putOnBox(this.video_div, boxColors.video);
     }
     this.lyrics = lyrics;
@@ -148,9 +148,12 @@ export class BucketSinging {
     
     if (videoUrl) {
       this.video = $(`video[src='${videoUrl}']`);
-      this.video.removeClass('hidden').addClass('bbs-video').css({opacity: 0}).prependTo(this.video_div);
+      this.video.removeClass('hidden')
+                .addClass('bbs-video')
+                .css({opacity: 0, height:'100%', position:'relative'})
+                .prependTo(this.video_div);
     }
-      
+
     if ( ! context) {
       let button = $('<input type="button" value="Click here to Initialize Singing">').appendTo(this.div);
       button.on('click', ()=>{
@@ -205,10 +208,16 @@ export class BucketSinging {
     await new Promise((res)=>{ this.client.addEventListener('connectivityChange',res); });
 
     if (this.video) {
-      this.client.addEventListener('markReached', ({detail:{data}})=>{
+      this.client.addEventListener('markReached', async ({detail:{data}})=>{
         if (data == 'backingTrackStart') {
           this.video.animate({opacity: 1}, 500);
           this.video[0].play();
+          if (this.video.width()==0) {
+            await new Promise((res)=>{this.video.on('loadedmetadata', res)});
+            this.video.off('loadedmetadata');
+          }
+          let left = (this.video_div.width() - this.video.width()) / 2 + 'px';
+          this.video.css({left});
         }
       });
       this.client.addEventListener('x_metadataReceived', ({detail:{metadata}})=>{
