@@ -17,9 +17,14 @@ PORT_FORWARD_PATH = os.environ.get('PORT_FORWARD_PATH', '/api')
 mark_base = 1000;
 
 class BucketSinging(object):
-    def __init__(self, ritual, boxColor, lyrics, bsBkg=None, leader=None, backing=None, videoUrl=None, justInit=False, **ignore):
+    def __init__(self, ritual, lyrics, boxColor=None, boxColors=None, bsBkg=None, leader=None, backing=None, videoUrl=None, justInit=False, **ignore):
         self.ritual = ritual
-        self.boxColor = boxColor
+        if boxColors:
+            self.boxColors = boxColors
+        elif boxColor:
+            self.boxColors = {'lyrics':boxColor, 'video':boxColor}
+        else:
+            raise ValueError('Box Colors Needed')
         self.lyrics = lyrics
         self.client_ids = []
         self.background_opts = (bsBkg or {})
@@ -97,7 +102,7 @@ class BucketSinging(object):
         self.consider_readiness()
         return { 'widget': 'BucketSinging',
                  'lyrics': self.lyrics,
-                 'boxColor': self.boxColor,
+                 'boxColors': self.boxColors,
                  'server_url': PORT_FORWARD_PATH,
                  'ready': self.ready,
                  'slot': self.slots.get(clientId, 2),

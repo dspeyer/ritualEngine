@@ -122,7 +122,7 @@ async function initContext(){
 }
 
 export class BucketSinging {
-  constructor({boxColor, lyrics, cleanup, background_opts, videoUrl, leader}) {
+  constructor({boxColors, lyrics, cleanup, background_opts, videoUrl, leader}) {
     let islead;
     if (leader) {
       islead = (document.cookie.indexOf(leader) != -1);
@@ -130,8 +130,11 @@ export class BucketSinging {
       islead = window.location.pathname.endsWith('lead');
     }
     this.div = $('<div>').appendTo($('body'));
-    this.video_div = $('<div>').css('z-index',-1).appendTo($('body'));
-    putOnBox([this.div, this.video_div], boxColor);
+    putOnBox(this.div, boxColor.lyrics);
+    if (videoUrl) {
+      this.video_div = $('<div>').css('z-index',-1).appendTo($('body'));
+      putOnBox(this.video_div, boxColor.video);
+    }
     this.lyrics = lyrics;
     this.cleanup = cleanup;
     this.background = background_opts;
