@@ -9,8 +9,8 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
    width="16in"
-   height="7in"
-   viewBox="0 0 1152 504"
+   height="6.4000001in"
+   viewBox="0 0 1152 460.80001"
    id="svg24"
    sodipodi:docname="1.svg"
    inkscape:version="0.92.3 (2405546, 2018-03-11)">
@@ -27,7 +27,21 @@
     </rdf:RDF>
   </metadata>
   <defs
-     id="defs28" />
+     id="defs28">
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter3269"
+       x="-0.10535664"
+       width="1.2107133"
+       y="-0.22741131"
+       height="1.4548227">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="30.47016"
+         id="feGaussianBlur3271" />
+    </filter>
+  </defs>
   <sodipodi:namedview
      pagecolor="#000000"
      bordercolor="#666666"
@@ -42,68 +56,76 @@
      id="namedview26"
      showgrid="false"
      units="in"
-     inkscape:zoom="0.30903185"
-     inkscape:cx="1047.7807"
-     inkscape:cy="41.404776"
-     inkscape:window-x="48"
-     inkscape:window-y="24"
+     inkscape:zoom="0.21851852"
+     inkscape:cx="-43.874162"
+     inkscape:cy="-18.960773"
+     inkscape:window-x="79"
+     inkscape:window-y="19"
      inkscape:window-maximized="0"
-     inkscape:current-layer="svg24" />
+     inkscape:current-layer="svg24"
+     inkscape:pagecheckerboard="true" />
+  <rect
+     style="fill:#ffffff;fill-opacity:0.26020412;stroke:none;stroke-width:2.25;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0.80120003;stroke-opacity:1;filter:url(#filter3269)"
+     id="rect3223"
+     width="694.10321"
+     height="321.56879"
+     x="243.45479"
+     y="104.34989" />
   <text
-     style="font-size:50px;font-family:Georgia;text-anchor:middle;fill:#ffffff;fill-opacity:1"
+     style="font-size:50px;font-family:Georgia;text-anchor:middle;fill:#000004;fill-opacity:1"
      id="text2"
      font-size="50"
-     x="568.4306"
-     y="51.862347">Solstice Layout Test</text>
+     x="595.88824"
+     y="63.577602">Solstice Layout Test</text>
   <text
-     style="font-size:15px;font-family:Georgia;fill:#ffffff;fill-opacity:1"
+     style="font-size:15px;font-family:Georgia;fill:#000004;fill-opacity:1"
      id="text4"
      font-size="15"
-     x="258.43057"
-     y="126.86234">Welcome! For best experience:</text>
+     x="285.88821"
+     y="138.57761">Welcome! For best experience:</text>
   <text
-     style="font-size:15px;font-family:Georgia;fill:#ffffff;fill-opacity:1"
+     style="font-size:15px;font-family:Georgia;fill:#000004;fill-opacity:1"
      id="text6"
      font-size="15"
-     x="258.43057"
-     y="151.86234">• Close other videoconferencing software (Zoom, etc may interfere with solstice)</text>
+     x="285.88821"
+     y="163.57759">• Close other videoconferencing software (Zoom, etc may interfere with solstice)</text>
   <text
-     style="font-size:15px;font-family:Georgia;fill:#ffffff;fill-opacity:1"
+     style="font-size:15px;font-family:Georgia;fill:#000004;fill-opacity:1"
      id="text12"
      font-size="15"
-     x="258.43057"
-     y="176.86234">• Use either a <tspan
-   style="font-style:italic;fill:#ffffff;fill-opacity:1"
+     x="285.88821"
+     y="188.57759">• Use either a <tspan
+   style="font-style:italic;fill:#000004;fill-opacity:1"
    id="tspan8"
    font-style="italic">wired</tspan>
  headset (preferably), or <tspan
-   style="font-style:italic;fill:#ffffff;fill-opacity:1"
+   style="font-style:italic;fill:#000004;fill-opacity:1"
    id="tspan10"
    font-style="italic">no</tspan>
  headset. (No bluetooth)</text>
   <text
-     style="font-size:15px;font-family:Georgia;fill:#ffffff;fill-opacity:1"
+     style="font-size:15px;font-family:Georgia;fill:#000004;fill-opacity:1"
      id="text14"
      font-size="15"
-     x="258.43057"
-     y="201.86234">• Close other browser tabs</text>
+     x="285.88821"
+     y="213.57759">• Close other browser tabs</text>
   <text
-     style="font-size:15px;font-family:Georgia;fill:#ffffff;fill-opacity:1"
+     style="font-size:15px;font-family:Georgia;fill:#000000;fill-opacity:1"
      id="text16"
      font-size="15"
-     x="258.43057"
-     y="301.86237">Once you've calibrated, wait for others to finish calibrating.</text>
+     x="285.88821"
+     y="313.57761">Once you've calibrated, wait for others to finish calibrating.</text>
   <text
-     style="font-size:15px;font-family:Georgia;fill:#ffffff;fill-opacity:1"
+     style="font-size:15px;font-family:Georgia;fill:#000000;fill-opacity:1"
      id="text18"
      font-size="15"
-     x="258.43057"
-     y="326.86237">We'll start the singing test after some discussion in chat</text>
+     x="285.88821"
+     y="338.57761">We'll start the singing test after some discussion in chat</text>
   <rect
      style="fill:none;fill-opacity:1;stroke:#00ffff;stroke-width:2.25;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0.80120003;stroke-opacity:1"
      id="rect869"
      width="253.125"
      height="43.760593"
-     x="259.98941"
-     y="225.13348" />
+     x="287.44705"
+     y="236.84874" />
 </svg>

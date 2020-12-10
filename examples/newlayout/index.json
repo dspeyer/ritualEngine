@@ -3,7 +3,7 @@
   "showParticipants": "video",
   "rotate": false,
   "useParticipantAudio": true,
-"bkgAll": true,
-  "ratio": 2.286,
-  "breserve": "22.22vh"
+  "bkgAll": true,
+  "ratio": 2.5,
+  "breserve": "30vh"
 }
