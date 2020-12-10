@@ -130,10 +130,10 @@ export class BucketSinging {
       islead = window.location.pathname.endsWith('lead');
     }
     this.div = $('<div>').appendTo($('body'));
-    putOnBox(this.div, boxColor.lyrics);
+    putOnBox(this.div, boxColors.lyrics);
     if (videoUrl) {
       this.video_div = $('<div>').css('z-index',-1).appendTo($('body'));
-      putOnBox(this.video_div, boxColor.video);
+      putOnBox(this.video_div, boxColors.video);
     }
     this.lyrics = lyrics;
     this.cleanup = cleanup;
