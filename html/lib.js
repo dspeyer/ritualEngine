@@ -1,7 +1,10 @@
 let elemBoxPairs = [];
 
 export function putOnBox(elems, color) {
-    let box = $('path[stroke="'+color+'"]')
+    let box = $('path[stroke="'+color+'"]');
+    if (! box.length) box = $('rect[stroke="'+color+'"]');
+    if (! box.length) box = $('path[style*="stroke:'+color+'"]');
+    if (! box.length) box = $('rect[style*="stroke:'+color+'"]');
     elemBoxPairs.push({elems,box});
     realPutOnBox({elems,box});
 }
