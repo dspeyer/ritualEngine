@@ -43,6 +43,20 @@ let css = `
   div.lyricdbg:hover {
     opacity: 1;
   }
+  div.initContext {
+      background: rgba(0, 0, 0, 0.5);
+      font-size: 14pt;
+      text-shadow: 0 0 2px black;
+      color: white;
+      padding: 0 16px;
+      position: absolute;
+      top: calc( 50% - 8em );
+      height: 16em;
+      left: 20vw;
+      right: 20vw;
+      border: 2px outset #777;
+      backdrop-filter: blur(8px);
+  }
 `;
 
 let backingTrackStartedRes;
@@ -58,19 +72,8 @@ async function initContext(){
   context = new BucketBrigadeContext({micStream});
   await context.start_bucket();
 
-  let div = $('<div>').css({background:'rgba(127, 127, 127, 0.5)',
-                            fontSize: '14pt',
-                            textShadow: '0 0 1px black',
-                            color: 'white',
-                            paddingLeft: 16,
-                            paddingRight: 16,
-                            position: 'absolute',
-                            top: 'calc( 50vh - 8em )',
-                            height: '16em',
-                            left: '20vw',
-                            right: '20vw',
-                            border: '2px outset #777'})
-                      .appendTo($('body'));
+  let div = $('<div>').addClass('initContext')
+                      .appendTo($('#content'));
   div.append("<p>First we'll measure the <b>latency</b> of your audio hardware.</p><p>Please turn your volume to max and put your "+
              "headphones where your microphone can hear them.  Or get ready to tap your microphone in time to the beeps.</p>");
   div.append($('<br>'));
