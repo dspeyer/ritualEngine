@@ -1,7 +1,4 @@
 Avatar stuff:
-* Sizing
-* On your left
-* Make overlap per-ritual configurable
 * Fewer videos
 ** Smart?
 *** Measure, either way
@@ -13,6 +10,8 @@ BBS stuff:
 * lyric timing acquisition
 * assign rooms
 * Don't calibrate volume if we skipped latency
+* Investigate calibration buttons doing nothing when there are lots of avatars
+* Readiness detector sometimes says 0/1/500 when it should say 1/1/500
 
 Chat:
 * Going away
