@@ -146,18 +146,19 @@ function fillAsAuditorium(div, n) {
     let left = n;
     for (let r=r0; left>0; r*=2/3) {
         let nr = Math.floor(w/(2*r));
-        if (r==r0) nr = Math.floor(nr/1.5);
+        if (r==r0) nr = Math.floor(nr/1.2); // TODO: Find a number with more logic behind it
         rows.push(nr);
         left -= nr;
     }
     if (left<0) {
-         let rem = - left / (n - left);
-         for (let i=0; i<rows.length; i++) {
-              let rh = Math.min(Math.round(rows[i]*rem), -left);
-              console.log({rem,rh,i,rowsi:rows[i],left,n});
-              left += rh;
-              rows[i] -= rh;
-             }
+        let rem = - left / (n - left);
+        rem *= (rows.length + 1) / rows.length;
+        for (let i=rows.length-1; i>=0; i--) {
+            let rh = Math.min(Math.ceil(rows[i]*rem), -left);
+            console.log({rem,rh,i,rowsi:rows[i],left,n});
+            left += rh;
+            rows[i] -= rh;
+        }
     }
     if (left!=0) {
         // Not sure if this will ever happen
@@ -169,18 +170,32 @@ function fillAsAuditorium(div, n) {
     let y,r;
     for (let rn of rows) {
         let xs = w/rn;
-        let x = xs / 2;
-        for (let i=0; i<rn; i++) {
-            let extra = r0 * (Math.pow(1.7, 4*Math.pow((x/w)-.5,2)) - 1);
-            if (yb==h-r0) {
+        if (yb==h-r0) {
+            let xc = r0;
+            for (let i=0; i<Math.floor(rn/2); i++) {
+                let extra = r0 * (Math.pow(2, 4*Math.pow((xc/w)-.5,2)) - 1);
                 y = yb - extra;
                 r = rb + extra;
-            } else {
+                xc += extra;
+                let xl = (2*i+1) * xs/2;
+                let x = (xc*(Math.floor(rn/2-1)-i) + xl*i) / Math.floor(rn/2-1);
+                ps.push({x,y,r,z:Math.round(r)});
+                ps.push({x:w-x,y,r,z:Math.round(r)});
+                xc += extra;
+                xc += xs;
+            }
+            if (rn%2) {
+                ps.push({x:w/2,y:yb,r:r0,z:Math.round(r0)});
+            }
+        } else {
+            let x = xs / 2;
+            for (let i=0; i<rn; i++) {
+                let extra = r0 * (Math.pow(2, 4*Math.pow((x/w)-.5,2)) - 1);
                 y = yb - 2*extra;
                 r = rb;
+                ps.push({x,y,r,z:Math.round(r)});
+                x += xs;
             }
-            ps.push({x,y,r,z:Math.round(r)});
-            x += xs;
         }
         yb -= 1.5 * rb;
         rb *= 2/3;
@@ -213,6 +228,7 @@ function putcircle(d,{x,y,r,label,z,br}) {
                                      'text-shadow': ('1px 1px 1px grey, -1px -1px 1px grey, ' +
                                                      '-1px 1px 1px grey, 1px -1px 1px grey'),
                                      'font-size': '14px',
+                                     zIndex: 99999
                                     })
                                .appendTo(d);
     }
