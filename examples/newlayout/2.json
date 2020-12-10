@@ -41,6 +41,7 @@
     "Hallelujah, Hallelujah",
     "Hallelujah, Hallelujah"
   ],
+  "lyricTimings": [14487, 18095, 21812, 29192, 31205, 36846, 42530, 44068, 51155, 66873, 67806, 70475, 74231, 81793, 85677, 89333, 95465, 96325, 103769, 114026, 119361, 123095, 126759, 134265, 138188, 141806, 147789, 148929, 155399, 166634, 167994, 175438, 188638, 189460, 190193],
   "backing": "hallelujah-backing-track.wav",
   "videoUrl": "https://solstice2020media.s3-us-west-1.amazonaws.com/hallelujah-silent-medium.mp4",
   "chatClass": "normal"

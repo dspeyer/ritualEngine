@@ -149,7 +149,9 @@ export class BucketSinging {
         this.cleanup = cleanup;
         this.background = background_opts;
         this.page = -1;
-
+        this.btstart = NaN;
+        this.timings = [];
+        
         this.dbg = $('<div class=lyricdbg>').appendTo($('body'));
         this.dbg.append('Debugging info:').append($('<br>'));
         if ( ! cssInit ){
@@ -214,6 +216,7 @@ export class BucketSinging {
 
         this.client.addEventListener('markReached', async ({detail: {data}}) => {
             if (data === 'backingTrackStart') {
+                this.bkstart = (new Date()).getTime();
                 backingTrackStartedRes();
             }
         });
@@ -269,6 +272,8 @@ export class BucketSinging {
             this.div.css('cursor','pointer');
             let cur = 0;
             this.div.on('click',async ()=>{
+                this.timings.push( (new Date()).getTime() - this.bkstart );
+                console.log(this.timings);
                 this.client.declare_event(mark_base+cur);
                 if (cur == 0) {
                     for (let i=1; i<=4; i++) {
