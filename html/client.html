@@ -235,6 +235,25 @@
          .hidden {
              display: none;
          }
+         .error {
+             position: absolute;
+             left: 20vw;
+             right: 20vw;
+             top:20vh;
+             background: white;
+             color: black;
+             border: 3px ridge red;
+             padding: 0.5em;
+         }
+         .error h2 {
+             font-family: monospace;
+             white-space: nowrap;
+             overflow: auto;
+         }
+         .error input {
+             background: #aaa;
+             border: outset #888 2px;
+         }
         </style>
     </head>
     <body>
@@ -260,6 +279,16 @@
             </div>
         </div>
         <script>
+         $(document).ajaxError((event, jqxhr, settings, thrownError) => {
+           let dlg = $(`<div class="error">
+                           <h1>${jqxhr.status} Error</h1>
+                           <h2>${settings.url}</h2>
+                           <pre>${jqxhr.responseText}</pre>
+                           <input type="button" value="Close">
+                        </div>`)
+             .appendTo($('body'));
+           dlg.find('input').on('click',()=>{dlg.remove();});
+         });
          if (%islead%) {
              $('#ctrls').show();
              $('#prev').click(()=>{ $.post('prevPage'); });
