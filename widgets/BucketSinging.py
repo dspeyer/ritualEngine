@@ -75,12 +75,13 @@ class BucketSinging(object):
         self.consider_readiness()
 
     async def sleep_then_check_readiness(self):
-        asyncio.sleep(1.1)
+        await asyncio.sleep(1.1)
         self.consider_readiness()
-        asyncio.sleep(4)
+        await asyncio.sleep(4)
         self.consider_readiness()
         
     def consider_readiness(self):
+        print("Checking readiness %d/%d/%d -- %.1f seconds" % (len(self.c_ready),len(self.c_seen),len(self.c_expected), (self.first_ready-datetime.now()).total_seconds()))
         seenThresh = datetime.now() - timedelta(seconds=30)
         self.c_expected = set([k for k,v in self.ritual.clients.items() if v.lastSeen > seenThresh])
         if self.ready:
@@ -123,3 +124,9 @@ class BucketSinging(object):
         if hasattr(self,'sleeping_readiness_checker') and not self.sleeping_readiness_checker.done():
             self.sleeping_readiness_checker.cancel()
 
+    def subpagesame(self, subhave, clientId):
+        if self.ready:
+            mysub = self.slots.get(clientId,2)
+        else:
+            mysub = -1
+        return subhave == '%d' % mysub

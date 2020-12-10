@@ -71,5 +71,5 @@ class Histogram(object):
             "xaxes": xax
         }
 
-    def subpagesame(self, subhave):
+    def subpagesame(self, subhave, clientId):
         return int(subhave) == len(self.data)

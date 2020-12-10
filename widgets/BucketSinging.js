@@ -56,6 +56,7 @@ let css = `
       right: 20vw;
       border: 2px outset #777;
       backdrop-filter: blur(8px);
+      z-index: 9999;
   }
 `;
 
@@ -135,7 +136,7 @@ export class BucketSinging {
     } else {
       islead = window.location.pathname.endsWith('lead');
     }
-    this.div = $('<div>').appendTo($('body'));
+      this.div = $('<div>').appendTo($('body'));
     putOnBox(this.div, boxColors.lyrics);
     if (videoUrl) {
       this.video_div = $('<div>').css({zIndex:-1,borderRadius:'50%',overflow:'hidden'}).appendTo($('body'));
@@ -144,7 +145,8 @@ export class BucketSinging {
     this.lyrics = lyrics;
     this.cleanup = cleanup;
     this.background = background_opts;
-      
+    this.page = -1;
+
     this.dbg = $('<div class=lyricdbg>').appendTo($('body'));
     this.dbg.append('Debugging info:').append($('<br>'));
     if ( ! cssInit ){
@@ -198,6 +200,7 @@ export class BucketSinging {
       return;
     }
     this.slot = slot;
+    this.page = slot;  
     let offset = (slot+1) * 3 + 1;
     this.dbg.append('slot '+slot+' -> offset '+offset).append($('<br>'));
 
