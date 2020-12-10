@@ -4,11 +4,12 @@
             addEventListener('error', (event) => {
                 event.preventDefault();
                 let title = document.title;
-                document.documentElement.innerHTML = `
+                $(`<div class=error>
                     <h1>This app has crashed. We're really sorry :-(</h1>
                     <h2>Please <a href="https://github.com/dspeyer/ritualEngine/issues/new">file a bug</a> with the following information; it will help us fix it.</h2>
-                    <textarea rows="50" cols="160" readonly></textarea>
-                    <h2>Then refresh the page and try again.</h2>`;
+                    <textarea readonly></textarea>
+                    <h2>Then refresh the page and try again.</h2>
+                </div>`).appendTo($('body'));
                 document.title = title;
                 let {name, message, stack} = event.error ?? {};
                 document.querySelector('textarea').textContent = stack ?? `${name}: ${message}`;
@@ -245,7 +246,7 @@
              border: 3px ridge red;
              padding: 0.5em;
          }
-         .error h2 {
+         .error h3 {
              font-family: monospace;
              white-space: nowrap;
              overflow: auto;
@@ -253,6 +254,10 @@
          .error input {
              background: #aaa;
              border: outset #888 2px;
+         }
+         .error textarea {
+             width: 98%;
+             height: 40vh;
          }
         </style>
     </head>
@@ -282,7 +287,7 @@
          $(document).ajaxError((event, jqxhr, settings, thrownError) => {
            let dlg = $(`<div class="error">
                            <h1>${jqxhr.status} Error</h1>
-                           <h2>${settings.url}</h2>
+                           <h3>${settings.url}</h3>
                            <pre>${jqxhr.responseText}</pre>
                            <input type="button" value="Close">
                         </div>`)
