@@ -54,6 +54,7 @@ async def ritualPage(req):
         chatQueue=asyncio.Queue(),
         lastSeen=datetime.now(),
         isStreamer=('streamer' in req.query),
+        room=None,
     )
     for datum in active[name].allChats[-50:]:
         active[name].clients[clientId].chatQueue.put_nowait(datum)
