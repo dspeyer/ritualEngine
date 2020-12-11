@@ -2,12 +2,10 @@ Avatar stuff:
 * Fewer videos
 ** Smart?
 *** Measure, either way
-* Rotation with lyrics
 * Names on Avatars
 
 BBS stuff:
 * new-style bucketing
-* lyric timing acquisition
 * assign rooms
 * Don't calibrate volume if we skipped latency
 

@@ -11,6 +11,16 @@ export function setParticipants(p,v) {
     redraw();
 }
 
+export let nvideos = 6;
+export let staticRotateHint = 10;
+let curVidRot = 0;
+let curStaRot = 0;
+export function rotateAvatars() {
+    curVidRot += (nvideos - 1) & 254;
+    curStaRot += staticRotateHint;
+    redraw();
+}
+
 let circles = [];
 export function redraw(force) {
     let div = $('#participants');
@@ -164,6 +174,9 @@ function fillAsAuditorium(div, n) {
         // Not sure if this will ever happen
         rows[rows.length-1] += left;
     }
+    if (rows.length > 2) {
+        staticRotateHint = rows[1];
+    }
     let ps=[];
     let rb = r0;
     let yb = h-r0;
@@ -178,7 +191,7 @@ function fillAsAuditorium(div, n) {
                 r = rb + extra;
                 xc += extra;
                 let xl = (2*i+1) * xs/2;
-                let x = (xc*(Math.floor(rn/2-1)-i) + xl*i) / Math.floor(rn/2-1);
+                let x = (xc*(Math.floor(rn/2-i)) + xl*i) / Math.floor(rn/2);
                 ps.push({x,y,r,z:Math.round(r)});
                 ps.push({x:w-x,y,r,z:Math.round(r)});
                 xc += extra;
@@ -247,28 +260,50 @@ let localAudioTrack = null;
 
 function setVideoAvatars() {
     videosToPlace = {};
-    let same = participants.filter((x)=>(x.room==currentRoomId));
+    let mes = participants.filter((x)=>(x.id==clientId));
+    let same = participants.filter((x)=>(x.room==currentRoomId && x.id!=clientId));
     let diff = participants.filter((x)=>(x.room!=currentRoomId));
-    participants = same.concat(diff);
-    for (let i in participants) {
-        let client = participants[i];
-        let cachebuster = client.hj + '_' + Math.round(((new Date()).getTime()+(i*10000))/300000);
-        circles[i].img.attr('src', 'clientAvatar/'+client.id+'?'+cachebuster);
-        if (twilioAudioEnabled) {
-            circles[i].css({opacity: (hasAudioTrack[client.id] ? 1 : .2)});
+    let samerot = Math.max( curVidRot%same.length, 1);
+    console.log({samerot,curVidRot,sl:same.length})
+    let samea = same.slice(samerot);
+    let sameb = same.slice(0,samerot);
+    let diffrot = Math.max( curStaRot%diff.length, 1);
+    let diffa = diff.slice(diffrot);
+    let diffb = diff.slice(0,diffrot);
+    let clients = [].concat(mes,samea,sameb,diffa,diffb);
+    let vidsPlaced = 0;
+    for (let i in clients) {
+        let client = clients[i];
+        let circle = circles[i];
+        circle.label?.text(i);
+        let cachebuster = client.hj + '_';
+        if (circle.width() > 10) {
+            cachebuster += Math.round(((new Date()).getTime()+(i*10*1000))/(300*1000));
         }
-        if (circles[i].videoOf == client.id) continue;
-        if (circles[i].videoOf) {
-            circles[i].video.hide();
-            circles[i].track.detach(circles[i].video[0]);
+        circle.img.attr('src', 'clientAvatar/'+client.id+'?'+cachebuster);
+        if (twilioAudioEnabled) {
+            circle.css({opacity: (hasAudioTrack[client.id] ? 1 : .2)});
+        }
+        if (circle.videoOf == client.id) {
+            vidsPlaced += 1;
+            continue;
+        }
+        if (vidsPlaced >= nvideos) {
+            continue;
+        }
+        if (circle.videoOf) {
+            circle.video.hide();
+            circle.track.detach(circle.video[0]);
             delete circles.videoOf;
             delete circles.track;
         }
         if (client.id == clientId) {
-            putVideoInCircle(circles[i], localVideo, clientId);
+            vidsPlaced += 1;
+            putVideoInCircle(circle, localVideo, clientId);
         }
         if (client.room == currentRoomId) {
-            videosToPlace[client.id] = circles[i];
+            vidsPlaced += 1;
+            videosToPlace[client.id] = circle;
         }
     }
     attachAllVideos();

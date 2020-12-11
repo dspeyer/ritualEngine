@@ -1,5 +1,6 @@
 import {MicEnumerator, openMic, BucketBrigadeContext, SingerClient, VolumeCalibrator, LatencyCalibrator} from './BucketSinging/app.js';
 import { putOnBox, bkgSet, bkgZoom } from '../../lib.js';
+import { rotateAvatars } from '../../avatars.js';
 
 let context = null;
 let calibrationFail = false;
@@ -295,6 +296,7 @@ export class BucketSinging {
     }
 
     async handleLyric(lid) {
+        rotateAvatars();
         this.div.find('span.current').removeClass('current').addClass('old');
         let elem = this.lyricEls[lid];
         if (! elem ) return;
