@@ -4,20 +4,24 @@ from copy import copy
 from random import random
 from collections import defaultdict
 from datetime import datetime, timedelta
+import json
+from itertools import count
 import socket
 import asyncio
+from urllib.parse import quote
 
-from aiohttp import web
+from aiohttp import web, ClientSession
 
 from users import getUserByEmail
+from core import secrets
 
 BUCKET_PATH = os.environ.get('BUCKET_PATH','../solstice-audio-test')
-PORT_FORWARD_PATH = os.environ.get('PORT_FORWARD_PATH', '/api')
+BUCKET_SINGING_URL = secrets.get('BUCKET_SINGING_URL', '/api')
 
 mark_base = 1000;
 
 class BucketSinging(object):
-    def __init__(self, ritual, lyrics, boxColor=None, boxColors=None, bsBkg=None, leader=None, backing=None, videoUrl=None, justInit=False, **ignore):
+    def __init__(self, ritual, lyrics, boxColor=None, boxColors=None, bsBkg=None, leader=None, backing=None, videoUrl=None, justInit=False, lyricTimings=None, **ignore):
         self.ritual = ritual
         if boxColors:
             self.boxColors = boxColors
@@ -34,6 +38,7 @@ class BucketSinging(object):
         self.slot_sizes = defaultdict(int)
         self.first_ready = datetime(9999, 1, 1, 1, 1, 1)
         self.justInit = justInit
+        self.lyricTimings = lyricTimings
         self.ready = False
         
         leader = getUserByEmail(leader)
@@ -94,9 +99,50 @@ class BucketSinging(object):
         if elapsed > timedelta(seconds=5):
             self.ready = True
         if self.ready:
+            asyncio.create_task(self.start_song())
             for i,task in self.ritual.reqs.items():
                 task.cancel()
 
+    async def start_song(self):
+        if hasattr(self,'sent_start_cmds'):
+            return
+        self.sent_start_cmds = True
+        if BUCKET_SINGING_URL.startswith('http'):
+            server = BUCKET_SINGING_URL
+        else:
+            server = 'http://localhost:8001'+BUCKET_SINGING_URL
+        if server.endswith('/'):
+            server=server[:-1]
+        client = ClientSession()
+        url = server + '/?mark_stop_singing=1'
+        print("POSTING "+url)
+        resp = await client.post(url)
+        print("response: "+(await resp.read()).decode())
+        url = server + '/?mark_start_singing=1'
+        if self.backing:
+            url += '?track='+quote(self.backing)
+        print("POSTING "+url)
+        resp = await client.post(url)
+        print("response: "+(await resp.read()).decode())
+        if self.lyricTimings:
+            metadata = resp.headers['x-audio-metadata']
+            print("metadata is "+metadata)
+            metadata = json.loads(metadata)
+            clock = metadata['server_clock']
+            sr = metadata['server_sample_rate']
+            evs = [ {'evid':i, 'clock':clock+t*sr} for i,t in enumerate(self.lyricTimings) ]
+            countdown = [ {'evid':-i, 'clock':clock+(self.lyricTimings[0]-i)*sr} for i in range(1,5) ]
+            evs = countdown + evs
+            for i in count(0,10):
+                # Break it up to avoid URL length limits
+                chunk = evs[i:i+10]
+                if not len(chunk):
+                    break
+                url = server + '/?event_data=' + quote(json.dumps(chunk))
+                print("POSTING "+url)
+                resp = await client.post(url)
+                print("response: "+(await resp.read()).decode())
+                
         
     def to_client(self, clientId, have):
         self.c_seen.add(clientId)
@@ -104,7 +150,7 @@ class BucketSinging(object):
         return { 'widget': 'BucketSinging',
                  'lyrics': self.lyrics,
                  'boxColors': self.boxColors,
-                 'server_url': PORT_FORWARD_PATH,
+                 'server_url': BUCKET_SINGING_URL,
                  'ready': self.ready,
                  'slot': self.slots.get(clientId, 2),
                  'background_opts': self.background_opts,

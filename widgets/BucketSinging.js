@@ -202,7 +202,7 @@ export class BucketSinging {
         $.post('widgetData', {calibrationFail, clientId, islead});
     }
 
-    async from_server({mark_base, slot, ready, backing_track, dbginfo, justInit, server_url}) {
+    async from_server({slot, ready, backing_track, dbginfo, justInit, server_url}) {
         this.dbg.append(dbginfo+' ready='+ready).append($('<br>'));
         if (!ready || !context) return;
         if (this.slot === slot) return;
@@ -215,7 +215,7 @@ export class BucketSinging {
         let offset = (slot+1) * 3 + 1;
         this.dbg.append('slot '+slot+' -> offset '+offset).append($('<br>'));
 
-        let apiUrl = window.location.protocol+'//'+window.location.host+server_url;
+        let apiUrl = server_url;
         let username = $('#chat-sender').val() || 'cId='+clientId; // Will show up in mixer console
         let secretId = Math.round(Math.random()*1e6); // TODO: understand this
         this.client = new SingerClient({context, apiUrl, offset, username, secretId});
@@ -253,7 +253,7 @@ export class BucketSinging {
         
 
         
-        if (slot==0) {
+        if (/*slot==*/0) {
             //TODO: figure out what this actually does, and why we need to wait
             await new Promise((res)=>{setTimeout(res,2000);});
             if (backing_track) {
@@ -263,7 +263,7 @@ export class BucketSinging {
             this.client.x_send_metadata("markStartSinging", true);
         }
         
-        if (slot==0) {
+        if (/*slot==*/0) {
             $('<div>').text('You are lead singer.  '+
                        (backing_track ? 'Instrumentals will begin soon.  ' : 'Sing when ready.  ') + 
                             'Click anywhere in the lyric area when you begin a new line')
@@ -274,16 +274,16 @@ export class BucketSinging {
                 this.lyricEls[i] = $('<span>').text(-i+'... ').appendTo(this.countdown);
             }
         }
-        if (slot==0) {
+        if (/*slot==*/0) {
             this.div.css('cursor','pointer');
             let cur = 0;
             this.div.on('click',async ()=>{
                 this.timings.push( (new Date()).getTime() - this.bkstart );
                 console.log(this.timings);
-                this.client.declare_event(mark_base+cur);
+                this.client.declare_event(cur);
                 if (cur == 0) {
                     for (let i=1; i<=4; i++) {
-                        this.client.declare_event(mark_base-i, i);
+                        this.client.declare_event(i, i);
                     }
                 }
                 await this.handleLyric(cur);
@@ -294,7 +294,7 @@ export class BucketSinging {
                 console.log('markreached',ev?.detail);
                 let lid = ev?.detail?.data;
                 if (lid == parseInt(lid)) {
-                    this.handleLyric(lid-mark_base);
+                    this.handleLyric(lid);
                 }
             });
         }
