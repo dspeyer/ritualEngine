@@ -18,8 +18,6 @@ from core import secrets
 BUCKET_PATH = os.environ.get('BUCKET_PATH','../solstice-audio-test')
 BUCKET_SINGING_URL = secrets.get('BUCKET_SINGING_URL', '/api')
 
-mark_base = 1000;
-
 class BucketSinging(object):
     def __init__(self, ritual, lyrics, boxColor=None, boxColors=None, bsBkg=None, leader=None, backing=None, videoUrl=None, justInit=False, lyricTimings=None, **ignore):
         self.ritual = ritual
@@ -46,8 +44,6 @@ class BucketSinging(object):
             self.leader = leader.rid
         else:
             self.leader = None
-        global mark_base
-        mark_base += 1000
 
         seenThresh = datetime.now() - timedelta(seconds=30)
         self.c_expected = set([k for k,v in ritual.clients.items() if v.lastSeen > seenThresh])
@@ -120,7 +116,7 @@ class BucketSinging(object):
         print("response: "+(await resp.read()).decode())
         url = server + '/?mark_start_singing=1'
         if self.backing:
-            url += '?track='+quote(self.backing)
+            url += '&track='+quote(self.backing)
         print("POSTING "+url)
         resp = await client.post(url)
         print("response: "+(await resp.read()).decode())
@@ -155,7 +151,6 @@ class BucketSinging(object):
                  'slot': self.slots.get(clientId, 2),
                  'background_opts': self.background_opts,
                  "videoUrl": self.videoUrl,
-                 'mark_base': mark_base,
                  'leader': self.leader,
                  'backing_track': self.backing or False,
                  'justInit': self.justInit,
