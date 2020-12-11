@@ -278,7 +278,7 @@ export class BucketSinging {
             this.div.css('cursor','pointer');
             let cur = 0;
             this.div.on('click',async ()=>{
-                this.timings.push( (new Date()).getTime() - this.bkstart );
+                this.timings.push( ((new Date()).getTime() - this.bkstart) / 1000 );
                 console.log(this.timings);
                 this.client.declare_event(cur);
                 if (cur == 0) {
