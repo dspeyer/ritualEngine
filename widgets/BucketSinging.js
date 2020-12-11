@@ -74,6 +74,11 @@ async function initContext(){
     context = new BucketBrigadeContext({micStream});
     await context.start_bucket();
 
+    if (window.skipCalibration) {
+      context.send_local_latency(150);
+      return;
+    }
+
     let div = $('<div>').addClass('initContext')
                         .appendTo($('#content'));
     div.append("<p>First we'll measure the <b>latency</b> of your audio hardware.</p><p>Please turn your volume to max "+
