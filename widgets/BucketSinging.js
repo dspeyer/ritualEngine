@@ -71,12 +71,13 @@ async function initContext(){
     let mic = mics[0]; // TODO: be smarter?
     console.log('Chose mic: ',mic);
     let micStream = await openMic(mic.deviceId);
-    context = new BucketBrigadeContext({micStream});
-    await context.start_bucket();
+    let mycontext = new BucketBrigadeContext({micStream});
+    await mycontext.start_bucket();
 
     if (window.skipCalibration) {
-      context.send_local_latency(150);
-      return;
+        mycontext.send_local_latency(150);
+        context = mycontext;
+        return;
     }
 
     let div = $('<div>').addClass('initContext')
@@ -98,7 +99,7 @@ async function initContext(){
     div.append(button);
     let res;
     let p = new Promise((res_)=>{res=res_;});
-    let estimator = new LatencyCalibrator({context, clickVolume:100}); // TODO: gradually increasing clickVolume
+    let estimator = new LatencyCalibrator({context:mycontext, clickVolume:100}); // TODO: gradually increasing clickVolume
     estimator.addEventListener('beep', (ev)=>{
         console.log(ev);
         if (ev.detail.done) res();
@@ -124,7 +125,7 @@ async function initContext(){
     div.append(button);
     p = new Promise((res_)=>{res=res_;});
     window.reportedVolume = {}; // WHY DO WE NEED THIS?
-    estimator = new VolumeCalibrator({context});
+    estimator = new VolumeCalibrator({context: mycontext});
     estimator.addEventListener('volumeChange', (ev)=>{ $('#curvol').text((ev.detail.volume*1000).toPrecision(3)) });
     estimator.addEventListener('volumeCalibrated', res);
     button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
@@ -135,6 +136,8 @@ async function initContext(){
     button = $('<input type=button>').attr('value',"Nifty").appendTo(div);
     await new Promise((res)=>{button.on('click',res);});
     div.remove();
+
+    context = mycontext;
 }
 
 export class BucketSinging {
