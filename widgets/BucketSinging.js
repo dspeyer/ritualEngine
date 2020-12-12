@@ -138,13 +138,7 @@ async function initContext(){
 }
 
 export class BucketSinging {
-    constructor({boxColors, lyrics, cleanup, background_opts, videoUrl, leader}) {
-        let islead;
-        if (leader) {
-            islead = (document.cookie.indexOf(leader) != -1);
-        } else {
-            islead = window.location.pathname.endsWith('lead');
-        }
+    constructor({boxColors, lyrics, cleanup, background_opts, videoUrl}) {
         this.div = $('<div>').appendTo($('body'));
         putOnBox(this.div, boxColors.lyrics);
         if (videoUrl) {
@@ -179,12 +173,12 @@ export class BucketSinging {
                 button.remove();
                 initContext().then(()=>{
                     this.show_lyrics(lyrics);
-                    this.declare_ready(islead);
+                    this.declare_ready();
                 });
             });
         } else {
             this.show_lyrics(lyrics);
-            this.declare_ready(islead);
+            this.declare_ready();
         }
     }
     
@@ -197,12 +191,13 @@ export class BucketSinging {
         }
     }
 
-    declare_ready(islead) {
+    declare_ready() {
+        let islead = window.location.pathname.endsWith('lead');
         this.dbg.append('declaring ready islead='+islead).append($('<br>'));
         $.post('widgetData', {calibrationFail, clientId, islead});
     }
 
-    async from_server({slot, ready, backing_track, dbginfo, justInit, server_url}) {
+    async from_server({slot, ready, backing_track, dbginfo, justInit, server_url, lyricLead}) {
         this.dbg.append(dbginfo+' ready='+ready).append($('<br>'));
         if (!ready || !context) return;
         if (this.slot === slot) return;
@@ -253,7 +248,7 @@ export class BucketSinging {
         
 
         
-        if (/*slot==*/0) {
+        if (lyricLead) {
             //TODO: figure out what this actually does, and why we need to wait
             await new Promise((res)=>{setTimeout(res,2000);});
             if (backing_track) {
@@ -263,7 +258,7 @@ export class BucketSinging {
             this.client.x_send_metadata("markStartSinging", true);
         }
         
-        if (/*slot==*/0) {
+        if (lyricLead) {
             $('<div>').text('You are lead singer.  '+
                        (backing_track ? 'Instrumentals will begin soon.  ' : 'Sing when ready.  ') + 
                             'Click anywhere in the lyric area when you begin a new line')
@@ -274,7 +269,7 @@ export class BucketSinging {
                 this.lyricEls[i] = $('<span>').text(-i+'... ').appendTo(this.countdown);
             }
         }
-        if (/*slot==*/0) {
+        if (lyricLead) {
             this.div.css('cursor','pointer');
             let cur = 0;
             this.div.on('click',async ()=>{
