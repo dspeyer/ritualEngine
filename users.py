@@ -5,13 +5,13 @@ from aiohttp import web, ClientSession
 import numpy as np
 import cv2
 
-from core import app, users, struct
+from core import app, error_handler, users, struct, tpl
 
 async def addLogin(req):
     return web.Response(body=open('html/login.html').read(), content_type='text/html')                
 
 async def manageLogins(req):
-    return web.Response(body=open('html/manage.html').read(), content_type='text/html')                
+    return web.Response(body=tpl('html/manage.html', errorhandler=error_handler), content_type='text/html')                
 
 async def dbgLoginPage(req):
     return web.Response(body=open('html/login.html').read(), content_type='text/html')
