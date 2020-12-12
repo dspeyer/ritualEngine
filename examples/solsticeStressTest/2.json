@@ -1,6 +1,7 @@
 {
   "widget": "BucketSinging",
   "background": "sunset2-01.jpg",
+  "chatClass": "normal", 
   "boxColor": "#000000",
   "showParticipants ": true,
   "rotate": false,

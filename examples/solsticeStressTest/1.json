@@ -2,5 +2,5 @@
   "widget": "WelcomeWatch",
   "boxColor": "#00ff00",
   "twilioAudioEnabled": true,
-  "chatClass": "bow"
+  "chatClass": "normal"
 }
