@@ -56,6 +56,7 @@ async def ritualPage(req):
         chatQueue=asyncio.Queue(),
         lastSeen=datetime.now(),
         isStreamer=('streamer' in req.query),
+        room=None,
     )
     for datum in active[name].allChats[-50:]:
         active[name].clients[clientId].chatQueue.put_nowait(datum)
@@ -93,6 +94,7 @@ async def ritualPage(req):
                                      else ''
                                  ),
                                  ratio=str(active[name].ratio),
+                                 breserve=active[name].breserve,
                                  islead=str(islead).lower(),
                                  bkgAll=str(active[name].bkgAll).lower(),
                                  rotate=str(active[name].rotate).lower(),
@@ -192,7 +194,8 @@ async def mkRitual(req):
     print("very good")
     timestamp = datetime.now(timezone.utc).isoformat()
     active[name] = Ritual(script=script, reqs={}, state=None, page=page, background=opts['background'],
-                          bkgAll=opts.get('bkgAll',False), ratio=opts.get('ratio',16/9), rotate=opts.get('rotate',True),
+                          bkgAll=opts.get('bkgAll',False), ratio=opts.get('ratio',16/9),
+                          rotate=opts.get('rotate',True), breserve=opts.get('breserve','233px'),
                           jpgs=[defaultjpg], jpgrats=[1], clients={}, allChats=[], videos=set())
     for slide_path in glob(f'examples/{script}/*.json'):
         filename = path.basename(slide_path)

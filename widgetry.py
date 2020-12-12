@@ -53,7 +53,7 @@ async def status(req):
     have = int(req.query.get('have'))
     subhave = req.query.get('subhave')
     if ( have==ritual.page and
-         ( not ritual.state or not hasattr(ritual.state,'subpagesame') or ritual.state.subpagesame(subhave) ) ):
+         ( not ritual.state or not hasattr(ritual.state,'subpagesame') or ritual.state.subpagesame(subhave, clientId) ) ):
         sleepid += 1
         myid = sleepid
         sleeptask = create_task(sleep(25))
@@ -91,7 +91,7 @@ async def status(req):
             if hasattr(ritual.state,'async_init'):
                 await ritual.state.async_init()
 
-        for key in ['background', 'bkZoom', 'bkZoomCenter']:
+        for key in ['background', 'bkZoom', 'bkZoomCenter', 'chatClass']:
             if key in data:
                 results[key] = data[key]
 

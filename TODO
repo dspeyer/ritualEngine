@@ -1,4 +1,16 @@
+Avatar stuff:
+* Fewer videos
+** Smart?
+*** Measure, either way
+* Names on Avatars
 
+BBS stuff:
+* new-style bucketing
+* assign rooms
+* Don't calibrate volume if we skipped latency
+
+Chat:
+* Avatars in chat?
 
 wrap long lines in lyrics
 break up status function?  Move part to rituals.py?

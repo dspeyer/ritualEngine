@@ -11,6 +11,16 @@ export function setParticipants(p,v) {
     redraw();
 }
 
+export let nvideos = 6;
+export let staticRotateHint = 10;
+let curVidRot = 0;
+let curStaRot = 0;
+export function rotateAvatars() {
+    curVidRot += (nvideos - 1) & 254;
+    curStaRot += staticRotateHint;
+    redraw();
+}
+
 let circles = [];
 export function redraw(force) {
     let div = $('#participants');
@@ -146,36 +156,62 @@ function fillAsAuditorium(div, n) {
     let left = n;
     for (let r=r0; left>0; r*=2/3) {
         let nr = Math.floor(w/(2*r));
+        if (r==r0) nr = Math.floor(nr/1.2); // TODO: Find a number with more logic behind it
         rows.push(nr);
         left -= nr;
     }
     if (left<0) {
-         let rem = - left / (n - left);
-         for (let i=0; i<rows.length; i++) {
-              let rh = Math.min(Math.round(rows[i]*rem), -left);
-              console.log({rem,rh,i,rowsi:rows[i],left,n});
-              left += rh;
-              rows[i] -= rh;
-             }
+        let rem = - left / (n - left);
+        rem *= (rows.length + 1) / rows.length;
+        for (let i=rows.length-1; i>=0; i--) {
+            let rh = Math.min(Math.ceil(rows[i]*rem), -left);
+            console.log({rem,rh,i,rowsi:rows[i],left,n});
+            left += rh;
+            rows[i] -= rh;
+        }
     }
     if (left!=0) {
         // Not sure if this will ever happen
         rows[rows.length-1] += left;
     }
+    if (rows.length > 2) {
+        staticRotateHint = rows[1];
+    }
     let ps=[];
-    let r = r0;
-    let y = h-r;
-    let br = 50;
+    let rb = r0;
+    let yb = h-r0;
+    let y,r;
     for (let rn of rows) {
         let xs = w/rn;
-        let x = xs / 2;
-        for (let i=0; i<rn; i++) {
-            ps.push({x,y,r,br,z:r});
-            x += xs;
+        if (yb==h-r0) {
+            let xc = r0;
+            for (let i=0; i<Math.floor(rn/2); i++) {
+                let extra = r0 * (Math.pow(2, 4*Math.pow((xc/w)-.5,2)) - 1);
+                y = yb - extra;
+                r = rb + extra;
+                xc += extra;
+                let xl = (2*i+1) * xs/2;
+                let x = (xc*(Math.floor(rn/2-i)) + xl*i) / Math.floor(rn/2);
+                ps.push({x,y,r,z:Math.round(r)});
+                ps.push({x:w-x,y,r,z:Math.round(r)});
+                xc += extra;
+                xc += xs;
+            }
+            if (rn%2) {
+                ps.push({x:w/2,y:yb,r:r0,z:Math.round(r0)});
+            }
+        } else {
+            let x = xs / 2;
+            for (let i=0; i<rn; i++) {
+                let extra = r0 * (Math.pow(2, 4*Math.pow((x/w)-.5,2)) - 1);
+                y = yb - 2*extra;
+                r = rb;
+                ps.push({x,y,r,z:Math.round(r)});
+                x += xs;
+            }
         }
-        y -= (2 - br/200 - 0.25) * r; // TODO: make the Y's still add up with this extra spacing
-        r *= 2/3;
-        br = 50 //Math.min(br+20,50);
+        yb -= 1.5 * rb;
+        rb *= 2/3;
     }
     div.empty();
     return ps.map(putcircle.bind(null,div));
@@ -185,11 +221,12 @@ function putcircle(d,{x,y,r,label,z,br}) {
     let s = Math.round(2*r) - 2 + 'px';
     let left = Math.round(x-r) + 1 + 'px';
     let top = Math.round(y-r) + 1 + 'px';
+    if (br===undefined) br=50;
     let div = $('<div>').css({position:'absolute', width: s, height: s, left, top,
-                              border: '1px rgba(255,255,255,0.5) solid'})
+                              border: '1px rgba(255,255,255,0.5) solid',
+                              borderRadius: br+'%', overflow: 'hidden'})
                         .appendTo(d);
     if (z) div.css('z-index', z);
-    if (br) div.css({borderRadius: br+'%', overflow: 'hidden'});
     div.img = $('<img>').css({width:'100%',height:'100%',position:'absolute'}).appendTo(div);
     div.video = $('<video>').css({width:'100%',height:'100%',position:'absolute'}).appendTo(div);
     div.video.hide();
@@ -204,6 +241,7 @@ function putcircle(d,{x,y,r,label,z,br}) {
                                      'text-shadow': ('1px 1px 1px grey, -1px -1px 1px grey, ' +
                                                      '-1px 1px 1px grey, 1px -1px 1px grey'),
                                      'font-size': '14px',
+                                     zIndex: 99999
                                     })
                                .appendTo(d);
     }
@@ -222,28 +260,50 @@ let localAudioTrack = null;
 
 function setVideoAvatars() {
     videosToPlace = {};
-    let same = participants.filter((x)=>(x.room==currentRoomId));
+    let mes = participants.filter((x)=>(x.id==clientId));
+    let same = participants.filter((x)=>(x.room==currentRoomId && x.id!=clientId));
     let diff = participants.filter((x)=>(x.room!=currentRoomId));
-    participants = same.concat(diff);
-    for (let i in participants) {
-        let client = participants[i];
-        let cachebuster = client.hj + '_' + Math.round(((new Date()).getTime()+(i*10000))/300000);
-        circles[i].img.attr('src', 'clientAvatar/'+client.id+'?'+cachebuster);
-        if (twilioAudioEnabled) {
-            circles[i].css({opacity: (hasAudioTrack[client.id] ? 1 : .2)});
+    let samerot = Math.max( curVidRot%same.length, 1);
+    console.log({samerot,curVidRot,sl:same.length})
+    let samea = same.slice(samerot);
+    let sameb = same.slice(0,samerot);
+    let diffrot = Math.max( curStaRot%diff.length, 1);
+    let diffa = diff.slice(diffrot);
+    let diffb = diff.slice(0,diffrot);
+    let clients = [].concat(mes,samea,sameb,diffa,diffb);
+    let vidsPlaced = 0;
+    for (let i in clients) {
+        let client = clients[i];
+        let circle = circles[i];
+        circle.label?.text(i);
+        let cachebuster = client.hj + '_';
+        if (circle.width() > 10) {
+            cachebuster += Math.round(((new Date()).getTime()+(i*10*1000))/(300*1000));
         }
-        if (circles[i].videoOf == client.id) continue;
-        if (circles[i].videoOf) {
-            circles[i].video.hide();
-            circles[i].track.detach(circles[i].video[0]);
+        circle.img.attr('src', 'clientAvatar/'+client.id+'?'+cachebuster);
+        if (twilioAudioEnabled) {
+            circle.css({opacity: (hasAudioTrack[client.id] ? 1 : .2)});
+        }
+        if (circle.videoOf == client.id) {
+            vidsPlaced += 1;
+            continue;
+        }
+        if (vidsPlaced >= nvideos) {
+            continue;
+        }
+        if (circle.videoOf) {
+            circle.video.hide();
+            circle.track.detach(circle.video[0]);
             delete circles.videoOf;
             delete circles.track;
         }
         if (client.id == clientId) {
-            putVideoInCircle(circles[i], localVideo, clientId);
+            vidsPlaced += 1;
+            putVideoInCircle(circle, localVideo, clientId);
         }
         if (client.room == currentRoomId) {
-            videosToPlace[client.id] = circles[i];
+            vidsPlaced += 1;
+            videosToPlace[client.id] = circle;
         }
     }
     attachAllVideos();

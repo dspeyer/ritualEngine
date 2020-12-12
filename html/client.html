@@ -4,11 +4,12 @@
             addEventListener('error', (event) => {
                 event.preventDefault();
                 let title = document.title;
-                document.documentElement.innerHTML = `
+                $(`<div class=error>
                     <h1>This app has crashed. We're really sorry :-(</h1>
                     <h2>Please <a href="https://github.com/dspeyer/ritualEngine/issues/new">file a bug</a> with the following information; it will help us fix it.</h2>
-                    <textarea rows="50" cols="160" readonly></textarea>
-                    <h2>Then refresh the page and try again.</h2>`;
+                    <textarea readonly></textarea>
+                    <h2>Then refresh the page and try again.</h2>
+                </div>`).appendTo($('body'));
                 document.title = title;
                 let {name, message, stack} = event.error ?? {};
                 document.querySelector('textarea').textContent = stack ?? `${name}: ${message}`;
@@ -36,8 +37,8 @@
              overflow: hidden;
          }
          .content.shrunk {
-             max-height: calc( 100vh - 233px );
-             max-width: calc( ( 100vh - 233px ) * %ratio% );
+             max-height: calc( 100vh - %breserve% );
+             max-width: calc( ( 100vh -  %breserve% ) * %ratio% );
              margin: auto;
          }
          .content svg {
@@ -46,12 +47,11 @@
          }
          .participants {
              width: 100vw;
-             height: 350px;
+             height:  %breserve%;
              position: absolute;
-             bottom: -5;
+             bottom: 0;
              display: flex;
              flex-wrap: wrap-reverse;
-             overflow: hidden;
          }
          .participant-video-wrapper {
              margin: 2px;
@@ -115,7 +115,7 @@
              color:black;
          }
          #chat {
-             max-height: calc(100vh - 300px);
+             max-height: calc(100vh - 1.5 * %breserve% );
              width: 250px;
              position: fixed;
              z-index: 1;
@@ -128,6 +128,13 @@
              font-family: Verdana, Geneva, Tahoma, sans-serif;
              padding: 6px;
              opacity: .35;
+         }
+         #chat.normal {}
+         #chat.hidden {
+             display: none;
+         }
+         #chat.bow {
+             color: black;
          }
          #chat:hover {
              opacity: 1;
@@ -145,7 +152,6 @@
              flex-grow: 0;
          }
          .chat-message {
-             color: white;
              padding: 8px 0;
              border-radius:5px;
          }
@@ -177,7 +183,10 @@
               color: white;
               border-radius:3px;
               margin-bottom: 8px;
-          }
+         }
+         .bow #chat-send input {
+             color: black;
+         }
          #chat-message {
              width:180px;
              margin-right:8px;
@@ -186,6 +195,9 @@
          #chat-error {
              color:rgba(255,200,200);
              margin-bottom:8px
+         }
+         .bow #chat-error {
+             color: rgba(110,0,0);
          }
          #chat-submit {
              width: 50px;
@@ -245,7 +257,7 @@
              border: 3px ridge red;
              padding: 0.5em;
          }
-         .error h2 {
+         .error h3 {
              font-family: monospace;
              white-space: nowrap;
              overflow: auto;
@@ -253,6 +265,10 @@
          .error input {
              background: #aaa;
              border: outset #888 2px;
+         }
+         .error textarea {
+             width: 98%;
+             height: 40vh;
          }
         </style>
     </head>
@@ -282,7 +298,7 @@
          $(document).ajaxError((event, jqxhr, settings, thrownError) => {
            let dlg = $(`<div class="error">
                            <h1>${jqxhr.status} Error</h1>
-                           <h2>${settings.url}</h2>
+                           <h3>${settings.url}</h3>
                            <pre>${jqxhr.responseText}</pre>
                            <input type="button" value="Close">
                         </div>`)
@@ -356,6 +372,9 @@
                          }
                          if ( ! state ) state = new widgetClasses[data.widget](data);
                          await state.from_server(data);
+                     }
+                     if (data.chatClass) {
+                         $('#chat').removeClass().addClass(data.chatClass);
                      }
                      ask();
                  }
