@@ -327,7 +327,7 @@ export async function twilioConnect(token, roomId) {
 
 export function setTwilioAudioEnabled(nv) {
     if (nv == twilioAudioEnabled) return;
-    hasAudioTrack = {};
+    hasAudioTrack = {[clientId]: true};
     if (nv) {
         twilioAudioEnabled = true;
         console.log('trying to get local audio');
