@@ -3,5 +3,6 @@
   "showParticipants": "video",
   "rotate": false,
   "useParticipantAudio": true,
-  "bkgAll": true
+  "bkgAll": true,
+  "welcome": "welcome"
 }

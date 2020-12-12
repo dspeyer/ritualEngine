@@ -1,32 +1,91 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
-  <g enable-background="new" font-family="Georgia" fill="white">
-    <text y="75" x="360" font-size="50" font-family="Georgia" fill="white" text-anchor="middle">
-        Solstice Stress Test
-    </text>
-    <text y="150" x="50" font-size="15" font-family="Georgia" fill="white">
-        Welcome! For best experience:
-    </text>
-    <text y="175" x="50" font-size="15" font-family="Georgia" fill="white" >
-        • Close other videoconferencing software (Zoom, etc may interfere with solstice)
-    </text>
-    <text y="200" x="50" font-size="15" font-family="Georgia" fill="white" >
-        • Use either a <tspan font-style="italic">wired</tspan> headset (preferably), or <tspan font-style="italic">no</tspan> headset. (No bluetooth)
-    </text>
-    <text y="225" x="50" font-size="15" font-family="Georgia" fill="white" >
-        • Close other browser tabs
-    </text>
-    <text y="325" x="50" font-size="15" font-family="Georgia" fill="white" >
-        Once you've calibrated, wait for others to finish calibrating. 
-    </text>
-    <text y="350" x="50" font-size="15" font-family="Georgia" fill="white" >
-        We'll start the singing test at roughly 2:05pm
-    </text>
-    <!-- <rect y="100" width="700" height="700" fill="rgba(0,255,0,.5)"/> -->
-    <path stroke="#000000" d="M 50 250 L 50 750 L 750 750 L 800 250 Z" fill="none">
-    </path>
-    <!-- <path transform="matrix(.0018,0,0,.0024,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#000000" d="M 22278 70330 L 343482 70330 L 343482 202066 L 22278 202066 Z "/> -->
-  </g>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="720pt"
+   height="405pt"
+   viewBox="0 0 720 405"
+   id="svg8"
+   sodipodi:docname="1.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata14">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs12" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1142"
+     inkscape:window-height="741"
+     id="namedview10"
+     showgrid="false"
+     inkscape:pagecheckerboard="true"
+     inkscape:zoom="0.43703704"
+     inkscape:cx="202.68325"
+     inkscape:cy="274.13548"
+     inkscape:window-x="48"
+     inkscape:window-y="24"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg8" />
+  <text
+     style="font-size:50px;font-family:Georgia;text-anchor:middle;fill:#000000;fill-opacity:1;"
+     id="text2"
+     font-size="50"
+     x="360"
+     y="75">Lobby</text>
+  <flowRoot
+     xml:space="preserve"
+     id="flowRoot823"
+     style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Bitstream Vera Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+       id="flowRegion825"><rect
+         id="rect827"
+         width="658.98303"
+         height="48.050846"
+         x="153.30508"
+         y="125.84746" /></flowRegion><flowPara
+       id="flowPara829"></flowPara></flowRoot>  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:30px;line-height:125%;font-family:'Bitstream Vera Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="65.211861"
+     y="123.55932"
+     id="text833"><tspan
+       sodipodi:role="line"
+       id="tspan831"
+       x="65.211861"
+       y="123.55932"
+       style="stroke-width:0.75px">Hang out here and wait for everyone to</tspan><tspan
+       sodipodi:role="line"
+       x="65.211861"
+       y="161.05933"
+       style="stroke-width:0.75px"
+       id="tspan835">complete the welcome screen</tspan></text>
+  <rect
+     style="fill:none;fill-opacity:1;stroke:#00ff00;stroke-width:2.25;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0.80120003;stroke-opacity:1"
+     id="rect837"
+     width="128.70763"
+     height="56.631355"
+     x="284.87289"
+     y="209.36441" />
 </svg>

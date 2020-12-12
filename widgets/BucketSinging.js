@@ -141,7 +141,7 @@ async function initContext(){
 }
 
 export class BucketSinging {
-    constructor({boxColors, lyrics, cleanup, background_opts, videoUrl, leader}) {
+    constructor({boxColors, lyrics, cleanup, background_opts, videoUrl, leader, page}) {
         let islead;
         if (leader) {
             islead = (document.cookie.indexOf(leader) != -1);
@@ -160,6 +160,7 @@ export class BucketSinging {
         this.page = -1;
         this.btstart = NaN;
         this.timings = [];
+        this.iswelcome = (page=='welcome');
         
         this.dbg = $('<div class=lyricdbg>').appendTo($('body'));
         this.dbg.append('Debugging info:').append($('<br>'));
@@ -202,7 +203,11 @@ export class BucketSinging {
 
     declare_ready(islead) {
         this.dbg.append('declaring ready islead='+islead).append($('<br>'));
-        $.post('widgetData', {calibrationFail, clientId, islead});
+        if (this.iswelcome) {
+            $.post('welcomed/'+clientId);
+        } else {
+            $.post('widgetData', {calibrationFail, clientId, islead});
+        }
     }
 
     async from_server({mark_base, slot, ready, backing_track, dbginfo, justInit, server_url}) {

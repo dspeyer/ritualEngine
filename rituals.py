@@ -56,6 +56,8 @@ async def ritualPage(req):
         isStreamer=('streamer' in req.query),
         room=None,
     )
+    if active[name].welcome:
+        active[name].clients[clientId].welcomed = False
     for datum in active[name].allChats[-50:]:
         active[name].clients[clientId].chatQueue.put_nowait(datum)
     if hasattr(active[name], 'current_video_room'):
@@ -103,6 +105,20 @@ async def ritualPage(req):
                         ),
                         content_type='text/html', charset='utf8')
 
+
+async def welcomed(req):
+    name = req.match_info.get('name','')
+    if name not in active:
+        return web.Response(status=404)
+    clientId = req.match_info.get('client','')
+    if clientId not in active[name].clients:
+        return web.Response(status=404)
+    active[name].clients[clientId].welcomed = True
+    for i,task in active[name].reqs.items():
+        task.cancel()
+    return web.Response(status=204)
+
+
 async def nextOrPrevPage(req):
     name = req.match_info.get('name','')
     if name not in active:
@@ -113,6 +129,7 @@ async def nextOrPrevPage(req):
             active[name].state.destroy()
     elif isnext:
         active[name].rotateSpeakers()
+    print("Clearing state")
     active[name].state = None
     active[name].page += (isnext and 1 or -1)
     for i,task in active[name].reqs.items():
@@ -192,8 +209,8 @@ async def mkRitual(req):
     print("very good")
     timestamp = datetime.now(timezone.utc).isoformat()
     active[name] = Ritual(script=script, reqs={}, state=None, page=page, background=opts['background'],
-                          bkgAll=opts.get('bkgAll',False), ratio=opts.get('ratio',16/9),
-                          rotate=opts.get('rotate',True), breserve=opts.get('breserve','233px'),
+                          bkgAll=opts.get('bkgAll',False), ratio=opts.get('ratio',16/9), welcome=opts.get('welcome'),
+                          rotate=opts.get('rotate',True), breserve=opts.get('breserve','233px'), 
                           jpgs=[defaultjpg], jpgrats=[1], clients={}, allChats=[], videos=set())
     for slide_path in glob(f'examples/{script}/*.json'):
         filename = path.basename(slide_path)
@@ -261,3 +278,4 @@ app.router.add_get('/{name}/bkg.jpg', background)
 app.router.add_get('/{name}/namedimg/{img}', namedimg)
 app.router.add_get('/{name}/clientAvatar/{client}', getAvatar)
 app.router.add_post('/{name}/clientAvatar/{client}', setAvatar)
+app.router.add_post('/{name}/welcomed/{client}', welcomed)
