@@ -4,5 +4,7 @@
   "rotate": false,
   "useParticipantAudio": true,
   "bkgAll": true,
+  "ratio": 2.5,
+  "breserve": "30vh",
   "welcome": "welcome"
 }

@@ -8,9 +8,9 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
-   width="720pt"
-   height="405pt"
-   viewBox="0 0 720 405"
+   width="10in"
+   height="4in"
+   viewBox="0 0 720 288"
    id="svg8"
    sodipodi:docname="1.svg"
    inkscape:version="0.92.3 (2405546, 2018-03-11)">
@@ -22,7 +22,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -43,49 +43,51 @@
      showgrid="false"
      inkscape:pagecheckerboard="true"
      inkscape:zoom="0.43703704"
-     inkscape:cx="202.68325"
+     inkscape:cx="463.53071"
      inkscape:cy="274.13548"
      inkscape:window-x="48"
      inkscape:window-y="24"
      inkscape:window-maximized="0"
-     inkscape:current-layer="svg8" />
+     inkscape:current-layer="svg8"
+     units="in" />
   <text
-     style="font-size:50px;font-family:Georgia;text-anchor:middle;fill:#000000;fill-opacity:1;"
+     style="font-size:50px;font-family:Georgia;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:#ffffff;"
      id="text2"
      font-size="50"
-     x="360"
-     y="75">Lobby</text>
+     x="354.85168"
+     y="47.237289">Lobby</text>
   <flowRoot
      xml:space="preserve"
      id="flowRoot823"
-     style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Bitstream Vera Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+     style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:'Bitstream Vera Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     transform="translate(0,-117)"><flowRegion
        id="flowRegion825"><rect
          id="rect827"
          width="658.98303"
          height="48.050846"
          x="153.30508"
          y="125.84746" /></flowRegion><flowPara
-       id="flowPara829"></flowPara></flowRoot>  <text
+       id="flowPara829" /></flowRoot>  <text
      xml:space="preserve"
-     style="font-style:normal;font-weight:normal;font-size:30px;line-height:125%;font-family:'Bitstream Vera Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     x="65.211861"
-     y="123.55932"
+     style="font-style:normal;font-weight:normal;font-size:30px;line-height:125%;font-family:'Bitstream Vera Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
+     x="60.063557"
+     y="95.796608"
      id="text833"><tspan
        sodipodi:role="line"
        id="tspan831"
-       x="65.211861"
-       y="123.55932"
-       style="stroke-width:0.75px">Hang out here and wait for everyone to</tspan><tspan
+       x="60.063557"
+       y="95.796608"
+       style="stroke-width:0.75px;stroke:#ffffff;fill:#ffffff;">Hang out here and wait for everyone to</tspan><tspan
        sodipodi:role="line"
-       x="65.211861"
-       y="161.05933"
-       style="stroke-width:0.75px"
+       x="60.063557"
+       y="133.2966"
+       style="stroke-width:0.75px;stroke:#ffffff;fill:#ffffff;"
        id="tspan835">complete the welcome screen</tspan></text>
   <rect
-     style="fill:none;fill-opacity:1;stroke:#00ff00;stroke-width:2.25;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0.80120003;stroke-opacity:1"
+     style="fill:none;fill-opacity:1;stroke:#00ff00;stroke-width:3.42871761;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0.80120003;stroke-opacity:1"
      id="rect837"
-     width="128.70763"
-     height="56.631355"
-     x="284.87289"
-     y="209.36441" />
+     width="302.44925"
+     height="55.963787"
+     x="196.60255"
+     y="181.93549" />
 </svg>
