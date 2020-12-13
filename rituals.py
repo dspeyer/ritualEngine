@@ -32,6 +32,12 @@ else:
     twilio_client = twilio_rest.Client(**twilio_client_kwargs)
 
 
+try:
+    intercom_app_id = secrets['INTERCOM_APP_ID']
+except KeyError:
+    intercom_app_id = ''
+
+
 async def homepage(req):
     l = '\n'.join([ '<li><a href="/%s/partake">%s (%s)</a>'%(x,x,active[x].script) for x in active.keys() ])
     s = '\n'.join([ '<option>%s</option>'%(x.replace('examples/','')) for x in glob('examples/*') ])
@@ -103,7 +109,8 @@ async def ritualPage(req):
                                  videos=''.join(
                                      f'<video class="hidden" src="{video}" playsinline preload="auto"></video>'
                                      for video in active[name].videos
-                                 )
+                                 ),
+                                 intercomappid=intercom_app_id,
                         ),
                         content_type='text/html', charset='utf8')
 
