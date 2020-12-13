@@ -31,6 +31,7 @@ except KeyError:
 else:
     twilio_client = twilio_rest.Client(**twilio_client_kwargs)
 
+MAX_IN_TWILIO_ROOM = 25
 
 async def homepage(req):
     l = '\n'.join([ '<li><a href="/%s/partake">%s (%s)</a>'%(x,x,active[x].script) for x in active.keys() ])
@@ -59,23 +60,7 @@ async def ritualPage(req):
     for datum in active[name].allChats[-50:]:
         active[name].clients[clientId].chatQueue.put_nowait(datum)
     if hasattr(active[name], 'current_video_room'):
-        async with active[name].video_room_lock:
-            if not active[name].current_video_room:
-                active[name].current_video_room = await asyncio.get_event_loop().run_in_executor(None, twilio_client.video.rooms.create)
-            video_room_id = active[name].current_video_room.unique_name
-            active[name].population_of_current_video_room += 1
-            if active[name].population_of_current_video_room == 26:
-                active[name].current_video_room = None
-                active[name].population_of_current_video_room = 0
-        token_builder = twilio_access_token.AccessToken(
-            account_sid=secrets['TWILIO_ACCOUNT_SID'],
-            signing_key_sid=secrets['TWILIO_API_KEY'],
-            secret=secrets['TWILIO_API_SECRET'],
-            identity=clientId,
-        )
-        token_builder.add_grant(twilio_grants.VideoGrant(room=video_room_id))
-        active[name].clients[clientId].video_token = token_builder.to_jwt().decode()
-        active[name].clients[clientId].room = video_room_id
+        await assign_twilio_room(active[name],clientId)
     else:
         video_room_id = ''
         video_token = ''
@@ -102,6 +87,28 @@ async def ritualPage(req):
                                  )
                         ),
                         content_type='text/html', charset='utf8')
+
+async def assign_twilio_room(ritual, clientId, force_new_room=False):
+    async with ritual.video_room_lock:
+        if force_new_room or not ritual.current_video_room:
+            ritual.current_video_room = (
+                await asyncio.get_event_loop().run_in_executor(None, twilio_client.video.rooms.create) )
+            ritual.population_of_current_video_room = 0
+        video_room_id = ritual.current_video_room.unique_name
+        ritual.population_of_current_video_room += 1
+        if ritual.population_of_current_video_room >= MAX_IN_TWILIO_ROOM + 1:
+            ritual.current_video_room = None
+            ritual.population_of_current_video_room = 0
+    token_builder = twilio_access_token.AccessToken(
+        account_sid=secrets['TWILIO_ACCOUNT_SID'],
+        signing_key_sid=secrets['TWILIO_API_KEY'],
+        secret=secrets['TWILIO_API_SECRET'],
+        identity=clientId,
+    )
+    token_builder.add_grant(twilio_grants.VideoGrant(room=video_room))
+    ritual.clients[clientId].video_token = token_builder.to_jwt().decode()
+    ritual.clients[clientId].room = video_room_id
+
 
 async def nextOrPrevPage(req):
     name = req.match_info.get('name','')

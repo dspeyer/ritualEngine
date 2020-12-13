@@ -143,8 +143,23 @@ class BucketSinging(object):
             self.slots[cid] = 2
         for cid in toplace[b23:]:
             self.slots[cid] = 3
-        # TODO: reshuffle twilio rooms based on slots
-                
+        if hasattr(self.ritual,'current_video_room'):
+            asyncio.create_task(self.reset_twilio())
+
+    async def reset_twilio(self):
+        cbs = defaultdict(list)
+        for client,slot in self.slots.items():
+            cbs[slot].append(client)
+        for slot,clients in cbs:
+            random.shuffle(clients)
+            first = True
+            for client in clients:
+                await assign_twilio_room(self.ritual, client, force_new_room=first)
+                first = False
+        for i,task in self.ritual.reqs.items():
+            task.cancel()
+
+            
     async def start_song(self):
         if hasattr(self,'sent_start_cmds'):
             return
