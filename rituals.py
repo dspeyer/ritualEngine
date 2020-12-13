@@ -12,7 +12,7 @@ from twilio import rest as twilio_rest
 from twilio.jwt import access_token as twilio_access_token
 from twilio.jwt.access_token import grants as twilio_grants
 
-from core import app, active, users, tpl, random_token, Ritual, secrets, struct
+from core import app, active, error_handler, users, tpl, random_token, Ritual, secrets, struct
 from users import connectUserRitual
 from widgetry import preload
 
@@ -54,7 +54,7 @@ async def ritualPage(req):
     if hasattr(active[name],'participants'):
         foundLogin = connectUserRitual(req, active[name], islead)
         if not foundLogin:
-            res = web.Response(body=open('html/login.html').read(), content_type='text/html')
+            res = web.Response(body=tpl('html/login.html', errorhandler=error_handler), content_type='text/html')
             res.set_cookie('LastRitual', name)
             return res
     clientId = random_token()
@@ -95,6 +95,7 @@ async def ritualPage(req):
     return web.Response(body=tpl('html/client.html',
                                  name=name,
                                  clientId=clientId,
+                                 errorhandler=error_handler,
                                  cclass=(
                                      'shrunk'
                                      if hasattr(active[name], 'participants')
