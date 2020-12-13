@@ -278,15 +278,19 @@
         </div>
         <script>
          $(document).ajaxError((event, jqxhr, settings, thrownError) => {
-           let dlg = $(`<div class="error">
-                           <h1>${jqxhr.status} Error</h1>
-                           <h3>${settings.url}</h3>
-                           <pre>${jqxhr.responseText}</pre>
-                           <input type="button" value="Close">
-                        </div>`)
-             .appendTo($('body'));
-           dlg.find('input').on('click',()=>{dlg.remove();});
-         });
+           if (Sentry) {
+               Sentry.captureException(thrownError);
+           } else {
+               let dlg = $(`<div class="error">
+                               <h1>${jqxhr.status} Error</h1>
+                               <h3>${settings.url}</h3>
+                               <pre>${jqxhr.responseText}</pre>
+                               <input type="button" value="Close">
+                            </div>`)
+                 .appendTo($('body'));
+               dlg.find('input').on('click',()=>{dlg.remove();});
+             });
+         }
          if (%islead%) {
              $('#ctrls').show();
              $('#prev').click(()=>{ $.post('prevPage'); });
