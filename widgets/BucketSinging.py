@@ -13,7 +13,7 @@ from urllib.parse import quote
 from aiohttp import web, ClientSession
 
 from users import getUserByEmail
-from core import secrets
+from core import secrets, assign_twilio_room
 
 BUCKET_PATH = os.environ.get('BUCKET_PATH','../solstice-audio-test')
 BUCKET_SINGING_URL = secrets.get('BUCKET_SINGING_URL', '/api')
@@ -150,7 +150,7 @@ class BucketSinging(object):
         cbs = defaultdict(list)
         for client,slot in self.slots.items():
             cbs[slot].append(client)
-        for slot,clients in cbs:
+        for slot,clients in cbs.items():
             random.shuffle(clients)
             first = True
             for client in clients:
