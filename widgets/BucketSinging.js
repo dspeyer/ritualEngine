@@ -167,6 +167,11 @@ export class BucketSinging {
                         .prependTo(this.video_div);
         }
 
+        if (window.location.search == 'fake') {
+            this.declare_ready();
+            return;
+        }
+        
         if ( ! context) {
             let button = $('<input type="button" value="Click here to Initialize Singing">').appendTo(this.div);
             button.on('click', ()=>{

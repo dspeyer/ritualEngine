@@ -57,6 +57,8 @@ async def ritualPage(req):
         isStreamer=('streamer' in req.query),
         room=None,
     )
+    if 'fake' in req.query:
+        active[name].clients[clientId].lastSeen = datetime(9999,9,9,9,9,9)
     for datum in active[name].allChats[-50:]:
         active[name].clients[clientId].chatQueue.put_nowait(datum)
     if hasattr(active[name], 'current_video_room'):
