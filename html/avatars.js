@@ -245,6 +245,18 @@ function putcircle(d,{x,y,r,label,z,br}) {
                                     })
                                .appendTo(d);
     }
+    div.on('click', () => {
+        let selected = div.hasClass('selected-avatar');
+        $('.selected-avatar').removeClass('selected-avatar');
+        if (!selected) {
+            div.addClass('selected-avatar');
+        }
+    });
+    if (window.isLead) {
+        $('<input type="button" class="avatar-control" value="Click Me">').on('click', () => {
+            alert("This button doesn't do anything yet.");
+        }).appendTo(div);
+    }
     return div;
 }
 

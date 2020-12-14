@@ -84,6 +84,18 @@
             width: 100px;
             height: 100px;
          }
+         .selected-avatar {
+             width: 200px !important;
+             height: 200px !important;
+             top: 0 !important;
+         }
+         .avatar-control {
+             display: none;
+         }
+         .selected-avatar .avatar-control {
+             display: block;
+             position: absolute;
+         }
          body {
              background-color: black;
              margin:0;
@@ -305,7 +317,8 @@
              .appendTo($('body'));
            dlg.find('input').on('click',()=>{dlg.remove();});
          });
-         if (%islead%) {
+         window.isLead = %islead%;
+         if (window.isLead) {
              $('#ctrls').show();
              $('#prev').click(()=>{ $.post('prevPage'); });
              $('#skip').click(()=>{ $.post('skipSpeaker'); });
