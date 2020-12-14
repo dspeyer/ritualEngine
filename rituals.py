@@ -55,6 +55,7 @@ async def ritualPage(req):
         lastSeen=datetime.now(),
         isStreamer=('streamer' in req.query),
         room=None,
+        name='NotYetNamed',
     )
     if active[name].welcome:
         active[name].clients[clientId].welcomed = False
@@ -169,13 +170,27 @@ async def chatSend(req):
     text = form.get('text', '')
     if not isinstance(text, str) or text.strip()=='':
         return web.Response(status=400)
-    sender = form.get('sender','Anonymous');
+    clientId = form.get('clientId')
+    if clientId in ritual.clients:
+        sender = ritual.clients[clientId].name
+    else:
+        # I don't *think* this can happen
+        sender = 'anon'+clientId
     datum = {'sender': sender, 'text': text}
     for client in ritual.clients.values():
         client.chatQueue.put_nowait(datum)
     ritual.allChats.append(datum)
     return web.Response(status=204)
 
+async def setName(req):
+    name = req.match_info.get('name','')
+    if name not in active:
+        return web.Response(status=404)
+    ritual = active[name]
+    form = await req.post()
+    ritual.clients[form['clientId']].name = form['name']
+    return web.Response(status=204)
+    
 async def background(req):
     name = req.match_info.get('name')
     sc = active[name].script
@@ -279,3 +294,4 @@ app.router.add_get('/{name}/namedimg/{img}', namedimg)
 app.router.add_get('/{name}/clientAvatar/{client}', getAvatar)
 app.router.add_post('/{name}/clientAvatar/{client}', setAvatar)
 app.router.add_post('/{name}/welcomed/{client}', welcomed)
+app.router.add_post('/{name}/setName', setName)
