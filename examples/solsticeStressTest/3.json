@@ -1,11 +1,6 @@
 {
-  "widget": "BucketSinging",
   "background": "sunset2-01.jpg",
-  "boxColor": "#000000",
   "showParticipants": true,
-  "rotate": false,
-  "bkgAll": true,
-  "lyrics": [],
-  "justInit": true,
-  "twilioAudioEnabled": true
+  "twilioAudioEnabled": true,
+  "chatClass": "normal"
 }

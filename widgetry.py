@@ -15,6 +15,7 @@ from widgets.Trivia import Trivia
 from widgets.CircleFlames import CircleFlames
 from widgets.Livestream import Livestream
 from widgets.Video import Video
+from widgets.WelcomeWatch import WelcomeWatch
 
 async def lib(req):
     return web.Response(body=open('html/%s.js'%req.match_info['fn']).read(), content_type='text/javascript')
@@ -50,10 +51,18 @@ async def status(req):
     ritual = active[name]
     clientId = req.query.get('clientId')
     ritual.clients[clientId].lastSeen = datetime.now()
-    have = int(req.query.get('have'))
+    have = req.query.get('have')
+    try:
+        have = int(have)
+    except ValueError:
+        pass
     subhave = req.query.get('subhave')
-    if ( have==ritual.page and
-         ( not ritual.state or not hasattr(ritual.state,'subpagesame') or ritual.state.subpagesame(subhave, clientId) ) ):
+
+    iswelcome = (ritual.welcome and not ritual.clients[clientId].welcomed)
+
+    if ( (iswelcome and have=='welcome') or 
+         (have==ritual.page and ( not ritual.state or not hasattr(ritual.state,'subpagesame') or
+                                  ritual.state.subpagesame(subhave, clientId) )) ):
         sleepid += 1
         myid = sleepid
         sleeptask = create_task(sleep(25))
@@ -67,14 +76,19 @@ async def status(req):
             pass
         del ritual.reqs[myid]
 
+    if iswelcome:
+        pagename = ritual.welcome
+    else:
+        pagename = '%d' % ritual.page
+        
     results={}
     if ritual.page != have:
-        fn = 'examples/%s/%d.svg'%(ritual.script,ritual.page)
+        fn = 'examples/%s/%s.svg'%(ritual.script,pagename)
         # TODO(#27): Make the error nonfatal if the file doesn't exist
         svg = open(fn).read()
         results['svg'] = svg
 
-        fn = 'examples/%s/%d.json'%(ritual.script,ritual.page)
+        fn = 'examples/%s/%s.json'%(ritual.script,pagename)
         if path.exists(fn):
             try:
                 data = json.loads(open(fn).read())
@@ -85,31 +99,42 @@ async def status(req):
         else:
             data = {}
 
+        print('---=== Loading JSON ===---')
+        print(pagename)
+        print(fn)
+        print(data)
+            
         if 'widget' in data and not ritual.state:
+            print("Creating widget: "+data['widget'])
             widget = globals()[data['widget']]
             ritual.state = widget(ritual=ritual, page=ritual.page, **data)
             if hasattr(ritual.state,'async_init'):
                 await ritual.state.async_init()
 
+        if 'fakewidget' in data:
+            for k,v in data['fakewidget'].items():
+                results[k] = v
+                
         for key in ['background', 'bkZoom', 'bkZoomCenter', 'chatClass']:
             if key in data:
                 results[key] = data[key]
 
         results['twilioAudioEnabled'] = data.get('twilioAudioEnabled', False);
                 
-        results['page'] = ritual.page
+        results['page'] = pagename
         
-    if ritual.state:
-        results.update(ritual.state.to_client(clientId, req.query.get('internalhave')))
-    if hasattr(ritual,'participants'):
-        results['participants'] = [ {'name':users[p].name, 'img':'/avatar/%s.png'%p} for p in ritual.participants ]
-    if hasattr(ritual,'current_video_room'):
-        results['video_token'] = ritual.clients[clientId].video_token
-        results['room'] = ritual.clients[clientId].room
-        seenThresh = datetime.now() - timedelta(seconds=30)
-        results['clients'] = [ { 'id':k, 'room':v.room, 'hj':hasattr(v,'jpg') }
-                               for k,v in ritual.clients.items()
-                               if v.lastSeen > seenThresh] # TODO: ordering?
+    if not iswelcome:
+        if ritual.state:
+            results.update(ritual.state.to_client(clientId, req.query.get('internalhave')))
+        if hasattr(ritual,'participants'):
+            results['participants'] = [ {'name':users[p].name, 'img':'/avatar/%s.png'%p} for p in ritual.participants ]
+        if hasattr(ritual,'current_video_room'):
+            results['video_token'] = ritual.clients[clientId].video_token
+            results['room'] = ritual.clients[clientId].room
+            seenThresh = datetime.now() - timedelta(seconds=30)
+            results['clients'] = [ { 'id':k, 'room':v.room, 'hj':hasattr(v,'jpg') }
+                                   for k,v in ritual.clients.items()
+                                   if v.lastSeen > seenThresh and (not ritual.welcome or v.welcomed)] # TODO: ordering?
     print(results.keys())
     return web.Response(text=json.dumps(results), content_type='application/json')
 
@@ -137,8 +162,6 @@ async def widgetData(req):
         print("Cancelling %d"%i)
         task.cancel()
     return web.Response(status=204)    
-
-
 
 async def stateDbg(req):
     name = req.match_info.get('name','')

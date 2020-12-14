@@ -1,24 +1,7 @@
 <html>
     <head>
         <title>Manage Ritual Engine Logons</title>
-        <script>
-            addEventListener('error', (event) => {
-                event.preventDefault();
-                let title = document.title;
-                document.documentElement.innerHTML = `
-                    <h1>This app has crashed. We're really sorry :-(</h1>
-                    <h2>Please <a href="https://github.com/dspeyer/ritualEngine/issues/new">file a bug</a> with the following information; it will help us fix it.</h2>
-                    <textarea rows="50" cols="160" readonly></textarea>
-                    <h2>Then refresh the page and try again.</h2>`;
-                document.title = title;
-                let {name, message, stack} = event.error ?? {};
-                document.querySelector('textarea').textContent = stack ?? `${name}: ${message}`;
-            }, {once: true});
-            addEventListener('unhandledrejection', (event) => {
-                event.preventDefault();
-                throw event.reason;
-            });
-        </script>
+        %errorhandler%
         <style>
          body {
              background: url('https://secularsolstice.github.io/snow-bkg.jpg');
