@@ -16,6 +16,7 @@ parser.add_argument('-a', metavar='avatardir', nargs='?', help='Send avatar imag
 parser.add_argument('-z', metavar='avatardir', nargs='?', help='Send client avatar images from the directory')
 parser.add_argument('-c', metavar='count', nargs='?', type=int, help='Count to send')
 parser.add_argument('-s', metavar='sleeptime', type=float, default=0.5, help='Sleep between uploads')
+parser.add_argument('--agent', metavar='UA', default="tester.py", help='User agent for requests')
 
 args = parser.parse_args()
 print(args)
@@ -66,15 +67,19 @@ if args.z:
     fns = glob(args.z+'/*.jpg')
     shuffle(fns)
     for i,fn in enumerate(fns):
-        client = requests.get(args.u+'/partake?fake').text
+        clientId = False
+        client = requests.get(args.u+'/partake?fake', headers={'user-agent':args.agent}).text
         for line in client.split('\n'):
             m = re.match(" *let clientId = '(.*)';", line)
             if m:
                 clientId = m.group(1)
-        print("sending '%s'"%fn)
-        jpg = open(fn,'rb').read()
-        files = { 'img': ('blob', jpg, 'image/jpeg') }
-        requests.post(args.u+'/clientAvatar/'+clientId, files=files)
+        if clientId:
+            print("sending '%s'"%fn)
+            jpg = open(fn,'rb').read()
+            files = { 'img': ('blob', jpg, 'image/jpeg') }
+            requests.post(args.u+'/clientAvatar/'+clientId, files=files)
+        else:
+            print("no clientId")
         if args.c and i >= args.c-1:
             break
         sleep(args.s)

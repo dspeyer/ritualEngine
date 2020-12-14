@@ -29,6 +29,8 @@ async def homepage(req):
     return web.Response(text=html, content_type='text/html')
 
 async def ritualPage(req):
+    if 'facebookexternalhit' in req.headers.get('User-Agent',''):
+        return web.Response(status=403)
     name = req.match_info.get('name','error')
     if name not in active:
         return web.Response(text="Not Found", status=404)
