@@ -170,6 +170,8 @@ async def setName(req):
     ritual = active[name]
     form = await req.post()
     ritual.clients[form['clientId']].name = form['name']
+    for i,task in active[name].reqs.items():
+        task.cancel()        
     return web.Response(status=204)
     
 async def background(req):

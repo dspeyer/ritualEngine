@@ -132,7 +132,7 @@ async def status(req):
             results['video_token'] = ritual.clients[clientId].video_token
             results['room'] = ritual.clients[clientId].room
             seenThresh = datetime.now() - timedelta(seconds=30)
-            results['clients'] = [ { 'id':k, 'room':v.room, 'hj':hasattr(v,'jpg') }
+            results['clients'] = [ { 'id':k, 'room':v.room, 'name':v.name, 'hj':hasattr(v,'jpg') }
                                    for k,v in ritual.clients.items()
                                    if v.lastSeen > seenThresh and (not ritual.welcome or v.welcomed)] # TODO: ordering?
     print(results.keys())
