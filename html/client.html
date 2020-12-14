@@ -353,7 +353,7 @@
                      if (data.video_token && data.room) {
                          let { twilioConnect, setTwilioAudioEnabled } = await import ('../avatars.js');
                          console.log(data.clients)
-                         await twilioConnect(data.video_token, data.room);
+                         await twilioConnect(data.video_token, data.room);    
                          if (data.twilioAudioEnabled !== undefined) {
                              setTwilioAudioEnabled(data.twilioAudioEnabled);
                          }

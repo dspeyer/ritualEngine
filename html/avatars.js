@@ -266,7 +266,7 @@ function setVideoAvatars() {
     videosToPlace = {};
     let mes = participants.filter((x)=>(x.id==clientId));
     let same = participants.filter((x)=>(x.room==currentRoomId && x.id!=clientId));
-    let diff = participants.filter((x)=>(x.room!=currentRoomId));
+    let diff = participants.filter((x)=>(x.room!=currentRoomId && x.id!=clientId));
     let samerot = Math.max( curVidRot%same.length, 1);
     console.log({samerot,curVidRot,sl:same.length})
     let samea = same.slice(samerot);
@@ -276,10 +276,10 @@ function setVideoAvatars() {
     let diffb = diff.slice(0,diffrot);
     let clients = [].concat(mes,samea,sameb,diffa,diffb);
     let vidsPlaced = 0;
+    console.log({act:'seting circles',clients,circles,mes,samea,sameb,diffa,diffb});
     for (let i in clients) {
         let client = clients[i];
         let circle = circles[i];
-        if (! circle) console.log({i,clients,circles});
         circle.label?.text(client.name);
         let cachebuster = client.hj + '_';
         if (circle.width() > 10) {
@@ -316,6 +316,7 @@ function setVideoAvatars() {
 
 
 function attachAllVideos() {
+    if (!room) return;
     for (let [sid, participant] of room.participants) {
         if (participant.identity in videosToPlace) {
             for (let [_, track] of participant.videoTracks) {
@@ -363,7 +364,15 @@ export async function twilioConnect(token, roomId) {
     if (room) room.disconnect();
     currentRoomId = roomId;
     localVideo = await Twilio.Video.createLocalVideoTrack({ width: 100, height: 100 });
-    room = await Twilio.Video.connect(token, { name: roomId, tracks: [localVideo] });
+    try {
+        room = await Twilio.Video.connect(token, { name: roomId, tracks: [localVideo] });
+    } catch (error) {
+        room = null;
+        currentRoomId = null;
+        console.log(error);
+        $.post('twilioRoomFail/'+clientId);
+        return;
+    }
     console.log('connected to room '+roomId);
     addEventListener('beforeunload', () => {
         room.disconnect();
@@ -392,6 +401,7 @@ export async function twilioConnect(token, roomId) {
 
 export function setTwilioAudioEnabled(nv) {
     if (nv == twilioAudioEnabled) return;
+    if ( ! room) return;
     hasAudioTrack = {[clientId]: true};
     if (nv) {
         twilioAudioEnabled = true;

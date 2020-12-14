@@ -2,14 +2,14 @@ import asyncio
 from datetime import datetime, timezone
 from glob import glob
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from os import path
 
 from aiohttp import web, ClientSession
 import numpy as np
 import cv2
 
-from core import app, active, users, tpl, random_token, Ritual, secrets, struct, assign_twilio_room, twilio_client, error_handler
+from core import app, active, users, tpl, random_token, Ritual, secrets, struct, assign_twilio_room, room_created, twilio_client, error_handler
 from users import connectUserRitual
 from widgetry import preload
 
@@ -263,6 +263,28 @@ async def getAvatar(req):
         ma = 0
     return web.Response(body=jpg, content_type='image/jpg', headers={'Cache-Control': 'max-age=%d'%ma})
 
+async def twilioRoomFail(req):
+    name = req.match_info.get('name','')
+    if name not in active:
+        return web.Response(status=404)
+    ritual = active[name]
+    clientId = req.match_info['client']
+    client = ritual.clients[clientId]
+    print("client %s(%s) reports fail for room %s"%(clientId,client.name,client.room))
+    if not hasattr(client,'twilioCursed'):
+        roomId = client.room
+        if datetime.now() - room_created[roomId] > timedelta(seconds=10):
+            print("  reassigning")
+            await assign_twilio_room(ritual, clientId, force_new_room=(roomId==ritual.current_video_room.unique_name))
+            for i,task in active[name].reqs.items():
+                task.cancel()        
+        else:
+            print("  declaring cursed")
+            client.twilioCursed = True
+    else:
+        print("  already cursed")
+    return web.Response(status=204)
+
 app.router.add_get('/', homepage)
 app.router.add_get('/{name}/partake', ritualPage)
 app.router.add_get('/{name}/lead', ritualPage)
@@ -278,3 +300,4 @@ app.router.add_get('/{name}/clientAvatar/{client}', getAvatar)
 app.router.add_post('/{name}/clientAvatar/{client}', setAvatar)
 app.router.add_post('/{name}/welcomed/{client}', welcomed)
 app.router.add_post('/{name}/setName', setName)
+app.router.add_post('/{name}/twilioRoomFail/{client}', twilioRoomFail)

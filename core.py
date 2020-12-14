@@ -6,6 +6,7 @@ import sys
 import traceback
 import asyncio
 import urllib.parse
+from datetime import datetime
 
 from aiohttp import web
 
@@ -119,12 +120,15 @@ else:
 
 MAX_IN_TWILIO_ROOM = 25
 
+room_created = {}
+
 async def assign_twilio_room(ritual, clientId, force_new_room=False):
     async with ritual.video_room_lock:
         if force_new_room or not ritual.current_video_room:
             ritual.current_video_room = (
                 await asyncio.get_event_loop().run_in_executor(None, twilio_client.video.rooms.create) )
             ritual.population_of_current_video_room = 0
+            room_created[ritual.current_video_room.unique_name] = datetime.now()
         video_room_id = ritual.current_video_room.unique_name
         ritual.population_of_current_video_room += 1
         if ritual.population_of_current_video_room >= MAX_IN_TWILIO_ROOM + 1:
