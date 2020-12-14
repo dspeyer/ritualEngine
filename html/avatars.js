@@ -222,13 +222,18 @@ function putcircle(d,{x,y,r,label,z,br}) {
     let left = Math.round(x-r) + 1 + 'px';
     let top = Math.round(y-r) + 1 + 'px';
     if (br===undefined) br=50;
-    let div = $('<div>').css({position:'absolute', width: s, height: s, left, top,
-                              border: '1px rgba(255,255,255,0.5) solid',
-                              borderRadius: br+'%', overflow: 'hidden'})
-                        .appendTo(d);
+    let div = $('<div>').css({
+            position:'absolute', 
+            width: s, 
+            height: s, 
+            left, 
+            top, 
+            overflow: 'hidden'
+        }).appendTo(d);
+        
     if (z) div.css('z-index', z);
-    div.img = $('<img>').css({width:'100%',height:'100%',position:'absolute'}).appendTo(div);
-    div.video = $('<video>').css({width:'100%',height:'100%',position:'absolute'}).appendTo(div);
+    div.img = $('<img class="avatar">').css({borderRadius: br+'%'}).appendTo(div);
+    div.video = $('<video class="avatar">').css({borderRadius: br+'%'}).appendTo(div);
     div.video.hide();
     if (label) {
         div.label = $('<span>').text('Placeholder')
