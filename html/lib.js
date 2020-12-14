@@ -6,7 +6,7 @@ export function putOnBox(elems, color) {
     if (! box.length) box = $('path[style*="stroke:'+color+'"]');
     if (! box.length) box = $('rect[style*="stroke:'+color+'"]');
     if (! box.length) {
-        let convertedColor = $('<div>').css({background:color})[0].style.background
+        let convertedColor = $('<div>').css({background:color})[0].style.backgroundColor;
         let maybe = $('path, rect');
         for (let i=0; i<maybe.length; i++) {
             let stroke = maybe[i].style.stroke;
