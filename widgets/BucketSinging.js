@@ -59,6 +59,9 @@ let css = `
       backdrop-filter: blur(8px);
       z-index: 9999;
   }
+  div.initContext input {
+      margin-top: 1em;
+  }
 `;
 
 let backingTrackStartedRes;
@@ -81,7 +84,24 @@ async function initContext(){
     }
 
     let div = $('<div>').addClass('initContext')
-                        .appendTo($('#content'));
+                        .appendTo($('body'));
+    div.append("<p>Before we begin, is there any point in setting up your audio?  If you're using bluetooth, "+
+               "are in a very noisy area, or just don't want anyone to hear you, we'll set you up to never be heard.</p>");
+    let buttonyes = $('<input type=button value="Yes, calibrate me.  None of those issues apply.">').appendTo(div);
+    let buttonno = $('<input type=button value="Forget it; I\'ll be uncalibrated.  Just don\'t let anyone hear me">').appendTo(div);
+    let res;
+    let p = new Promise((r)=>{res=r});
+    buttonyes.on('click',res);
+    buttonno.on('click',()=>{calibrationFail=true;res()});
+    await p;
+    
+    if (calibrationFail) {
+        div.remove();
+        context = mycontext;
+        return;
+    }
+    
+    div.empty();
     div.append("<p>First we'll measure the <b>latency</b> of your audio hardware.</p><p>Please turn your volume to max "+
                "and put your headphones where your microphone can hear them.  Or get ready to tap your microphone in "+
                "time to the beeps.</p>");
@@ -97,8 +117,7 @@ async function initContext(){
     button = $('<input type=button>').attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.")
                                      .appendTo(div);
     div.append(button);
-    let res;
-    let p = new Promise((res_)=>{res=res_;});
+    p = new Promise((res_)=>{res=res_;});
     let estimator = new LatencyCalibrator({context:mycontext, clickVolume:100}); // TODO: gradually increasing clickVolume
     estimator.addEventListener('beep', (ev)=>{
         console.log(ev);
@@ -107,13 +126,19 @@ async function initContext(){
     });
     button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
     await p;
+    
+    if (calibrationFail) {
+        div.remove();
+        context = mycontext;
+        return;
+    }
 
     div.empty();
     div.append($("<p>Now we need to calibrate your <b>volume</b>.  Please sing at the same volume you plan to during "+
                  "the event. For your convenience, here are some lyrics:" +
                  "<blockquote><i>" +
                  "Mary had a little iamb, little iamb, little iamb<br/>" +
-                 "And everywhere that Mary went trochies were sure to come" +
+                 "And everywhere that Mary went scansion were sure to fail" +
                  "</i></blockquote></p>"));
     button = $('<input type=button>').attr('value',"I'm singing").appendTo(div);  
     await new Promise((res)=>{button.on('click',res);});
@@ -135,8 +160,8 @@ async function initContext(){
     div.append("<p>That's enough singing.  Calibration is done.  On with the main event.</p>");
     button = $('<input type=button>').attr('value',"Nifty").appendTo(div);
     await new Promise((res)=>{button.on('click',res);});
-    div.remove();
 
+    div.remove();
     context = mycontext;
 }
 
