@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="10in"
+   height="4in"
+   viewBox="0 0 720 288"
+   id="svg87"
+   sodipodi:docname="welcome.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata93">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs91" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1142"
+     inkscape:window-height="741"
+     id="namedview89"
+     showgrid="false"
+     units="in"
+     inkscape:pagecheckerboard="true"
+     inkscape:zoom="0.43703704"
+     inkscape:cx="480"
+     inkscape:cy="86.949153"
+     inkscape:window-x="48"
+     inkscape:window-y="24"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg87" />
+  <text
+     style="font-size:50px;font-family:Georgia;text-anchor:middle;fill:#ffffff"
+     id="text65"
+     font-size="50"
+     x="354.85172"
+     y="48.953388">Solstice Stress Test</text>
+  <!-- <text
+     style="font-size:15px;font-family:Georgia;fill:#ffffff"
+     id="text67"
+     font-size="15"
+     x="46.567795"
+     y="77.618645">Welcome! For best experience:</text>
+  <text
+     style="font-size:15px;font-family:Georgia;fill:#ffffff"
+     id="text69"
+     font-size="15"
+     x="46.567795"
+     y="102.61864">• Close other videoconferencing software (Zoom, etc may interfere with solstice)</text>
+  <text
+     style="font-size:15px;font-family:Georgia;fill:#ffffff"
+     id="text75"
+     font-size="15"
+     x="46.567795"
+     y="127.61864">• Use either a <tspan
+   style="font-style:italic"
+   id="tspan71"
+   font-style="italic">wired</tspan>
+ headset (preferably), or <tspan
+   style="font-style:italic"
+   id="tspan73"
+   font-style="italic">no</tspan>
+ headset. (No bluetooth)</text> -->
+  <!-- <text
+     style="font-size:15px;font-family:Georgia;fill:#ffffff"
+     id="text77"
+     font-size="15"
+     x="46.567795"
+     y="152.61864">• Close other browser tabs</text>
+  <text
+     style="font-size:15px;font-family:Georgia;fill:#ffffff"
+     id="text79"
+     font-size="15"
+     x="46.567795"
+     y="252.61864">Once you've calibrated, wait for others to finish calibrating.</text>
+  <text
+     style="font-size:15px;font-family:Georgia;fill:#ffffff"
+     id="text81"
+     font-size="15"
+     x="46.567795"
+     y="277.61865">We'll start the singing test at roughly 2:05pm</text> -->
+  <path
+     style="font-family:Georgia;fill:none;stroke:#000000;stroke-width:0.16424851"
+     inkscape:connector-curvature="0"
+     id="path83"
+     d="m 46.145223,177.20389 v 30.61764 H 354.53431 l 22.02778,-30.61764 z" />
+</svg>

@@ -59,6 +59,9 @@ let css = `
       backdrop-filter: blur(8px);
       z-index: 9999;
   }
+  div.initContext input {
+      margin-top: 1em;
+  }
 `;
 
 let backingTrackStartedRes;
@@ -72,6 +75,9 @@ async function initContext(){
     console.log('Chose mic: ',mic);
     let micStream = await openMic(mic.deviceId);
     let mycontext = new BucketBrigadeContext({micStream});
+    addEventListener('error', () => {
+        mycontext.close();
+    });
     await mycontext.start_bucket();
 
     if (window.skipCalibration) {
@@ -81,7 +87,24 @@ async function initContext(){
     }
 
     let div = $('<div>').addClass('initContext')
-                        .appendTo($('#content'));
+                        .appendTo($('body'));
+    div.append("<p>Before we begin, is there any point in setting up your audio?  If you're using bluetooth, "+
+               "are in a very noisy area, or just don't want anyone to hear you, we'll set you up to never be heard.</p>");
+    let buttonyes = $('<input type=button value="Yes, calibrate me.  None of those issues apply.">').appendTo(div);
+    let buttonno = $('<input type=button value="Forget it; I\'ll be uncalibrated.  Just don\'t let anyone hear me">').appendTo(div);
+    let res;
+    let p = new Promise((r)=>{res=r});
+    buttonyes.on('click',res);
+    buttonno.on('click',()=>{calibrationFail=true;res()});
+    await p;
+    
+    if (calibrationFail) {
+        div.remove();
+        context = mycontext;
+        return;
+    }
+    
+    div.empty();
     div.append("<p>First we'll measure the <b>latency</b> of your audio hardware.</p><p>Please turn your volume to max "+
                "and put your headphones where your microphone can hear them.  Or get ready to tap your microphone in "+
                "time to the beeps.</p>");
@@ -97,8 +120,7 @@ async function initContext(){
     button = $('<input type=button>').attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.")
                                      .appendTo(div);
     div.append(button);
-    let res;
-    let p = new Promise((res_)=>{res=res_;});
+    p = new Promise((res_)=>{res=res_;});
     let estimator = new LatencyCalibrator({context:mycontext, clickVolume:100}); // TODO: gradually increasing clickVolume
     estimator.addEventListener('beep', (ev)=>{
         console.log(ev);
@@ -107,13 +129,19 @@ async function initContext(){
     });
     button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
     await p;
+    
+    if (calibrationFail) {
+        div.remove();
+        context = mycontext;
+        return;
+    }
 
     div.empty();
     div.append($("<p>Now we need to calibrate your <b>volume</b>.  Please sing at the same volume you plan to during "+
                  "the event. For your convenience, here are some lyrics:" +
                  "<blockquote><i>" +
                  "Mary had a little iamb, little iamb, little iamb<br/>" +
-                 "And everywhere that Mary went trochies were sure to come" +
+                 "And everywhere that Mary went scansion were sure to fail" +
                  "</i></blockquote></p>"));
     button = $('<input type=button>').attr('value',"I'm singing").appendTo(div);  
     await new Promise((res)=>{button.on('click',res);});
@@ -135,19 +163,13 @@ async function initContext(){
     div.append("<p>That's enough singing.  Calibration is done.  On with the main event.</p>");
     button = $('<input type=button>').attr('value',"Nifty").appendTo(div);
     await new Promise((res)=>{button.on('click',res);});
-    div.remove();
 
+    div.remove();
     context = mycontext;
 }
 
 export class BucketSinging {
-    constructor({boxColors, lyrics, cleanup, background_opts, videoUrl, leader}) {
-        let islead;
-        if (leader) {
-            islead = (document.cookie.indexOf(leader) != -1);
-        } else {
-            islead = window.location.pathname.endsWith('lead');
-        }
+    constructor({boxColors, lyrics, cleanup, background_opts, videoUrl, page}) {
         this.div = $('<div>').appendTo($('body'));
         putOnBox(this.div, boxColors.lyrics);
         if (videoUrl) {
@@ -160,6 +182,7 @@ export class BucketSinging {
         this.page = -1;
         this.btstart = NaN;
         this.timings = [];
+        this.iswelcome = (page=='welcome');
         
         this.dbg = $('<div class=lyricdbg>').appendTo($('body'));
         this.dbg.append('Debugging info:').append($('<br>'));
@@ -176,18 +199,23 @@ export class BucketSinging {
                         .prependTo(this.video_div);
         }
 
+        if (window.location.search == 'fake') {
+            this.declare_ready();
+            return;
+        }
+        
         if ( ! context) {
             let button = $('<input type="button" value="Click here to Initialize Singing">').appendTo(this.div);
             button.on('click', ()=>{
                 button.remove();
                 initContext().then(()=>{
                     this.show_lyrics(lyrics);
-                    this.declare_ready(islead);
+                    this.declare_ready();
                 });
             });
         } else {
             this.show_lyrics(lyrics);
-            this.declare_ready(islead);
+            this.declare_ready();
         }
     }
     
@@ -200,12 +228,17 @@ export class BucketSinging {
         }
     }
 
-    declare_ready(islead) {
+    declare_ready() {
+        let islead = window.location.pathname.endsWith('lead');
         this.dbg.append('declaring ready islead='+islead).append($('<br>'));
-        $.post('widgetData', {calibrationFail, clientId, islead});
+        if (this.iswelcome) {
+            $.post('welcomed/'+clientId);
+        } else {
+            $.post('widgetData', {calibrationFail, clientId, islead});
+        }
     }
 
-    async from_server({mark_base, slot, ready, backing_track, dbginfo, justInit, server_url}) {
+    async from_server({slot, ready, backing_track, dbginfo, justInit, server_url, lyricLead}) {
         this.dbg.append(dbginfo+' ready='+ready).append($('<br>'));
         if (!ready || !context) return;
         if (this.slot === slot) return;
@@ -218,10 +251,13 @@ export class BucketSinging {
         let offset = (slot+1) * 3 + 1;
         this.dbg.append('slot '+slot+' -> offset '+offset).append($('<br>'));
 
-        let apiUrl = window.location.protocol+'//'+window.location.host+server_url;
-        let username = $('#chat-sender').val() || 'cId='+clientId; // Will show up in mixer console
+        let apiUrl = server_url;
+        let username = 'RE/'+chatname+' ['+clientId.substr(0,10)+'...]';
         let secretId = Math.round(Math.random()*1e6); // TODO: understand this
         this.client = new SingerClient({context, apiUrl, offset, username, secretId});
+        addEventListener('error', this.clientErrorListener = () => {
+            this.client.close();
+        });
 
         this.client.addEventListener('markReached', async ({detail: {data}}) => {
             if (data === 'backingTrackStart') {
@@ -244,29 +280,16 @@ export class BucketSinging {
                     this.video.css({left});
                 }
             });
-            this.client.addEventListener('x_metadataReceived', ({detail:{metadata}})=>{
+            this.client.addEventListener('backingTrackUpdate', ({detail: {progress}}) => {
                 // TODO: if (playing) ?
-                let elapsedAudioSeconds = (metadata.client_read_clock - metadata.song_start_clock) / metadata.server_sample_rate;
-                console.log(`Sync Status: audio = ${elapsedAudioSeconds}, video = ${this.video[0].currentTime}`);
-                if (Math.abs(elapsedAudioSeconds - this.video[0].currentTime) > 0.1) {
-                    this.video[0].currentTime = elapsedAudioSeconds;
+                console.log(`Sync Status: audio = ${progress}, video = ${this.video[0].currentTime}`);
+                if (Math.abs(progress - this.video[0].currentTime) > 0.1) {
+                    this.video[0].currentTime = progress;
                 }
             });
         }
-        
-
-        
-        if (slot==0) {
-            //TODO: figure out what this actually does, and why we need to wait
-            await new Promise((res)=>{setTimeout(res,2000);});
-            if (backing_track) {
-                this.dbg.append('bt='+backing_track).append($('<br>'));
-                this.client.x_send_metadata("backingTrack", backing_track);
-            }
-            this.client.x_send_metadata("markStartSinging", true);
-        }
-        
-        if (slot==0) {
+                
+        if (lyricLead) {
             $('<div>').text('You are lead singer.  '+
                        (backing_track ? 'Instrumentals will begin soon.  ' : 'Sing when ready.  ') + 
                             'Click anywhere in the lyric area when you begin a new line')
@@ -277,16 +300,16 @@ export class BucketSinging {
                 this.lyricEls[i] = $('<span>').text(-i+'... ').appendTo(this.countdown);
             }
         }
-        if (slot==0) {
+        if (lyricLead) {
             this.div.css('cursor','pointer');
             let cur = 0;
             this.div.on('click',async ()=>{
-                this.timings.push( (new Date()).getTime() - this.bkstart );
+                this.timings.push( ((new Date()).getTime() - this.bkstart) / 1000 );
                 console.log(this.timings);
-                this.client.declare_event(mark_base+cur);
+                this.client.declare_event(cur);
                 if (cur == 0) {
                     for (let i=1; i<=4; i++) {
-                        this.client.declare_event(mark_base-i, i);
+                        this.client.declare_event(i, i);
                     }
                 }
                 await this.handleLyric(cur);
@@ -297,7 +320,7 @@ export class BucketSinging {
                 console.log('markreached',ev?.detail);
                 let lid = ev?.detail?.data;
                 if (lid == parseInt(lid)) {
-                    this.handleLyric(lid-mark_base);
+                    this.handleLyric(lid);
                 }
             });
         }
@@ -331,6 +354,7 @@ export class BucketSinging {
     destroy(){
         if (this.client) {
             this.client.close();
+            removeEventListener(this.clientErrorListener);
         }
         this.div.remove();
         this.dbg.remove();

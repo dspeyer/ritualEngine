@@ -181,6 +181,7 @@ function fillAsAuditorium(div, n) {
     let rb = r0;
     let yb = h-r0;
     let y,r;
+    let label=true;
     for (let rn of rows) {
         let xs = w/rn;
         if (yb==h-r0) {
@@ -192,13 +193,13 @@ function fillAsAuditorium(div, n) {
                 xc += extra;
                 let xl = (2*i+1) * xs/2;
                 let x = (xc*(Math.floor(rn/2-i)) + xl*i) / Math.floor(rn/2);
-                ps.push({x,y,r,z:Math.round(r)});
-                ps.push({x:w-x,y,r,z:Math.round(r)});
+                ps.push({x,y,r,z:Math.round(r),label});
+                ps.push({x:w-x,y,r,z:Math.round(r),label});
                 xc += extra;
                 xc += xs;
             }
             if (rn%2) {
-                ps.push({x:w/2,y:yb,r:r0,z:Math.round(r0)});
+                ps.push({x:w/2,y:yb,r:r0,z:Math.round(r0),label});
             }
         } else {
             let x = xs / 2;
@@ -206,9 +207,10 @@ function fillAsAuditorium(div, n) {
                 let extra = r0 * (Math.pow(2, 4*Math.pow((x/w)-.5,2)) - 1);
                 y = yb - 2*extra;
                 r = rb;
-                ps.push({x,y,r,z:Math.round(r)});
+                ps.push({x,y,r,z:Math.round(r),label});
                 x += xs;
             }
+            label = false;
         }
         yb -= 1.5 * rb;
         rb *= 2/3;
@@ -238,14 +240,16 @@ function putcircle(d,{x,y,r,label,z,br}) {
     if (label) {
         div.label = $('<span>').text('Placeholder')
                                .css({position: 'absolute',
-                                     bottom: '5px',
+                                     top: (y+r-16)+'px',
                                      left,
                                      width: s,
+                                     overflow: 'hidden',
+                                     whiteSpace: 'nowrap',
                                      'text-align': 'center',
                                      color:'white',
                                      'text-shadow': ('1px 1px 1px grey, -1px -1px 1px grey, ' +
                                                      '-1px 1px 1px grey, 1px -1px 1px grey'),
-                                     'font-size': '14px',
+                                     'font-size': '12px',
                                      zIndex: 99999
                                     })
                                .appendTo(d);
@@ -279,7 +283,7 @@ function setVideoAvatars() {
     videosToPlace = {};
     let mes = participants.filter((x)=>(x.id==clientId));
     let same = participants.filter((x)=>(x.room==currentRoomId && x.id!=clientId));
-    let diff = participants.filter((x)=>(x.room!=currentRoomId));
+    let diff = participants.filter((x)=>(x.room!=currentRoomId && x.id!=clientId));
     let samerot = Math.max( curVidRot%same.length, 1);
     console.log({samerot,curVidRot,sl:same.length})
     let samea = same.slice(samerot);
@@ -289,10 +293,11 @@ function setVideoAvatars() {
     let diffb = diff.slice(0,diffrot);
     let clients = [].concat(mes,samea,sameb,diffa,diffb);
     let vidsPlaced = 0;
+    console.log({act:'seting circles',clients,circles,mes,samea,sameb,diffa,diffb});
     for (let i in clients) {
         let client = clients[i];
         let circle = circles[i];
-        circle.label?.text(i);
+        circle.label?.text(client.name);
         let cachebuster = client.hj + '_';
         if (circle.width() > 10) {
             cachebuster += Math.round(((new Date()).getTime()+(i*10*1000))/(300*1000));
@@ -328,6 +333,7 @@ function setVideoAvatars() {
 
 
 function attachAllVideos() {
+    if (!room) return;
     for (let [sid, participant] of room.participants) {
         if (participant.identity in videosToPlace) {
             for (let [_, track] of participant.videoTracks) {
@@ -375,7 +381,15 @@ export async function twilioConnect(token, roomId) {
     if (room) room.disconnect();
     currentRoomId = roomId;
     localVideo = await Twilio.Video.createLocalVideoTrack({ width: 100, height: 100 });
-    room = await Twilio.Video.connect(token, { name: roomId, tracks: [localVideo] });
+    try {
+        room = await Twilio.Video.connect(token, { name: roomId, tracks: [localVideo] });
+    } catch (error) {
+        room = null;
+        currentRoomId = null;
+        console.log(error);
+        $.post('twilioRoomFail/'+clientId);
+        return;
+    }
     console.log('connected to room '+roomId);
     addEventListener('beforeunload', () => {
         room.disconnect();
@@ -404,6 +418,7 @@ export async function twilioConnect(token, roomId) {
 
 export function setTwilioAudioEnabled(nv) {
     if (nv == twilioAudioEnabled) return;
+    if ( ! room) return;
     hasAudioTrack = {[clientId]: true};
     if (nv) {
         twilioAudioEnabled = true;

@@ -1,29 +1,8 @@
 <html>
     <head>
-        <script>
-            addEventListener('error', (event) => {
-                event.preventDefault();
-                let title = document.title;
-                $(`<div class=error>
-                    <h1>This app has crashed. We're really sorry :-(</h1>
-                    <h2>Please <a href="https://github.com/dspeyer/ritualEngine/issues/new">file a bug</a> with the following information; it will help us fix it.</h2>
-                    <textarea readonly></textarea>
-                    <h2>Then refresh the page and try again.</h2>
-                </div>`).appendTo($('body'));
-                document.title = title;
-                let {name, message, stack} = event.error ?? {};
-                document.querySelector('textarea').textContent = stack ?? `${name}: ${message}`;
-            }, {once: true});
-            addEventListener('unhandledrejection', (event) => {
-                event.preventDefault();
-                throw event.reason;
-            });
-        </script>
+        %errorhandler%
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://webrtchacks.github.io/adapter/adapter-latest.js"></script>
         <script src="https://media.twiliocdn.com/sdk/js/video/releases/2.8.0/twilio-video.js"></script>
-        <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet">
-        <script src="https://vjs.zencdn.net/7.10.2/video.js"></script>
         <style>
          #everything {
              width: 100vw;
@@ -176,10 +155,6 @@
          .chat-sender {
              font-weight: bold;
          }
-         .chat-ctrls-sender {
-             font-weight: bold;
-             font-size: 12px;
-         }
          .chat-ctrls-sender input{
              font-weight: bold;
 
@@ -288,17 +263,42 @@
              width: 98%;
              height: 40vh;
          }
+         #askname {
+             background: rgba(0, 0, 0, 1);
+             font-size: 14pt;
+             text-shadow: 0 0 2px black;
+             color: white;
+             padding: 0 16px;
+             position: absolute;
+             top: calc( 50% - 6em );
+             height: 12em;
+             left: 20vw;
+             right: 20vw;
+             border: 2px outset #777;
+             backdrop-filter: blur(8px);
+             z-index: 9999;
+         }
+         #askname input {
+             width: 100%;
+             display: block;
+             margin-top: 1em;
+         }
         </style>
     </head>
     <body>
         <div id="everything">
+            <div id="askname">
+                <h1>Welcome</h1>
+                Please give us a name to call you.  This will be visible to the other participants.
+                <input id="name">
+                <input type="button" id="sendname" value="OK">
+            </div>
             <div id="content" class="content %cclass%">
                 <div id="svgwrapper"></div>
                 <div id="chat">
                     <div id="chat-buffer"></div>
                     <form id="chat-send">
                         <div id="chat-error"></div>
-                        <input id="chat-sender" name="name" placeholder="Your Name">
                         <input id="chat-message" type="text" placeholder="Message" autocomplete="off">
                         <input id="chat-submit" type="submit" value="Chat">
                     </form>
@@ -339,9 +339,19 @@
          let clientId = '%clientId%';
          let name = '%name%';
          document.title = name;
+         let chatname = 'notSet';
          let page = 0;
          let state = null;
          var widgetClasses = {};
+
+         $('#sendname').on('click', ()=>{ // TODO Also on <enter> in name field
+             let name = $('#name').val();
+             // TODO: sanity-check name
+            $.post('setName', {clientId, name});
+            chatname = name;
+             $('#askname').hide();
+         });
+         
          async function ask() {
              $.ajax('status',{
                  data:{clientId,have:page,subhave:(state && state.page)},
@@ -362,7 +372,7 @@
                      if (data.video_token && data.room) {
                          let { twilioConnect, setTwilioAudioEnabled } = await import ('../avatars.js');
                          console.log(data.clients)
-                         await twilioConnect(data.video_token, data.room);
+                         await twilioConnect(data.video_token, data.room);    
                          if (data.twilioAudioEnabled !== undefined) {
                              setTwilioAudioEnabled(data.twilioAudioEnabled);
                          }
@@ -403,15 +413,10 @@
          $('#chat-send').submit((event) => {
              event.preventDefault();
              let text = $('#chat-message').val();
-             let sender = $('#chat-sender').val();
-             if (!sender) {
-                $('#chat-error').text('Please enter your name');
-             };
              if (!text) {
                 $('#chat-error').text('Please enter a message');
-             };
-             if (text && sender) {
-                $.post('chat/send', {text,sender});
+             } else {
+                $.post('chat/send', {text,clientId});
                 $('#chat-message').val('');
                 $('#chat-error').text('')
              }
@@ -433,5 +438,11 @@
          askChat();
         </script>
         %videos%
+        <script>
+            window.intercomSettings = {app_id: '%intercomappid%'};
+            if (window.intercomSettings.app_id) {
+                var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/'+window.intercomSettings.app_id;var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}};
+            }
+        </script>
     </body>
 </html>
