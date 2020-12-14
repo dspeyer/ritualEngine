@@ -79,11 +79,13 @@ else:
     error_handler = f'<script src="https://js.sentry-cdn.com/{sentry_public_key}.min.js" crossorigin="anonymous"></script>' + '''
         <script>
             Sentry.onLoad(() => {
+                let showedReportDialog = false;
                 Sentry.init({
                     sendDefaultPii: true,
                     autoSessionTracking: true,
                     beforeSend(event) {
-                        if (event.exception) {
+                        if (event.exception && !showedReportDialog) {
+                            showedReportDialog = true;
                             Sentry.showReportDialog({ eventId: event.event_id });
                         }
                         return event;
