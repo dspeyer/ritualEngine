@@ -320,6 +320,7 @@
          let clientId = '%clientId%';
          let name = '%name%';
          document.title = name;
+         let chatname = 'notSet';
          let page = 0;
          let state = null;
          var widgetClasses = {};
@@ -327,7 +328,8 @@
          $('#sendname').on('click', ()=>{ // TODO Also on <enter> in name field
              let name = $('#name').val();
              // TODO: sanity-check name
-             $.post('setName', {clientId, name});
+            $.post('setName', {clientId, name});
+            chatname = name;
              $('#askname').hide();
          });
          

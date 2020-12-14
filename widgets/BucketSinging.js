@@ -224,7 +224,7 @@ export class BucketSinging {
         this.dbg.append('slot '+slot+' -> offset '+offset).append($('<br>'));
 
         let apiUrl = server_url;
-        let username = $('#chat-sender').val() || 'cId='+clientId; // Will show up in mixer console
+        let username = 'RE/'+chatname+' ['+clientId.substr(0,10)+'...]';
         let secretId = Math.round(Math.random()*1e6); // TODO: understand this
         this.client = new SingerClient({context, apiUrl, offset, username, secretId});
 
