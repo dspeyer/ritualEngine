@@ -249,12 +249,11 @@ export class BucketSinging {
                     this.video.css({left});
                 }
             });
-            this.client.addEventListener('x_metadataReceived', ({detail:{metadata}})=>{
+            this.client.addEventListener('backingTrackUpdate', ({detail: {progress}}) => {
                 // TODO: if (playing) ?
-                let elapsedAudioSeconds = (metadata.client_read_clock - metadata.song_start_clock) / metadata.server_sample_rate;
-                console.log(`Sync Status: audio = ${elapsedAudioSeconds}, video = ${this.video[0].currentTime}`);
-                if (Math.abs(elapsedAudioSeconds - this.video[0].currentTime) > 0.1) {
-                    this.video[0].currentTime = elapsedAudioSeconds;
+                console.log(`Sync Status: audio = ${progress}, video = ${this.video[0].currentTime}`);
+                if (Math.abs(progress - this.video[0].currentTime) > 0.1) {
+                    this.video[0].currentTime = progress;
                 }
             });
         }
