@@ -56,7 +56,7 @@
      font-size="50"
      x="354.85172"
      y="48.953388">Solstice Stress Test</text>
-  <text
+  <!-- <text
      style="font-size:15px;font-family:Georgia;fill:#ffffff"
      id="text67"
      font-size="15"
@@ -81,8 +81,8 @@
    style="font-style:italic"
    id="tspan73"
    font-style="italic">no</tspan>
- headset. (No bluetooth)</text>
-  <text
+ headset. (No bluetooth)</text> -->
+  <!-- <text
      style="font-size:15px;font-family:Georgia;fill:#ffffff"
      id="text77"
      font-size="15"
@@ -99,7 +99,7 @@
      id="text81"
      font-size="15"
      x="46.567795"
-     y="277.61865">We'll start the singing test at roughly 2:05pm</text>
+     y="277.61865">We'll start the singing test at roughly 2:05pm</text> -->
   <path
      style="font-family:Georgia;fill:none;stroke:#000000;stroke-width:0.16424851"
      inkscape:connector-curvature="0"
