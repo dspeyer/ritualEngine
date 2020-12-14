@@ -120,6 +120,8 @@ class BucketSinging(object):
                 self.slots[cid] = 0
         else:
             self.c_songLeader = set()
+            for cid in self.c_slideLeader:
+                self.slots[cid] = 3
         for cid in self.c_uncalibrated:
             if not cid in self.slots:
                 self.slots[cid]=3
