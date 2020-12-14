@@ -8,11 +8,8 @@ from os import path
 from aiohttp import web, ClientSession
 import numpy as np
 import cv2
-from twilio import rest as twilio_rest
-from twilio.jwt import access_token as twilio_access_token
-from twilio.jwt.access_token import grants as twilio_grants
 
-from core import app, active, error_handler, users, tpl, random_token, Ritual, secrets, struct
+from core import app, active, users, tpl, random_token, Ritual, secrets, struct, assign_twilio_room, twilio_client, error_handler
 from users import connectUserRitual
 from widgetry import preload
 
@@ -21,22 +18,9 @@ cv2.circle(defaultimg, (32,32), 24, (0,255,255), thickness=-1)
 defaultjpg = bytes(cv2.imencode('.JPG', defaultimg)[1])
 
 try:
-    twilio_client_kwargs = {
-        'username': secrets['TWILIO_API_KEY'],
-        'password': secrets['TWILIO_API_SECRET'],
-        'account_sid': secrets['TWILIO_ACCOUNT_SID'],
-    }
-except KeyError:
-    twilio_client = None
-else:
-    twilio_client = twilio_rest.Client(**twilio_client_kwargs)
-
-
-try:
     intercom_app_id = secrets['INTERCOM_APP_ID']
 except KeyError:
     intercom_app_id = ''
-
 
 async def homepage(req):
     l = '\n'.join([ '<li><a href="/%s/partake">%s (%s)</a>'%(x,x,active[x].script) for x in active.keys() ])
@@ -63,29 +47,17 @@ async def ritualPage(req):
         lastSeen=datetime.now(),
         isStreamer=('streamer' in req.query),
         room=None,
+        name='NotYetNamed',
     )
     if active[name].welcome:
         active[name].clients[clientId].welcomed = False
+    if 'fake' in req.query:
+        active[name].clients[clientId].lastSeen = datetime(9999,9,9,9,9,9)
+        active[name].clients[clientId].welcomed = True
     for datum in active[name].allChats[-50:]:
         active[name].clients[clientId].chatQueue.put_nowait(datum)
     if hasattr(active[name], 'current_video_room'):
-        async with active[name].video_room_lock:
-            if not active[name].current_video_room:
-                active[name].current_video_room = await asyncio.get_event_loop().run_in_executor(None, twilio_client.video.rooms.create)
-            video_room_id = active[name].current_video_room.unique_name
-            active[name].population_of_current_video_room += 1
-            if active[name].population_of_current_video_room == 26:
-                active[name].current_video_room = None
-                active[name].population_of_current_video_room = 0
-        token_builder = twilio_access_token.AccessToken(
-            account_sid=secrets['TWILIO_ACCOUNT_SID'],
-            signing_key_sid=secrets['TWILIO_API_KEY'],
-            secret=secrets['TWILIO_API_SECRET'],
-            identity=clientId,
-        )
-        token_builder.add_grant(twilio_grants.VideoGrant(room=video_room_id))
-        active[name].clients[clientId].video_token = token_builder.to_jwt().decode()
-        active[name].clients[clientId].room = video_room_id
+        await assign_twilio_room(active[name],clientId)
     else:
         video_room_id = ''
         video_token = ''
@@ -99,7 +71,7 @@ async def ritualPage(req):
                                  cclass=(
                                      'shrunk'
                                      if hasattr(active[name], 'participants')
-                                     or video_room_id
+                                     or hasattr(active[name], 'current_video_room')
                                      else ''
                                  ),
                                  ratio=str(active[name].ratio),
@@ -179,13 +151,27 @@ async def chatSend(req):
     text = form.get('text', '')
     if not isinstance(text, str) or text.strip()=='':
         return web.Response(status=400)
-    sender = form.get('sender','Anonymous');
+    clientId = form.get('clientId')
+    if clientId in ritual.clients:
+        sender = ritual.clients[clientId].name
+    else:
+        # I don't *think* this can happen
+        sender = 'anon'+clientId
     datum = {'sender': sender, 'text': text}
     for client in ritual.clients.values():
         client.chatQueue.put_nowait(datum)
     ritual.allChats.append(datum)
     return web.Response(status=204)
 
+async def setName(req):
+    name = req.match_info.get('name','')
+    if name not in active:
+        return web.Response(status=404)
+    ritual = active[name]
+    form = await req.post()
+    ritual.clients[form['clientId']].name = form['name']
+    return web.Response(status=204)
+    
 async def background(req):
     name = req.match_info.get('name')
     sc = active[name].script
@@ -289,3 +275,4 @@ app.router.add_get('/{name}/namedimg/{img}', namedimg)
 app.router.add_get('/{name}/clientAvatar/{client}', getAvatar)
 app.router.add_post('/{name}/clientAvatar/{client}', setAvatar)
 app.router.add_post('/{name}/welcomed/{client}', welcomed)
+app.router.add_post('/{name}/setName', setName)

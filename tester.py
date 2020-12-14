@@ -68,7 +68,7 @@ if args.z:
     shuffle(fns)
     for i,fn in enumerate(fns):
         clientId = False
-        client = requests.get(args.u+'/partake', headers={'user-agent':args.agent}).text
+        client = requests.get(args.u+'/partake?fake', headers={'user-agent':args.agent}).text
         for line in client.split('\n'):
             m = re.match(" *let clientId = '(.*)';", line)
             if m:
