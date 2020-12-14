@@ -17,6 +17,11 @@ defaultimg = np.zeros((64,64,3),'uint8')
 cv2.circle(defaultimg, (32,32), 24, (0,255,255), thickness=-1)
 defaultjpg = bytes(cv2.imencode('.JPG', defaultimg)[1])
 
+try:
+    intercom_app_id = secrets['INTERCOM_APP_ID']
+except KeyError:
+    intercom_app_id = ''
+
 async def homepage(req):
     l = '\n'.join([ '<li><a href="/%s/partake">%s (%s)</a>'%(x,x,active[x].script) for x in active.keys() ])
     s = '\n'.join([ '<option>%s</option>'%(x.replace('examples/','')) for x in glob('examples/*') ])
@@ -75,7 +80,8 @@ async def ritualPage(req):
                                  videos=''.join(
                                      f'<video class="hidden" src="{video}" playsinline preload="auto"></video>'
                                      for video in active[name].videos
-                                 )
+                                 ),
+                                 intercomappid=intercom_app_id,
                         ),
                         content_type='text/html', charset='utf8')
 
