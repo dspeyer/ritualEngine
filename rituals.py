@@ -9,7 +9,7 @@ from aiohttp import web, ClientSession
 import numpy as np
 import cv2
 
-from core import app, active, users, tpl, random_token, Ritual, secrets, struct, assign_twilio_room, twilio_client
+from core import app, active, users, tpl, random_token, Ritual, secrets, struct, assign_twilio_room, twilio_client, error_handler
 from users import connectUserRitual
 from widgetry import preload
 
@@ -31,7 +31,7 @@ async def ritualPage(req):
     if hasattr(active[name],'participants'):
         foundLogin = connectUserRitual(req, active[name], islead)
         if not foundLogin:
-            res = web.Response(body=open('html/login.html').read(), content_type='text/html')
+            res = web.Response(body=tpl('html/login.html', errorhandler=error_handler), content_type='text/html')
             res.set_cookie('LastRitual', name)
             return res
     clientId = random_token()
@@ -60,6 +60,7 @@ async def ritualPage(req):
     return web.Response(body=tpl('html/client.html',
                                  name=name,
                                  clientId=clientId,
+                                 errorhandler=error_handler,
                                  cclass=(
                                      'shrunk'
                                      if hasattr(active[name], 'participants')
