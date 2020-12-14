@@ -288,19 +288,7 @@ export class BucketSinging {
                 }
             });
         }
-        
-
-        
-        if (lyricLead) {
-            //TODO: figure out what this actually does, and why we need to wait
-            await new Promise((res)=>{setTimeout(res,2000);});
-            if (backing_track) {
-                this.dbg.append('bt='+backing_track).append($('<br>'));
-                this.client.x_send_metadata("backingTrack", backing_track);
-            }
-            this.client.x_send_metadata("markStartSinging", true);
-        }
-        
+                
         if (lyricLead) {
             $('<div>').text('You are lead singer.  '+
                        (backing_track ? 'Instrumentals will begin soon.  ' : 'Sing when ready.  ') + 
