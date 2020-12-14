@@ -72,6 +72,9 @@ async function initContext(){
     console.log('Chose mic: ',mic);
     let micStream = await openMic(mic.deviceId);
     let mycontext = new BucketBrigadeContext({micStream});
+    addEventListener('error', () => {
+        mycontext.close();
+    });
     await mycontext.start_bucket();
 
     if (window.skipCalibration) {
@@ -227,6 +230,9 @@ export class BucketSinging {
         let username = $('#chat-sender').val() || 'cId='+clientId; // Will show up in mixer console
         let secretId = Math.round(Math.random()*1e6); // TODO: understand this
         this.client = new SingerClient({context, apiUrl, offset, username, secretId});
+        addEventListener('error', this.clientErrorListener = () => {
+            this.client.close();
+        });
 
         this.client.addEventListener('markReached', async ({detail: {data}}) => {
             if (data === 'backingTrackStart') {
@@ -336,6 +342,7 @@ export class BucketSinging {
     destroy(){
         if (this.client) {
             this.client.close();
+            removeEventListener(this.clientErrorListener);
         }
         this.div.remove();
         this.dbg.remove();
