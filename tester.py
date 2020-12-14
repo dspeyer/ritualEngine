@@ -66,7 +66,7 @@ if args.z:
     fns = glob(args.z+'/*.jpg')
     shuffle(fns)
     for i,fn in enumerate(fns):
-        client = requests.get(args.u+'/partake').text
+        client = requests.get(args.u+'/partake?fake').text
         for line in client.split('\n'):
             m = re.match(" *let clientId = '(.*)';", line)
             if m:
