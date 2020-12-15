@@ -33,7 +33,7 @@ let css = `
   div.lyrics span.old {
       color: #999;
       text-shadow: 1px 1px 2px #444, -1px -1px 2px #444;
-  } 
+  }
   div.lyricdbg {
       position: absolute;
       left: 0;
@@ -92,6 +92,45 @@ async function initContext(){
     });
     await mycontext.start_bucket();
 
+    const CALIBRATION_SAVE_DURATION = 6 * 60 * 60;  // 6 hours
+    let now_s = Date.now() / 1000;
+    const saved_calibration = localStorage.getItem("saved_calibration");
+    if (saved_calibration === null) {
+        console.log("No saved calibration data, gotta calibrate.");
+    } else {
+        var parsed_calibration = null;
+        try {
+            parsed_calibration = JSON.parse(saved_calibration);
+        } catch (e) {
+            console.log("Failed to parse saved calibration data:", saved_calibration, "with exception", e, "; Starting from scratch.");
+        }
+
+        if (parsed_calibration != null) {
+            const {
+                latency: saved_latency,
+                input_gain: saved_input_gain,
+                time: saved_cal_ts
+            } = parsed_calibration;
+
+            if (now_s - saved_cal_ts > CALIBRATION_SAVE_DURATION) {
+                console.log("Not using saved latency and calibration values from", now_s - saved_cal_ts, "seconds ago (too old): latency:", saved_latency, "input_gain:", saved_input_gain);
+            } else {
+                console.log("Using saved latency and calibration values from", now_s - saved_cal_ts, "seconds ago: latency:", saved_latency, "input_gain:", saved_input_gain);
+                mycontext.send_local_latency(saved_latency);
+                mycontext.send_input_gain(saved_input_gain);
+                context = mycontext;
+
+                // Any time we retrieve this, bump out the expiration another 6 hours. This prevents a timeout in the middle of an event, but ensures we won't retain it overnight.
+                localStorage.setItem("saved_calibration", JSON.stringify({
+                    latency: saved_latency,
+                    input_gain: saved_input_gain,
+                    time: now_s
+                }));
+                return;
+            }
+        }
+    }
+
     if (window.skipCalibration) {
         mycontext.send_local_latency(150);
         context = mycontext;
@@ -112,13 +151,13 @@ async function initContext(){
     buttonyes.on('click',res);
     buttonno.on('click',()=>{calibrationFail=true;res()});
     await p;
-    
+
     if (calibrationFail) {
         div.remove();
         context = mycontext;
         return;
     }
-    
+
     div.empty();
     div.append("<p>First we'll measure the <b>latency</b> of your audio hardware.</p><p>Please turn your volume to max "+
                "and put your headphones where your microphone can hear them.  Or get ready to tap your microphone in "+
@@ -126,7 +165,7 @@ async function initContext(){
     div.append($('<br>'));
     let button = $('<input type=button>').attr('value',"I'm ready: Start the LOUD beeping!").appendTo(div);
     await new Promise((res)=>{button.on('click',res);});
-    
+
     div.empty();
     div.append('<p>Beeping...</p>');
     div.append('Beeps heard: ');
@@ -139,14 +178,16 @@ async function initContext(){
     let estimator = new LatencyCalibrator({context:mycontext, clickVolume:100}); // TODO: gradually increasing clickVolume
     estimator.addEventListener('beep', (ev)=>{
         console.log(ev);
-        if (ev.detail.done) res();
+        if (ev.detail.done) res(ev.detail);
         heard.text(ev.detail.samples);
     });
     button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
-    await p;
-    
-    if (calibrationFail) {
+    const latency_cal_result = await p;
+
+    if (calibrationFail || latency_cal_result.success == false) {
         div.remove();
+        console.warn("Ignoring sound input because latency calibration failed.")
+        mycontext.send_ignore_input(true);  // XXX ??
         context = mycontext;
         return;
     }
@@ -158,7 +199,7 @@ async function initContext(){
                  "Mary had a little iamb, little iamb, little iamb<br/>" +
                  "And everywhere that Mary went scansion were sure to fail" +
                  "</i></blockquote></p>"));
-    button = $('<input type=button>').attr('value',"I'm singing").appendTo(div);  
+    button = $('<input type=button>').attr('value',"I'm singing").appendTo(div);
     await new Promise((res)=>{button.on('click',res);});
     button.remove();
     div.append($("<p><i>We're listening...</i></p>"));
@@ -172,8 +213,16 @@ async function initContext(){
     estimator.addEventListener('volumeChange', (ev)=>{ $('#curvol').text((ev.detail.volume*1000).toPrecision(3)) });
     estimator.addEventListener('volumeCalibrated', res);
     button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
-    await p;
-    
+    const volume_cal_result = await p;
+
+    now_s = Date.now() / 1000;
+    console.log("Saving calibration data at:", now_s, "latency:", latency_cal_result, "volume:", volume_cal_result);
+    localStorage.setItem("saved_calibration", JSON.stringify({
+        latency: latency_cal_result.estLatency,
+        input_gain: volume_cal_result.detail.inputGain,
+        time: now_s
+    }));
+
     div.empty();
     div.append("<p>That's enough singing.  Calibration is done.  On with the main event.</p>");
     button = $('<input type=button>').attr('value',"Nifty").appendTo(div);
@@ -201,14 +250,15 @@ export class BucketSinging {
         this.page = -1;
         this.btstart = NaN;
         this.timings = [];
-        
+        this.iswelcome = (page=='welcome');
+
         this.dbg = $('<div class=lyricdbg>').appendTo($('body'));
         this.dbg.append('Debugging info:').append($('<br>'));
         if ( ! cssInit ){
             $('<style>').text(css).appendTo($('head'));
             cssInit = true;
         }
-        
+
         if (videoUrl) {
             this.video = $(`video[src='${videoUrl}']`);
             (this.video).removeClass('hidden')
@@ -236,7 +286,7 @@ export class BucketSinging {
             this.declare_ready();
         }
     }
-    
+
     show_lyrics(lyrics) {
         this.div.addClass('lyrics');
         this.lyricEls = {};
@@ -261,7 +311,7 @@ export class BucketSinging {
             return;
         }
         this.slot = slot;
-        this.page = slot;  
+        this.page = slot;
         let offset = (slot+1) * 3 + 1;
         this.dbg.append('slot '+slot+' -> offset '+offset).append($('<br>'));
 
@@ -331,7 +381,7 @@ export class BucketSinging {
         
         if (lyricLead) {
             $('<div>').text('You are lead singer.  '+
-                       (backing_track ? 'Instrumentals will begin soon.  ' : 'Sing when ready.  ') + 
+                       (backing_track ? 'Instrumentals will begin soon.  ' : 'Sing when ready.  ') +
                             'Click anywhere in the lyric area when you begin a new line')
                       .css({background:'#444'})
                       .prependTo(this.div);
@@ -380,7 +430,7 @@ export class BucketSinging {
         }
 
         let otop = elem.position().top;
-        let target = elem.parent().height() / 3;  
+        let target = elem.parent().height() / 3;
         while (true) {
             if (otop < target) break;
             this.div[0].scrollTop += 4;
@@ -390,7 +440,7 @@ export class BucketSinging {
             await new Promise( (res)=>{setTimeout(res,16);} );
         }
     };
-    
+
     destroy(){
         if (this.client) {
             this.client.close();
@@ -406,5 +456,5 @@ export class BucketSinging {
     async welcome() {
         await initContext();
     }
-    
+
 }
