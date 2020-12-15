@@ -106,6 +106,11 @@ async def nextOrPrevPage(req):
     if name not in active:
         return web.Response(status=404)
     isnext = req.url.path.endswith('/nextPage')
+    newpage = active[name].page + (isnext and 1 or -1)
+    fn = 'examples/%s/%d.svg'%(active[name].script,newpage)
+    if not path.exists(fn):
+        return web.Response(status=400, text="Attempt to access non-existant page %d"%newpage)
+    active[name].page = newpage
     if active[name].state:
         if hasattr(active[name].state,'destroy'):
             active[name].state.destroy()
@@ -113,7 +118,6 @@ async def nextOrPrevPage(req):
         active[name].rotateSpeakers()
     print("Clearing state")
     active[name].state = None
-    active[name].page += (isnext and 1 or -1)
     for i,task in active[name].reqs.items():
         print("Cancelling %d"%i)
         task.cancel()
