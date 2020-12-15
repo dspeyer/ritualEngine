@@ -62,6 +62,13 @@ class BucketSinging(object):
 
     def from_client(self, data, users):
         clientId = data['clientId']        
+        action = data['action']
+        if action == 'ready':
+            self.from_client_ready(clientId,data)
+        if action == 'pickslot':
+            self.from_client_pickslot(clientId,data)
+
+    def from_client_ready(self, clientId, data):
         self.c_ready.add(data['clientId'])
         if self.ready:
             # Late arrivals
@@ -81,6 +88,13 @@ class BucketSinging(object):
             self.sleeping_readiness_checker = asyncio.create_task(self.sleep_then_check_readiness())
         self.consider_readiness()
 
+    def from_client_pickslot(self, clientId, data):
+        slot = int(data['slot'])
+        self.slots[clientId] = slot
+        for i,task in self.ritual.reqs.items():
+            task.cancel()
+        
+        
     async def sleep_then_check_readiness(self):
         await asyncio.sleep(1.1)
         self.consider_readiness()
@@ -206,6 +220,9 @@ class BucketSinging(object):
     def to_client(self, clientId, have):
         self.c_seen.add(clientId)
         self.consider_readiness()
+        slotCounts = [0, 0, 0, 0]
+        for slot in self.slots.values():
+            slotCounts[slot] += 1
         return { 'widget': 'BucketSinging',
                  'lyrics': self.lyrics,
                  'boxColors': self.boxColors,
@@ -216,6 +233,7 @@ class BucketSinging(object):
                  'background_opts': self.background_opts,
                  "videoUrl": self.videoUrl,
                  'justInit': self.justInit,
+                 'slotCounts': slotCounts,
                  'dbginfo': '%d/%d/%d'%(len(self.c_ready),len(self.c_seen),len(self.c_expected)) }
 
     @staticmethod

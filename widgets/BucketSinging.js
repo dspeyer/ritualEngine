@@ -62,6 +62,31 @@ let css = `
   div.initContext input {
       margin-top: 1em;
   }
+  div.slots {
+    display: flex;
+    flex-direction: row;
+    color: white;
+    background: rgba(0,0,0,0.5);
+  }
+  div.slotCol {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 5px;
+  }
+  div.slotCol div {
+    padding: 5px;
+  }
+  div.bucket {
+    background: #660;
+    border-radius: 0 0 50% 50%;
+    padding: 10px;
+  }
+  div.semibutton {
+    border: 2px #990 outset;
+    cursor: pointer;
+    padding: 2px !important;
+  }
 `;
 
 let backingTrackStartedRes;
@@ -176,6 +201,10 @@ export class BucketSinging {
             this.video_div = $('<div>').css({zIndex:-1,borderRadius:'50%',overflow:'hidden'}).appendTo($('body'));
             putOnBox(this.video_div, boxColors.video);
         }
+        if (boxColors.slots) {
+            this.slotsUi = $('<div class=slots>').appendTo($('body'));
+            putOnBox(this.slotsUi, boxColors.slots);
+        }
         this.lyrics = lyrics;
         this.cleanup = cleanup;
         this.background = background_opts;
@@ -234,11 +263,11 @@ export class BucketSinging {
         if (this.iswelcome) {
             $.post('welcomed/'+clientId);
         } else {
-            $.post('widgetData', {calibrationFail, clientId, islead});
+            $.post('widgetData', {action:'ready', calibrationFail, clientId, islead});
         }
     }
 
-    async from_server({slot, ready, backing_track, dbginfo, justInit, server_url, lyricLead}) {
+    async from_server({slot, ready, backing_track, dbginfo, justInit, server_url, lyricLead, slotCounts}) {
         this.dbg.append(dbginfo+' ready='+ready).append($('<br>'));
         if (!ready || !context) return;
         if (this.slot === slot) return;
@@ -251,6 +280,13 @@ export class BucketSinging {
         let offset = (slot+1) * 3 + 1;
         this.dbg.append('slot '+slot+' -> offset '+offset).append($('<br>'));
 
+        if (this.client) {
+            this.client.close();
+            $('.current').removeClass('current');
+            $('.old').removeClass('old');
+            if (this.countdown) this.countdown.empty();
+        }
+            
         let apiUrl = server_url;
         let username = 'RE/'+chatname+' ['+clientId.substr(0,10)+'...]';
         let secretId = Math.round(Math.random()*1e6); // TODO: understand this
@@ -289,6 +325,25 @@ export class BucketSinging {
             });
         }
                 
+        if (this.slotsUi) {
+            this.slotsUi.empty();
+            for (let i in slotCounts) {
+                let col = $('<div class=slotCol>')
+                    .append($('<div class=bucket>').text(i))
+                    .append($('<div>').text(slotCounts[i]))
+                    .appendTo(this.slotsUi);
+                if (i==slot) {
+                    $('<div>').text('You').appendTo(col);
+                } else if ( ! calibrationFail) {
+                    $('<div class=semibutton>').text('Join')
+                                               .on('click',()=>{
+                                                   $.post('widgetData', {action:'pickslot', clientId, slot:i});
+                                               })
+                                               .appendTo(col);
+                }
+            }
+        }
+        
         if (lyricLead) {
             $('<div>').text('You are lead singer.  '+
                        (backing_track ? 'Instrumentals will begin soon.  ' : 'Sing when ready.  ') + 
@@ -360,6 +415,7 @@ export class BucketSinging {
         this.dbg.remove();
         if (this.video) this.video.removeClass('bbs-video').addClass('hidden').appendTo(document.body);
         if (this.video_div) this.video_div.remove();
+        if (this.slotsUi) this.slotsUi.remove();
     }
     
 }
