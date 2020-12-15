@@ -44,23 +44,30 @@ let css = `
   div.lyricdbg:hover {
       opacity: 1;
   }
-  div.initContext {
-      background: rgba(0, 0, 0, 0.5);
-      font-size: 14pt;
-      text-shadow: 0 0 2px black;
-      color: white;
-      padding: 0 16px;
-      position: absolute;
-      top: calc( 50% - 8em );
-      height: 16em;
-      left: 20vw;
-      right: 20vw;
-      border: 2px outset #777;
-      backdrop-filter: blur(8px);
-      z-index: 9999;
+  div.slots {
+    display: flex;
+    flex-direction: row;
+    color: white;
+    background: rgba(0,0,0,0.5);
   }
-  div.initContext input {
-      margin-top: 1em;
+  div.slotCol {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 5px;
+  }
+  div.slotCol div {
+    padding: 5px;
+  }
+  div.bucket {
+    background: #660;
+    border-radius: 0 0 50% 50%;
+    padding: 10px;
+  }
+  div.semibutton {
+    border: 2px #990 outset;
+    cursor: pointer;
+    padding: 2px !important;
   }
 `;
 
@@ -70,6 +77,11 @@ let backingTrackStartedPromise = new Promise((res) => {
 });
 
 async function initContext(){
+    let div = $('<div>').addClass('modaldlg')
+                        .appendTo($('body'));
+
+    div.append('Searching for microphone...');
+    
     let mics = await (new MicEnumerator()).mics();
     let mic = mics[0]; // TODO: be smarter?
     console.log('Chose mic: ',mic);
@@ -114,6 +126,8 @@ async function initContext(){
                     input_gain: saved_input_gain,
                     time: now_s
                 }));
+                $('<p>').text("Found microphone and calibration for it: all is well!").appendTo(div);
+                setTimeout(()=>{div.remove();}, 500);
                 return;
             }
         }
@@ -122,13 +136,16 @@ async function initContext(){
     if (window.skipCalibration) {
         mycontext.send_local_latency(150);
         context = mycontext;
+        div.remove();
         return;
     }
 
-    let div = $('<div>').addClass('initContext')
-                        .appendTo($('body'));
-    div.append("<p>Before we begin, is there any point in setting up your audio?  If you're using bluetooth, "+
-               "are in a very noisy area, or just don't want anyone to hear you, we'll set you up to never be heard.</p>");
+    div.empty();
+    div.append(`<div>Before we begin setting up your audio, is there any point?  If you're: <ul>
+                  <li> using bluetooth
+                  <li> in a very noisy area
+                  <li> or just desirous that no-one hear you
+                </ul> we'll set you up to never be heard.</div>`);
     let buttonyes = $('<input type=button value="Yes, calibrate me.  None of those issues apply.">').appendTo(div);
     let buttonno = $('<input type=button value="Forget it; I\'ll be uncalibrated.  Just don\'t let anyone hear me">').appendTo(div);
     let res;
@@ -151,27 +168,44 @@ async function initContext(){
     let button = $('<input type=button>').attr('value',"I'm ready: Start the LOUD beeping!").appendTo(div);
     await new Promise((res)=>{button.on('click',res);});
 
-    div.empty();
-    div.append('<p>Beeping...</p>');
-    div.append('Beeps heard: ');
-    let heard = $('<span>').appendTo(div);
-    div.append($('<br><br>'));
-    button = $('<input type=button>').attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.")
-                                     .appendTo(div);
-    div.append(button);
-    p = new Promise((res_)=>{res=res_;});
-    let estimator = new LatencyCalibrator({context:mycontext, clickVolume:100}); // TODO: gradually increasing clickVolume
-    estimator.addEventListener('beep', (ev)=>{
-        console.log(ev);
-        if (ev.detail.done) res(ev.detail);
-        heard.text(ev.detail.samples);
-    });
-    button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
-    const latency_cal_result = await p;
 
-    if (calibrationFail || latency_cal_result.success == false) {
+    let retryBeeping = true;
+    let latency_cal_result = null;
+    while (retryBeeping) {
+        div.empty();
+        div.append('<p>Beeping...</p>');
+        div.append('Beeps heard: ');
+        let heard = $('<span>').appendTo(div);
+        div.append($('<br><br>'));
+        button = $('<input type=button>').attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.")
+                                         .appendTo(div);
+        div.append(button);
+        p = new Promise((res_)=>{res=res_;});
+        let estimator = new LatencyCalibrator({context:mycontext, clickVolume:100}); // TODO: gradually increasing volume?
+        estimator.addEventListener('beep', (ev)=>{
+            console.log(ev);
+            if (ev.detail.done) res(ev.detail);
+            heard.text(ev.detail.samples);
+        });
+        button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
+        latency_cal_result = await p;
+        if (latency_cal_result.success === false) {
+            div.empty();
+            div.append('Failed to get a clear latency measurement.  Maybe increase volume or fiddle with audio hardware?');
+            p = new Promise((r)=>{res=r;});
+            $('<input type=button value="Try again">').on('click',res).appendTo(div);
+            button = $('<input type=button>')
+                .attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.")
+                .on('click', ()=>{ calibrationFail=true; retryBeeping=false; res(); })
+                .appendTo(div);
+            await p;
+        } else {
+            retryBeeping = false;
+        }
+    }
+
+    if (calibrationFail) {
         div.remove();
-        console.warn("Ignoring sound input because latency calibration failed.")
         mycontext.send_ignore_input(true);  // XXX ??
         context = mycontext;
         return;
@@ -194,7 +228,7 @@ async function initContext(){
     div.append(button);
     p = new Promise((res_)=>{res=res_;});
     window.reportedVolume = {}; // WHY DO WE NEED THIS?
-    estimator = new VolumeCalibrator({context: mycontext});
+    let estimator = new VolumeCalibrator({context: mycontext});
     estimator.addEventListener('volumeChange', (ev)=>{ $('#curvol').text((ev.detail.volume*1000).toPrecision(3)) });
     estimator.addEventListener('volumeCalibrated', res);
     button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
@@ -225,13 +259,16 @@ export class BucketSinging {
             this.video_div = $('<div>').css({zIndex:-1,borderRadius:'50%',overflow:'hidden'}).appendTo($('body'));
             putOnBox(this.video_div, boxColors.video);
         }
+        if (boxColors.slots) {
+            this.slotsUi = $('<div class=slots>').appendTo($('body'));
+            putOnBox(this.slotsUi, boxColors.slots);
+        }
         this.lyrics = lyrics;
         this.cleanup = cleanup;
         this.background = background_opts;
         this.page = -1;
         this.btstart = NaN;
         this.timings = [];
-        this.iswelcome = (page=='welcome');
 
         this.dbg = $('<div class=lyricdbg>').appendTo($('body'));
         this.dbg.append('Debugging info:').append($('<br>'));
@@ -252,8 +289,8 @@ export class BucketSinging {
             this.declare_ready();
             return;
         }
-
-        if ( ! context) {
+        
+        if ( ! context && page!='welcome') {
             let button = $('<input type="button" value="Click here to Initialize Singing">').appendTo(this.div);
             button.on('click', ()=>{
                 button.remove();
@@ -280,14 +317,10 @@ export class BucketSinging {
     declare_ready() {
         let islead = window.location.pathname.endsWith('lead');
         this.dbg.append('declaring ready islead='+islead).append($('<br>'));
-        if (this.iswelcome) {
-            $.post('welcomed/'+clientId);
-        } else {
-            $.post('widgetData', {calibrationFail, clientId, islead});
-        }
+        $.post('widgetData', {action:'ready', calibrationFail, clientId, islead});
     }
 
-    async from_server({slot, ready, backing_track, dbginfo, justInit, server_url, lyricLead}) {
+    async from_server({slot, ready, backing_track, dbginfo, justInit, server_url, lyricLead, slotCounts}) {
         this.dbg.append(dbginfo+' ready='+ready).append($('<br>'));
         if (!ready || !context) return;
         if (this.slot === slot) return;
@@ -300,8 +333,15 @@ export class BucketSinging {
         let offset = (slot+1) * 3 + 1;
         this.dbg.append('slot '+slot+' -> offset '+offset).append($('<br>'));
 
+        if (this.client) {
+            this.client.close();
+            $('.current').removeClass('current');
+            $('.old').removeClass('old');
+            if (this.countdown) this.countdown.empty();
+        }
+            
         let apiUrl = server_url;
-        let username = 'RE/'+chatname+' ['+clientId.substr(0,10)+'...]';
+        let username = 'RE/'+chatname[0]+' ['+clientId.substr(0,10)+'...]';
         let secretId = Math.round(Math.random()*1e6); // TODO: understand this
         this.client = new SingerClient({context, apiUrl, offset, username, secretId});
         addEventListener('error', this.clientErrorListener = () => {
@@ -337,7 +377,26 @@ export class BucketSinging {
                 }
             });
         }
-
+                
+        if (this.slotsUi) {
+            this.slotsUi.empty();
+            for (let i in slotCounts) {
+                let col = $('<div class=slotCol>')
+                    .append($('<div class=bucket>').text(i))
+                    .append($('<div>').text(slotCounts[i]))
+                    .appendTo(this.slotsUi);
+                if (i==slot) {
+                    $('<div>').text('You').appendTo(col);
+                } else if ( ! calibrationFail) {
+                    $('<div class=semibutton>').text('Join')
+                                               .on('click',()=>{
+                                                   $.post('widgetData', {action:'pickslot', clientId, slot:i});
+                                               })
+                                               .appendTo(col);
+                }
+            }
+        }
+        
         if (lyricLead) {
             $('<div>').text('You are lead singer.  '+
                        (backing_track ? 'Instrumentals will begin soon.  ' : 'Sing when ready.  ') +
@@ -403,12 +462,17 @@ export class BucketSinging {
     destroy(){
         if (this.client) {
             this.client.close();
-            removeEventListener(this.clientErrorListener);
+            removeEventListener('error', this.clientErrorListener);
         }
         this.div.remove();
         this.dbg.remove();
         if (this.video) this.video.removeClass('bbs-video').addClass('hidden').appendTo(document.body);
         if (this.video_div) this.video_div.remove();
+        if (this.slotsUi) this.slotsUi.remove();
     }
+}
 
+
+export async function welcome() {
+    await initContext();
 }

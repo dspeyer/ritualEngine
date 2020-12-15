@@ -16,6 +16,7 @@ export let staticRotateHint = 10;
 let curVidRot = 0;
 let curStaRot = 0;
 export function rotateAvatars() {
+    $('.selected-avatar').removeClass('selected-avatar');
     curVidRot += (nvideos - 1) & 254;
     curStaRot += staticRotateHint;
     redraw();
@@ -219,35 +220,47 @@ function fillAsAuditorium(div, n) {
     return ps.map(putcircle.bind(null,div));
 }
 
+let setGlobalClickHandler = false;
 function putcircle(d,{x,y,r,label,z,br}) {
     let s = Math.round(2*r) - 2 + 'px';
     let left = Math.round(x-r) + 1 + 'px';
     let top = Math.round(y-r) + 1 + 'px';
     if (br===undefined) br=50;
-    let div = $('<div>').css({position:'absolute', width: s, height: s, left, top,
-                              border: '1px rgba(255,255,255,0.5) solid',
-                              borderRadius: br+'%', overflow: 'hidden'})
-                        .appendTo(d);
+    let div = $('<div>').css({
+            position:'absolute', 
+            width: s, 
+            height: s, 
+            left, 
+            top, 
+            overflow: 'hidden'
+        }).appendTo(d);
+        
     if (z) div.css('z-index', z);
-    div.img = $('<img>').css({width:'100%',height:'100%',position:'absolute'}).appendTo(div);
-    div.video = $('<video>').css({width:'100%',height:'100%',position:'absolute'}).appendTo(div);
+    div.img = $('<img class="avatar">').css({borderRadius: br+'%'}).appendTo(div);
+    div.video = $('<video class="avatar">').css({borderRadius: br+'%'}).appendTo(div);
     div.video.hide();
     if (label) {
         div.label = $('<span>').text('Placeholder')
-                               .css({position: 'absolute',
-                                     top: (y+r-16)+'px',
-                                     left,
-                                     width: s,
-                                     overflow: 'hidden',
-                                     whiteSpace: 'nowrap',
-                                     'text-align': 'center',
-                                     color:'white',
-                                     'text-shadow': ('1px 1px 1px grey, -1px -1px 1px grey, ' +
-                                                     '-1px 1px 1px grey, 1px -1px 1px grey'),
-                                     'font-size': '12px',
-                                     zIndex: 99999
-                                    })
-                               .appendTo(d);
+                               .addClass('avatar-label')
+                               .appendTo(div);
+    }
+    div.on('click', (ev) => {
+        $('.selected-avatar').removeClass('selected-avatar');
+        div.addClass('selected-avatar');
+        ev.stopPropagation();
+        console.log('local click');
+    });
+    if ( ! setGlobalClickHandler) {
+        $('body').on('click', () => {
+            console.log('global click');
+            $('.selected-avatar').removeClass('selected-avatar');
+        });
+        setGlobalClickHandler = true;
+    }
+    if (window.isLead) {
+        $('<input type="button" class="avatar-control" value="Click Me">').on('click', () => {
+            alert("This button doesn't do anything yet.");
+        }).appendTo(div);
     }
     return div;
 }
@@ -339,6 +352,7 @@ function detachAllVideos() {
 
 
 function putVideoInCircle(circle, track, id) {
+    if (!track) return;
     track.attach(circle.video[0]);
     circle.video.show();
     circle.videoOf = id;
@@ -363,7 +377,12 @@ export async function twilioConnect(token, roomId) {
     if (roomId == currentRoomId) return;
     if (room) room.disconnect();
     currentRoomId = roomId;
-    localVideo = await Twilio.Video.createLocalVideoTrack({ width: 100, height: 100 });
+    console.log({cameraChoice});
+    if (cameraChoice[0]) {
+        localVideo = await Twilio.Video.createLocalVideoTrack({ width: 100, height: 100, deviceId:{exact:cameraChoice[0]}});
+    } else {
+        localVideo = null;
+    }
     try {
         room = await Twilio.Video.connect(token, { name: roomId, tracks: [localVideo] });
     } catch (error) {

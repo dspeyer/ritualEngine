@@ -2,10 +2,11 @@ from os import path
 import json
 from datetime import datetime, timedelta
 from asyncio import create_task, sleep, CancelledError
+import random
 
 from aiohttp import web
 
-from core import app, active, users, struct
+from core import app, active, users, struct, assign_twilio_room
 
 from widgets.PhotoCollage import PhotoCollage
 from widgets.Histogram import Histogram
@@ -111,16 +112,19 @@ async def status(req):
             if hasattr(ritual.state,'async_init'):
                 await ritual.state.async_init()
 
-        if 'fakewidget' in data:
-            for k,v in data['fakewidget'].items():
-                results[k] = v
-                
-        for key in ['background', 'bkZoom', 'bkZoomCenter', 'chatClass']:
+        for key in ['background', 'bkZoom', 'bkZoomCenter', 'chatClass', 'initWidgets']:
             if key in data:
                 results[key] = data[key]
 
         results['twilioAudioEnabled'] = data.get('twilioAudioEnabled', False);
-                
+        if results['twilioAudioEnabled']:
+            clients = list(ritual.clients.keys())
+            random.shuffle(clients)
+            first = True
+            for client in clients:
+                await assign_twilio_room(ritual, client, force_new_room=first)
+                first = False
+        
         results['page'] = pagename
         
     if not iswelcome:
@@ -176,7 +180,7 @@ async def preload(ritual,slide):
             await widget.preload(ritual=ritual,**slide)
 
 
-app.router.add_get(r'/{fn:lib|avatars}.js', lib)
+app.router.add_get(r'/{fn:lib|avatars|welcome}.js', lib)
 app.router.add_get('/widgets/{fn}', getJs)
 app.router.add_get('/{name}/status', status)
 app.router.add_post('/{name}/widgetData', widgetData)

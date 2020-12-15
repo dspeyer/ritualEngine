@@ -63,6 +63,42 @@
             width: 100px;
             height: 100px;
          }
+         .selected-avatar {
+             width: 200px !important;
+             height: 200px !important;
+             top: 0 !important; 
+             z-index: 9999 !important;
+         }
+         .avatar {
+             height: 100%;
+             width: 100%;
+             position:absolute;
+             border: 1px rgba(255,255,255,0.5) solid;
+         }
+         .avatar-control {
+             display: none;
+         }
+         .avatar-label {
+             position: absolute;
+             bottom: 10%;
+             left: 0;
+             width: 100%;
+             white-space: nowrap;
+             text-align: center;
+             color: white;
+             text-shadow: 1px 1px 1px grey, -1px -1px 1px grey, -1px 1px 1px grey, 1px -1px 1px grey;
+             font-size: 12px;
+             zIndex: 1;
+         }
+         .selected-avatar .avatar-label {
+             font-size: 14px;
+             bottom: 5%;
+             text-shadow: 2px 2px 2px black, -2px -2px 2px black, -2px 2px 2px black, 2px -2px 2px black;
+         }
+         .selected-avatar .avatar-control {
+             display: block;
+             position: absolute;
+         }
          body {
              background-color: black;
              margin:0;
@@ -242,6 +278,7 @@
              color: black;
              border: 3px ridge red;
              padding: 0.5em;
+             z-index: 100;
          }
          .error h3 {
              font-family: monospace;
@@ -256,36 +293,33 @@
              width: 98%;
              height: 40vh;
          }
-         #askname {
+         .modaldlg {
              background: rgba(0, 0, 0, 1);
              font-size: 14pt;
              text-shadow: 0 0 2px black;
              color: white;
-             padding: 0 16px;
+             padding: 16px;
              position: absolute;
-             top: calc( 50% - 6em );
-             height: 12em;
+             top: calc( 50% - 9em );
              left: 20vw;
              right: 20vw;
              border: 2px outset #777;
              backdrop-filter: blur(8px);
-             z-index: 9999;
+             z-index: 10;
          }
-         #askname input {
+         .modaldlg input {
              width: 100%;
              display: block;
              margin-top: 1em;
+         }
+         .modaldlg h1 {
+             margin-top: 0;
+             padding-top: 0;
          }
         </style>
     </head>
     <body>
         <div id="everything">
-            <div id="askname">
-                <h1>Welcome</h1>
-                Please give us a name to call you.  This will be visible to the other participants.
-                <input id="name">
-                <input type="button" id="sendname" value="OK">
-            </div>
             <div id="content" class="content %cclass%">
                 <div id="svgwrapper"></div>
                 <div id="chat">
@@ -316,7 +350,8 @@
              .appendTo($('body'));
            dlg.find('input').on('click',()=>{dlg.remove();});
          });
-         if (%islead%) {
+         window.isLead = %islead%;
+         if (window.isLead) {
              $('#ctrls').show();
              $('#prev').click(()=>{ $.post('prevPage'); });
              $('#skip').click(()=>{ $.post('skipSpeaker'); });
@@ -331,19 +366,12 @@
          let clientId = '%clientId%';
          let name = '%name%';
          document.title = name;
-         let chatname = 'notSet';
+         let chatname = ['notSet']; // Array so we don't have to worry about setting vs local var creation
+         let cameraChoice = [null]; // ditto
          let page = 0;
          let state = null;
          var widgetClasses = {};
 
-         $('#sendname').on('click', ()=>{ // TODO Also on <enter> in name field
-             let name = $('#name').val();
-             // TODO: sanity-check name
-            $.post('setName', {clientId, name});
-            chatname = name;
-             $('#askname').hide();
-         });
-         
          async function ask() {
              $.ajax('status',{
                  data:{clientId,have:page,subhave:(state && state.page)},
@@ -361,7 +389,7 @@
                          $('#svgwrapper').html(data.svg);
                          $('#svgwrapper svg').attr('width','').attr('height','');
                      }
-                     if (data.video_token && data.room) {
+                     if (data.video_token && data.room && page!='welcome') {
                          let { twilioConnect, setTwilioAudioEnabled } = await import ('../avatars.js');
                          console.log(data.clients)
                          await twilioConnect(data.video_token, data.room);    
@@ -396,6 +424,10 @@
                      }
                      if (data.chatClass) {
                          $('#chat').removeClass().addClass(data.chatClass);
+                     }
+                     if (data.page == 'welcome') {
+                         let { welcome } = await import ('../welcome.js');
+                         welcome(data.initWidgets || []);
                      }
                      ask();
                  }

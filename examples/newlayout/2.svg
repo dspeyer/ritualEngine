@@ -24,7 +24,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -60,10 +60,10 @@
      units="in"
      inkscape:pagecheckerboard="true"
      inkscape:zoom="0.32777778"
-     inkscape:cx="705.40861"
+     inkscape:cx="198.96794"
      inkscape:cy="259.12853"
-     inkscape:window-x="68"
-     inkscape:window-y="24"
+     inkscape:window-x="63"
+     inkscape:window-y="-6"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg1091" />
   <clipPath
@@ -154,4 +154,11 @@
        x="501.02383"
        y="148.48515"
        style="stroke-width:0.93450898px">By Leonard Cohen</tspan></text>
+  <rect
+     style="fill:none;fill-opacity:1;stroke:#ff0000;stroke-width:3;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0.80120003;stroke-opacity:1"
+     id="rect837"
+     width="167.79662"
+     height="79.322037"
+     x="67.118645"
+     y="101.85764" />
 </svg>
