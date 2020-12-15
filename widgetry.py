@@ -184,7 +184,7 @@ async def preload(ritual,slide):
             await widget.preload(ritual=ritual,**slide)
 
 
-app.router.add_get(r'/{fn:lib|avatars}.js', lib)
+app.router.add_get(r'/{fn:lib|avatars|welcome}.js', lib)
 app.router.add_get('/widgets/{fn}', getJs)
 app.router.add_get('/{name}/status', status)
 app.router.add_post('/{name}/widgetData', widgetData)
