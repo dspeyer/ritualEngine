@@ -22,7 +22,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -46,8 +46,8 @@
      inkscape:zoom="0.43703704"
      inkscape:cx="480"
      inkscape:cy="86.949153"
-     inkscape:window-x="48"
-     inkscape:window-y="24"
+     inkscape:window-x="43"
+     inkscape:window-y="-6"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg87" />
   <text
@@ -100,9 +100,4 @@
      font-size="15"
      x="46.567795"
      y="277.61865">We'll start the singing test at roughly 2:05pm</text> -->
-  <path
-     style="font-family:Georgia;fill:none;stroke:#000000;stroke-width:0.16424851"
-     inkscape:connector-curvature="0"
-     id="path83"
-     d="m 46.145223,177.20389 v 30.61764 H 354.53431 l 22.02778,-30.61764 z" />
 </svg>

@@ -12,7 +12,7 @@ async function setVid(video) {
 }
 
 let inprog = false;
-export async function  welcome() {
+export async function  welcome(widgets) {
     if (inprog) return;
     inprog = true;
     let dlg = $('<div class=modaldlg>').appendTo($('body'));
@@ -101,8 +101,9 @@ export async function  welcome() {
     }
     
     dlg.remove();
-    if (state.welcome) {
-        await state.welcome();
-    } 
+    for (let widget of widgets) {
+        let module = await import('/widgets/'+widget+'.js');
+        await module.welcome();
+    }
     $.post('welcomed/'+clientId);
 }

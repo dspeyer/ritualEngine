@@ -416,7 +416,7 @@
                      }
                      if (data.page == 'welcome') {
                          let { welcome } = await import ('../welcome.js');
-                         welcome();
+                         welcome(data.initWidgets || []);
                      }
                      ask();
                  }

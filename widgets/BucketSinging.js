@@ -470,9 +470,9 @@ export class BucketSinging {
         if (this.video_div) this.video_div.remove();
         if (this.slotsUi) this.slotsUi.remove();
     }
+}
 
-    async welcome() {
-        await initContext();
-    }
 
+export async function welcome() {
+    await initContext();
 }
