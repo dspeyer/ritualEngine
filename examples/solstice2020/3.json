@@ -1,6 +1,9 @@
 {
-  "widget": "BucketSinging",
+  "widget": "Video",
+  "background": "sunset4-01.jpg",
+  "videoUrl": "https://d3vyng54usxcs.cloudfront.net/intro-suit-trim.mp4",
   "boxColor": "#000000",
-  "background": "sunset2-01.jpg",
-  "lyrics": [""]
+  "showParticipants": true,
+  "rotate": false,
+  "bkgAll": true
 }
