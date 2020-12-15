@@ -2,10 +2,11 @@ from os import path
 import json
 from datetime import datetime, timedelta
 from asyncio import create_task, sleep, CancelledError
+import random
 
 from aiohttp import web
 
-from core import app, active, users, struct
+from core import app, active, users, struct, assign_twilio_room
 
 from widgets.PhotoCollage import PhotoCollage
 from widgets.Histogram import Histogram
@@ -120,7 +121,14 @@ async def status(req):
                 results[key] = data[key]
 
         results['twilioAudioEnabled'] = data.get('twilioAudioEnabled', False);
-                
+        if results['twilioAudioEnabled']:
+            clients = list(ritual.clients.keys())
+            random.shuffle(clients)
+            first = True
+            for client in clients:
+                await assign_twilio_room(ritual, client, force_new_room=first)
+                first = False
+        
         results['page'] = pagename
         
     if not iswelcome:

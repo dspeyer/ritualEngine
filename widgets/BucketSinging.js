@@ -354,7 +354,7 @@ export class BucketSinging {
     destroy(){
         if (this.client) {
             this.client.close();
-            removeEventListener(this.clientErrorListener);
+            removeEventListener('error', this.clientErrorListener);
         }
         this.div.remove();
         this.dbg.remove();
