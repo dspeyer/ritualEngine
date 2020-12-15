@@ -67,7 +67,7 @@
              width: 200px !important;
              height: 200px !important;
              top: 0 !important; 
-             z-index: 9999;
+             z-index: 9999 !important;
          }
          .avatar {
              height: 100%;
@@ -77,6 +77,23 @@
          }
          .avatar-control {
              display: none;
+         }
+         .avatar-label {
+             position: absolute;
+             bottom: 10%;
+             left: 0;
+             width: 100%;
+             white-space: nowrap;
+             text-align: center;
+             color: white;
+             text-shadow: 1px 1px 1px grey, -1px -1px 1px grey, -1px 1px 1px grey, 1px -1px 1px grey;
+             font-size: 12px;
+             zIndex: 1;
+         }
+         .selected-avatar .avatar-label {
+             font-size: 14px;
+             bottom: 5%;
+             text-shadow: 2px 2px 2px black, -2px -2px 2px black, -2px 2px 2px black, 2px -2px 2px black;
          }
          .selected-avatar .avatar-control {
              display: block;

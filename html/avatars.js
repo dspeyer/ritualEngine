@@ -16,6 +16,7 @@ export let staticRotateHint = 10;
 let curVidRot = 0;
 let curStaRot = 0;
 export function rotateAvatars() {
+    $('.selected-avatar').removeClass('selected-avatar');
     curVidRot += (nvideos - 1) & 254;
     curStaRot += staticRotateHint;
     redraw();
@@ -219,6 +220,7 @@ function fillAsAuditorium(div, n) {
     return ps.map(putcircle.bind(null,div));
 }
 
+let setGlobalClickHandler = false;
 function putcircle(d,{x,y,r,label,z,br}) {
     let s = Math.round(2*r) - 2 + 'px';
     let left = Math.round(x-r) + 1 + 'px';
@@ -239,28 +241,22 @@ function putcircle(d,{x,y,r,label,z,br}) {
     div.video.hide();
     if (label) {
         div.label = $('<span>').text('Placeholder')
-                               .css({position: 'absolute',
-                                     top: (y+r-16)+'px',
-                                     left,
-                                     width: s,
-                                     overflow: 'hidden',
-                                     whiteSpace: 'nowrap',
-                                     'text-align': 'center',
-                                     color:'white',
-                                     'text-shadow': ('1px 1px 1px grey, -1px -1px 1px grey, ' +
-                                                     '-1px 1px 1px grey, 1px -1px 1px grey'),
-                                     'font-size': '12px',
-                                     zIndex: 99999
-                                    })
-                               .appendTo(d);
+                               .addClass('avatar-label')
+                               .appendTo(div);
     }
-    div.on('click', () => {
-        let selected = div.hasClass('selected-avatar');
+    div.on('click', (ev) => {
         $('.selected-avatar').removeClass('selected-avatar');
-        if (!selected) {
-            div.addClass('selected-avatar');
-        }
+        div.addClass('selected-avatar');
+        ev.stopPropagation();
+        console.log('local click');
     });
+    if ( ! setGlobalClickHandler) {
+        $('body').on('click', () => {
+            console.log('global click');
+            $('.selected-avatar').removeClass('selected-avatar');
+        });
+        setGlobalClickHandler = true;
+    }
     if (window.isLead) {
         $('<input type="button" class="avatar-control" value="Click Me">').on('click', () => {
             alert("This button doesn't do anything yet.");
