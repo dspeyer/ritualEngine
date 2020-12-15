@@ -339,6 +339,7 @@ function detachAllVideos() {
 
 
 function putVideoInCircle(circle, track, id) {
+    if (!track) return;
     track.attach(circle.video[0]);
     circle.video.show();
     circle.videoOf = id;
@@ -363,7 +364,12 @@ export async function twilioConnect(token, roomId) {
     if (roomId == currentRoomId) return;
     if (room) room.disconnect();
     currentRoomId = roomId;
-    localVideo = await Twilio.Video.createLocalVideoTrack({ width: 100, height: 100 });
+    console.log({cameraChoice});
+    if (cameraChoice[0]) {
+        localVideo = await Twilio.Video.createLocalVideoTrack({ width: 100, height: 100, deviceId:{exact:cameraChoice[0]}});
+    } else {
+        localVideo = null;
+    }
     try {
         room = await Twilio.Video.connect(token, { name: roomId, tracks: [localVideo] });
     } catch (error) {

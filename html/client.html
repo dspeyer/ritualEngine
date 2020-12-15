@@ -231,6 +231,7 @@
              color: black;
              border: 3px ridge red;
              padding: 0.5em;
+             z-index: 100;
          }
          .error h3 {
              font-family: monospace;
@@ -257,7 +258,7 @@
              right: 20vw;
              border: 2px outset #777;
              backdrop-filter: blur(8px);
-             z-index: 9999;
+             z-index: 10;
          }
          .modaldlg input {
              width: 100%;
@@ -318,6 +319,7 @@
          let name = '%name%';
          document.title = name;
          let chatname = ['notSet']; // Array so we don't have to worry about setting vs local var creation
+         let cameraChoice = [null]; // ditto
          let page = 0;
          let state = null;
          var widgetClasses = {};
@@ -339,7 +341,7 @@
                          $('#svgwrapper').html(data.svg);
                          $('#svgwrapper svg').attr('width','').attr('height','');
                      }
-                     if (data.video_token && data.room) {
+                     if (data.video_token && data.room && page!='welcome') {
                          let { twilioConnect, setTwilioAudioEnabled } = await import ('../avatars.js');
                          console.log(data.clients)
                          await twilioConnect(data.video_token, data.room);    
