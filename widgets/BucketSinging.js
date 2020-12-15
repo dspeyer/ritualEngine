@@ -250,7 +250,6 @@ export class BucketSinging {
         this.page = -1;
         this.btstart = NaN;
         this.timings = [];
-        this.iswelcome = (page=='welcome');
 
         this.dbg = $('<div class=lyricdbg>').appendTo($('body'));
         this.dbg.append('Debugging info:').append($('<br>'));
