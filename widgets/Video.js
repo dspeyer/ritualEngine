@@ -14,6 +14,7 @@ export class Video {
   async from_server() {}
   
   destroy(){
+    this.video[0].pause();
     this.video.removeClass('bbs-video').addClass('hidden').appendTo(document.body);
     this.video_div.remove();
   }
