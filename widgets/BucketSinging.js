@@ -126,6 +126,8 @@ async function initContext(){
                     input_gain: saved_input_gain,
                     time: now_s
                 }));
+                $('<p>').text("Found microphone and calibration for it: all is well!").appendTo(div);
+                setTimeout(()=>{div.remove();}, 500);
                 return;
             }
         }
@@ -166,27 +168,44 @@ async function initContext(){
     let button = $('<input type=button>').attr('value',"I'm ready: Start the LOUD beeping!").appendTo(div);
     await new Promise((res)=>{button.on('click',res);});
 
-    div.empty();
-    div.append('<p>Beeping...</p>');
-    div.append('Beeps heard: ');
-    let heard = $('<span>').appendTo(div);
-    div.append($('<br><br>'));
-    button = $('<input type=button>').attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.")
-                                     .appendTo(div);
-    div.append(button);
-    p = new Promise((res_)=>{res=res_;});
-    let estimator = new LatencyCalibrator({context:mycontext, clickVolume:100}); // TODO: gradually increasing clickVolume
-    estimator.addEventListener('beep', (ev)=>{
-        console.log(ev);
-        if (ev.detail.done) res(ev.detail);
-        heard.text(ev.detail.samples);
-    });
-    button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
-    const latency_cal_result = await p;
 
-    if (calibrationFail || latency_cal_result.success == false) {
+    let retryBeeping = true;
+    let latency_cal_result = null;
+    while (retryBeeping) {
+        div.empty();
+        div.append('<p>Beeping...</p>');
+        div.append('Beeps heard: ');
+        let heard = $('<span>').appendTo(div);
+        div.append($('<br><br>'));
+        button = $('<input type=button>').attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.")
+                                         .appendTo(div);
+        div.append(button);
+        p = new Promise((res_)=>{res=res_;});
+        let estimator = new LatencyCalibrator({context:mycontext, clickVolume:100}); // TODO: gradually increasing volume?
+        estimator.addEventListener('beep', (ev)=>{
+            console.log(ev);
+            if (ev.detail.done) res(ev.detail);
+            heard.text(ev.detail.samples);
+        });
+        button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
+        latency_cal_result = await p;
+        if (latency_cal_result.success === false) {
+            div.empty();
+            div.append('Failed to get a clear latency measurement.  Maybe increase volume or fiddle with audio hardware?');
+            p = new Promise((r)=>{res=r;});
+            $('<input type=button value="Try again">').on('click',res).appendTo(div);
+            button = $('<input type=button>')
+                .attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.")
+                .on('click', ()=>{ calibrationFail=true; retryBeeping=false; res(); })
+                .appendTo(div);
+            await p;
+        } else {
+            retryBeeping = false;
+        }
+    }
+
+    if (calibrationFail) {
         div.remove();
-        console.warn("Ignoring sound input because latency calibration failed.")
         mycontext.send_ignore_input(true);  // XXX ??
         context = mycontext;
         return;
@@ -209,7 +228,7 @@ async function initContext(){
     div.append(button);
     p = new Promise((res_)=>{res=res_;});
     window.reportedVolume = {}; // WHY DO WE NEED THIS?
-    estimator = new VolumeCalibrator({context: mycontext});
+    let estimator = new VolumeCalibrator({context: mycontext});
     estimator.addEventListener('volumeChange', (ev)=>{ $('#curvol').text((ev.detail.volume*1000).toPrecision(3)) });
     estimator.addEventListener('volumeCalibrated', res);
     button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
