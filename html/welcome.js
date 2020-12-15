@@ -36,7 +36,11 @@ export async function  welcome(widgets) {
     dlg.empty();
     dlg.append($('<p>We like to show all ritual participants to each other, '+
                  'using a mixture of video feeds and still images...</p>'));
-//    await navigator.mediaDevices.getUserMedia({ video: true }); // force permission prompt
+    try {
+        // Force a permissions dialog before calling enumerateDevices, but ignore any trouble because this isn't the place
+        track = await Twilio.Video.createLocalVideoTrack({width:100, height:100});
+        track.stop();
+    } catch (e) {}
     let devices = await navigator.mediaDevices.enumerateDevices();
     devices = devices.filter((x)=>(x.kind=='videoinput'));
     p = new Promise((r)=>{res=r;});
