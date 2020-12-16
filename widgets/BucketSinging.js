@@ -1,5 +1,5 @@
 import {MicEnumerator, openMic, BucketBrigadeContext, SingerClient, VolumeCalibrator, LatencyCalibrator} from './BucketSinging/app.js';
-import { putOnBox, bkgSet, bkgZoom } from '../../lib.js';
+import { putOnBox, bkgSet, bkgZoom, deleteParameter, retrieveParameter, persistParameter } from '../../lib.js';
 import { rotateAvatars } from '../../avatars.js';
 
 let context = null;
@@ -81,7 +81,7 @@ async function initContext(){
                         .appendTo($('body'));
 
     div.append('Searching for microphone...');
-    
+
     let mics = await (new MicEnumerator()).mics();
     let mic = mics[0]; // TODO: be smarter?
     console.log('Chose mic: ',mic);
@@ -94,43 +94,31 @@ async function initContext(){
 
     const CALIBRATION_SAVE_DURATION = 6 * 60 * 60;  // 6 hours
     let now_s = Date.now() / 1000;
-    const saved_calibration = localStorage.getItem("saved_calibration");
+
+    const saved_calibration = retrieveParameter("saved_calibration")
+
     if (saved_calibration === null) {
         console.log("No saved calibration data, gotta calibrate.");
     } else {
-        var parsed_calibration = null;
-        try {
-            parsed_calibration = JSON.parse(saved_calibration);
-        } catch (e) {
-            console.log("Failed to parse saved calibration data:", saved_calibration, "with exception", e, "; Starting from scratch.");
-        }
+        const {
+            latency: saved_latency,
+            input_gain: saved_input_gain,
+        } = saved_calibration;
 
-        if (parsed_calibration != null) {
-            const {
-                latency: saved_latency,
-                input_gain: saved_input_gain,
-                time: saved_cal_ts
-            } = parsed_calibration;
+        console.log("Using saved latency and calibration values:", saved_latency, "input_gain:", saved_input_gain);
+        mycontext.send_local_latency(saved_latency);
+        mycontext.send_input_gain(saved_input_gain);
+        context = mycontext;
 
-            if (now_s - saved_cal_ts > CALIBRATION_SAVE_DURATION) {
-                console.log("Not using saved latency and calibration values from", now_s - saved_cal_ts, "seconds ago (too old): latency:", saved_latency, "input_gain:", saved_input_gain);
-            } else {
-                console.log("Using saved latency and calibration values from", now_s - saved_cal_ts, "seconds ago: latency:", saved_latency, "input_gain:", saved_input_gain);
-                mycontext.send_local_latency(saved_latency);
-                mycontext.send_input_gain(saved_input_gain);
-                context = mycontext;
+        // Any time we retrieve this, bump out the expiration another 6 hours. This prevents a timeout in the middle of an event, but ensures we won't retain it overnight.
+        persistParameter("saved_calibration", {
+            latency: saved_latency,
+            input_gain: saved_input_gain,
+        }, CALIBRATION_SAVE_DURATION);
 
-                // Any time we retrieve this, bump out the expiration another 6 hours. This prevents a timeout in the middle of an event, but ensures we won't retain it overnight.
-                localStorage.setItem("saved_calibration", JSON.stringify({
-                    latency: saved_latency,
-                    input_gain: saved_input_gain,
-                    time: now_s
-                }));
-                $('<p>').text("Found microphone and calibration for it: all is well!").appendTo(div);
-                setTimeout(()=>{div.remove();}, 500);
-                return;
-            }
-        }
+        $('<p>').text("Found microphone and calibration for it: all is well!").appendTo(div);
+        setTimeout(()=>{div.remove();}, 500);
+        return;
     }
 
     if (window.skipCalibration) {
@@ -232,13 +220,11 @@ async function initContext(){
     button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
     const volume_cal_result = await p;
 
-    now_s = Date.now() / 1000;
-    console.log("Saving calibration data at:", now_s, "latency:", latency_cal_result, "volume:", volume_cal_result);
-    localStorage.setItem("saved_calibration", JSON.stringify({
+    console.log("Saving calibration data: latency:", latency_cal_result, "volume:", volume_cal_result);
+    persistParameter("saved_calibration", {
         latency: latency_cal_result.estLatency,
         input_gain: volume_cal_result.detail.inputGain,
-        time: now_s
-    }));
+    }, CALIBRATION_SAVE_DURATION);
 
     div.empty();
     div.append("<p>That's enough singing.  Calibration is done.  On with the main event.</p>");
@@ -287,7 +273,7 @@ export class BucketSinging {
             this.declare_ready();
             return;
         }
-        
+
         if ( ! context && page!='welcome') {
             let button = $('<input type="button" value="Click here to Initialize Singing">').appendTo(this.div);
             button.on('click', ()=>{
@@ -337,7 +323,7 @@ export class BucketSinging {
             $('.old').removeClass('old');
             if (this.countdown) this.countdown.empty();
         }
-            
+
         let apiUrl = server_url;
         let username = 'RE/'+chatname[0]+' ['+clientId.substr(0,10)+'...]';
         let secretId = Math.round(Math.random()*1e6); // TODO: understand this
@@ -375,7 +361,7 @@ export class BucketSinging {
                 }
             });
         }
-                
+
         if (this.slotsUi) {
             this.slotsUi.empty();
             for (let i in slotCounts) {
@@ -394,7 +380,7 @@ export class BucketSinging {
                 }
             }
         }
-        
+
         if (lyricLead) {
             $('<div>').text('You are lead singer.  '+
                        (backing_track ? 'Instrumentals will begin soon.  ' : 'Sing when ready.  ') +
