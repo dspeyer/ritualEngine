@@ -6,20 +6,6 @@
     <text y="75" x="360" font-size="50" font-family="Georgia" fill="white" text-anchor="middle">
         Secular Solstice
     </text>
-    <g font-size="16" >
-      <text y="200" x="40">
-        While you wait for others to arrive, make sure that...
-      </text>
-      <text y="225" x="40">
-        1. You are using Chrome, on a laptop.
-      </text>
-      <text y="250" x="40" >
-        2. Your audio is good (no background noise).
-      </text>
-      <text y="275" x="40">
-        3. You have a candle and matches/lighter.
-      </text>
-    </g>
     <path fill="none" stroke="#000000" d="M 100,45 V 275 H 631 V 45 Z" />
   </g>
 </svg>
