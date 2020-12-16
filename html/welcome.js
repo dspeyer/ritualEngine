@@ -24,7 +24,7 @@ export async function  welcome(widgets) {
     if (name === null) {
         dlg.append($(`<div id="askname">
                     <h1>Welcome</h1>
-                    <p>First, <b class="warning">please make sure you are using Google Chrome.</b> <br>Solstice will not reliably work on Firefox, Safari or other browsers.</p>
+                    <p>First, <b class="warning">please make sure you are using Google Chrome. <em>(<a class="warning" href="https://www.google.com/chrome">Download</a>)</em> </b> <br>Solstice will not reliably work on Firefox, Safari or other browsers.</p>
                     <p>Please give us a name to call you.  This will be visible to the other participants.</p>
                     <div class="name-input-row">
                         <input id="name">
