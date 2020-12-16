@@ -118,12 +118,8 @@ async def status(req):
 
         results['twilioAudioEnabled'] = data.get('twilioAudioEnabled', False);
         if results['twilioAudioEnabled']:
-            clients = list(ritual.clients.keys())
-            random.shuffle(clients)
-            first = True
-            for client in clients:
-                await assign_twilio_room(ritual, client, force_new_room=first)
-                first = False
+            if ritual.clients[clientId].room != ritual.current_video_room.unique_name:
+                await assign_twilio_room(ritual, client)
         
         results['page'] = pagename
         
