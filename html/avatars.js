@@ -262,6 +262,44 @@ function putcircle(d,{x,y,r,label,z,br}) {
             alert("This button doesn't do anything yet.");
         }).appendTo(div);
     }
+    div.on('mouseover', (ev) => {
+        let target = ev.target;
+        for (; target.tagName!='DIV'; target=target.parentElement);
+        console.log('mouseover',ev);
+        let client = target.client;
+        if ( ! client) return;
+        console.log(client);
+        let html = `
+          <table class=hoverinfo>
+            <tr><th>Name:</th><td colspan=2 class=name></td></tr>
+            <tr><th>ClientId:</th><td class="cid eq"></td><td class="long">${client.id.substr(0,10)}\u2026</tr>
+            <tr><th>Room:</th><td class="room eq"></td><td class="long">${client.room.substr(0,10)}\u2026</tr>
+            <tr><th>Audio:</th><td colspan=2>${!!hasAudioTrack[client.id]}</td></tr>
+            <tr><th>Video:</th><td colspan=2 class=video></td></tr>
+          </table>
+        `;
+        let tab = $(html).css({bottom:(window.innerHeight-ev.clientY+20)+'px'})
+                         .appendTo($('#everything'));
+        if (ev.clientX < window.innerWidth/2) {
+            tab.css({left:(ev.clientX+20)+'px'});
+        } else {
+            tab.css({right:(window.innerWidth-ev.clientX+20)+'px'});
+        }
+        tab.find('.name').text(client.name);
+        tab.find('.cid.eq').text((client.id==clientId)?'[=]':'[\u2260]');
+        tab.find('.room.eq').text((client.room==currentRoomId)?'[=]':'[\u2260]');
+        if ($(target).find('video')[0].srcObject) {
+            tab.find('.video').text('has');
+        } else if (client.id in videosToPlace) {
+            tab.find('.video').text('wants');
+        } else {
+            tab.find('.video').text('no');
+        }
+        setTimeout(()=>{tab.remove()}, 5*1000);
+    });
+    div.on('mouseout', ()=> {
+        $('.hoverinfo').remove();
+    });
     return div;
 }
 
@@ -292,6 +330,7 @@ function setVideoAvatars() {
     for (let i in clients) {
         let client = clients[i];
         let circle = circles[i];
+        circle[0].client = client;
         circle.label?.text(client.name);
         let cachebuster = client.hj + '_';
         if (circle.width() > 10) {
