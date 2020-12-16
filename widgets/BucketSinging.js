@@ -45,10 +45,10 @@ let css = `
       opacity: 1;
   }
   div.slots {
+    display:flex;
     color: white;
     background: rgba(0,0,0,0.5);
     font-family: Gill Sans;
-    display:flex;
   }
   div.slotCol {
     display:inline-block;
@@ -361,7 +361,7 @@ export class BucketSinging {
             button.on('click',()=>{$.post('widgetData', {action:'pickslot', clientId, slot:i})})
         }
         if (i==0) {
-            tooltip.append('<p><em>Songleader. Singers in this bucket only hear the backing track, but everyone can hear them. Click hear if you want to help lead the song!</em></p>')
+            tooltip.append('<p><em>Songleader. Singers in this bucket only hear the backing track, but everyone can hear them.</em></p><p><em>Join if you want to help lead the song!</em></p>')
         } else if (i==3) {
             tooltip.append('<p><em>Listen Only. Singers in the last bucket can hear everyone, but nobody hears them.</em></p>')
         } else {
