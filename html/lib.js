@@ -32,7 +32,7 @@ function realPutOnBox({elems, box}) {
             elem.css(i,rect[i]);
         }
     }
-}    
+}
 
 $(window).resize(()=>{
     elemBoxPairs = elemBoxPairs.filter((p)=>(p.box.parent().length));
@@ -81,7 +81,7 @@ export async function getPhoto(holder, output) {
                    appendTo(holder);
     let p = new Promise( (res) => { button.click(res); } );
     await p;
-    
+
     let canvas = $('<canvas width='+w+' height='+h+'>').appendTo($('body'));
     let context = canvas[0].getContext('2d');
     context.drawImage(video[0], 0, 0, w, h);
@@ -133,4 +133,89 @@ export function bkgZoom(amt,c) {
                  top: (-100*(amt-1)*c[1])+'%',
                  left: (-100*(amt-1)*c[0])+'%'});
 }
-    
+
+const STATE_KEY = "ritual_engine_persisted_state";
+
+function getOurState() {
+    console.log("Getting saved ritual engine state from local storage.")
+    var ourStateRaw = localStorage.getItem(STATE_KEY);
+    if (ourStateRaw === null) {
+        console.log("No saved state found.")
+        return {};
+    }
+    var ourState = {};
+    try {
+        ourState = JSON.parse(ourStateRaw);
+    } catch (e) {
+        console.error("Unable to parse our saved state:", e, ", flushing. State was:", ourStateRaw);
+        localStorage.removeItem(STATE_KEY)
+    }
+    if (typeof(ourState) != "object") {
+        console.error("Unable to parse our saved state (not an object), flushing. State was:", ourState);
+        ourState = {};
+    }
+    console.log("Found saved state:", ourState);
+    return ourState;
+}
+
+function saveOurState(val) {
+    console.log("Saving ritual engine state to local storage.")
+    if (typeof(val) != "object") {
+        console.error("Refusing to save our state (not an object):", val);
+        return;
+    }
+    localStorage.setItem(STATE_KEY, JSON.stringify(val));
+}
+
+export function wipeSavedParameters() {
+    console.log("Deleting saved ritual engine state from local storage.")
+    localStorage.removeItem(STATE_KEY);
+}
+
+export function deleteParameter(key) {
+    console.log("Deleting saved parameter:", key)
+    var ourState = getOurState();
+    delete ourState[key];
+    saveOurState(ourState);
+}
+
+export function persistParameter(key, val, max_seconds) {
+    console.log("Persisting parameter:", key, " -> ", val, "for max seconds:", max_seconds);
+    var expiration;
+    if (max_seconds === undefined) {
+        expiration = null;
+    } else {
+        var now = Date.now() / 1000;
+        expiration = now + max_seconds;
+    }
+    console.log("Persisted parameter will expire at", expiration);
+    var ourState = getOurState();
+    ourState[key] = [val, expiration];
+    saveOurState(ourState);
+}
+
+export function retrieveParameter(key) {
+    console.log("Retrieving parameter:", key);
+    var ourState = getOurState();
+    if (key in ourState) {
+        try {
+            var rawVal = ourState[key];
+            var [val, expiration] = rawVal;
+        } catch (e) {
+            console.error("Failed to parse saved parameter", key, "with raw value", rawVal);
+            deleteParameter(key);
+            return null;
+        }
+        console.log("Found parameter", key, "with value", val, "and expiration", expiration);
+        var now = Date.now() / 1000;
+        if (expiration !== null && now > expiration) {
+            console.log("... but it was expired, throwing it out.");
+            deleteParameter(key);
+            return null;
+        }
+        // Caller must refresh expiration if desired, we don't do that here
+        return val;
+    }
+    return null;
+}
+

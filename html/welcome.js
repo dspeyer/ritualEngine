@@ -1,3 +1,5 @@
+import { deleteParameter, retrieveParameter, persistParameter } from './lib.js'
+
 let track = null;
 async function setVid(video) {
     if (track) {
@@ -15,8 +17,12 @@ let inprog = false;
 export async function  welcome(widgets) {
     if (inprog) return;
     inprog = true;
+
+    let name = retrieveParameter("chat_name");
     let dlg = $('<div class=modaldlg>').appendTo($('body'));
-    dlg.append($(`<div id="askname">
+
+    if (name === null) {
+        dlg.append($(`<div id="askname">
                     <h1>Welcome</h1>
                     <p>First, <b class="warning">please make sure you are using Google Chrome.</b> <br>Solstice will not reliably work on Firefox, Safari or other browsers.</p>
                     <p>Please give us a name to call you.  This will be visible to the other participants.</p>
@@ -25,20 +31,22 @@ export async function  welcome(widgets) {
                         <input type="button" id="sendname" value="OK">
                     </div>
                   </div>`));
-    let res;
-    let p = new Promise((r)=>{res=r;});
-    $('#sendname').on('click',res);
-    $('#name').on('keyup', (ev)=>{ if (ev.key=='Enter') res(); });
-    await p;
+        let res;
+        let p = new Promise((r)=>{res=r;});
+        $('#sendname').on('click',res);
+        $('#name').on('keyup', (ev)=>{ if (ev.key=='Enter') res(); });
+        await p;
 
-    let name = $('#name').val();
+        name = $('#name').val();
+        persistParameter("chat_name", name);
+    }
     // TODO: sanity-check name
     $.post('setName', {clientId, name});
     chatname[0] = name;
 
     dlg.empty();
-    dlg.append($('<p>We like to show all ritual participants to each other, '+
-                 'using a mixture of video feeds and still images...</p>'));
+    dlg.append($('<p>Checking your camera...</p>'));
+
     try {
         // Force a permissions dialog before calling enumerateDevices, but ignore any trouble because this isn't the place
         track = await Twilio.Video.createLocalVideoTrack({width:100, height:100});
@@ -46,40 +54,70 @@ export async function  welcome(widgets) {
     } catch (e) {}
     let devices = await navigator.mediaDevices.enumerateDevices();
     devices = devices.filter((x)=>(x.kind=='videoinput' && x.deviceId));
-    p = new Promise((r)=>{res=r;});
-    if (devices.length >= 1) {
-        let choice = 0;
-        cameraChoice[0] = devices[0].deviceId;
-        dlg.append($('<p>Your video feed looks like this:</p>'));
-        let video = $('<video>').css({borderRadius:'50%',
-                                      border:'2px solid #999',
-                                      marginLeft:'calc(50% - 51px)',
-                                      width:'100px',
-                                      height:'100px'}).appendTo(dlg);
-        await setVid(video);
-        $('<input type=button class="yes-button" value="Looks good">').on('click',res).appendTo(dlg);
-        if (devices.length > 1) {
-            $('<input type=button value="Use other camera">').on('click',()=>{
-                choice = (choice + 1) % devices.length;
-                cameraChoice[0] = devices[choice].deviceId;
-                setVid(video);
-            }).appendTo(dlg);
+
+    let saved_devicelist = retrieveParameter("camera_choice_options");
+    let saved_camera = retrieveParameter("camera_choice");
+
+    let current_devicelist = JSON.stringify(devices.map((x) => x.deviceId));
+    console.log("Current device list:", current_devicelist, "Saved device list:", saved_devicelist, "saved camera:", saved_camera);
+    if (saved_devicelist == current_devicelist && saved_camera !== null) {
+        console.log("All looks good, using saved camera");
+        // ok to reuse existing selection if nothing has changed
+        if (saved_camera == {}) {
+            // Hack for selecting "no camera"
+            saved_camera = null;
         }
-        $('<input type=button value="Don\'t show video">').on('click',()=>{ cameraChoice[0]=null; res(); })
-                                                          .appendTo(dlg);
-        if (devices.length == 1) {
-            $(`<p>
-                (Do you have multiple cameras?  If so, your browser is choosing which to let us access.  You can
-                change this setting by clicking on the camera icon to the right of the URL.)
-               </p>`).css({fontSize:'smaller'}).appendTo(dlg);
-        }
-        await p;
-        if (track) {
-            track.stop();
-        }
+        cameraChoice[0] = saved_camera;
         dlg.empty();
     } else {
-        cameraChoice[0] = null;
+        console.log("Can't used saved camera, prompting...");
+        dlg.empty();
+        dlg.append($('<p>We like to show all ritual participants to each other, '+
+            'using a mixture of video feeds and still images...</p>'));
+        if (devices.length >= 1) {
+            let res;
+            let p = new Promise((r)=>{res=r;});
+            let choice = 0;
+            cameraChoice[0] = devices[0].deviceId;
+            dlg.append($('<p>Your video feed looks like this:</p>'));
+            let video = $('<video>').css({borderRadius:'50%',
+                                          border:'2px solid #999',
+                                          marginLeft:'calc(50% - 51px)',
+                                          width:'100px',
+                                          height:'100px'}).appendTo(dlg);
+            await setVid(video);
+            $('<input type=button  class="yes-button" value="Looks good">').on('click',res).appendTo(dlg);
+            if (devices.length > 1) {
+                $('<input type=button value="Use other camera">').on('click',()=>{
+                    choice = (choice + 1) % devices.length;
+                    cameraChoice[0] = devices[choice].deviceId;
+                    setVid(video);
+                }).appendTo(dlg);
+            }
+            $('<input type=button value="Don\'t show video">').on('click',()=>{ cameraChoice[0]=null; res(); })
+                                                              .appendTo(dlg);
+            if (devices.length == 1) {
+                $(`<p>
+                    (Do you have multiple cameras?  If so, your browser is choosing which to let us access.  You can
+                    change this setting by clicking on the camera icon to the right of the URL.)
+                   </p>`).css({fontSize:'smaller'}).appendTo(dlg);
+            }
+            await p;
+            if (track) {
+                track.stop();
+            }
+        } else {
+            cameraChoice[0] = null;
+        }
+    }
+    dlg.empty();
+
+    persistParameter("camera_choice_options", current_devicelist);
+    if (cameraChoice[0] === null) {
+        // hack to deal with null valules
+        persistParameter("camera_choice", {});
+    } else {
+        persistParameter("camera_choice", cameraChoice[0]);
     }
 
     if ( ! cameraChoice[0]) {
@@ -106,7 +144,7 @@ export async function  welcome(widgets) {
         }
         await p;
     }
-    
+
     dlg.remove();
     for (let widget of widgets) {
         let module = await import('/widgets/'+widget+'.js');
