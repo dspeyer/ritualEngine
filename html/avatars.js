@@ -280,13 +280,12 @@ function setVideoAvatars() {
     let mes = participants.filter((x)=>(x.id==clientId));
     let same = participants.filter((x)=>(x.room==currentRoomId && x.id!=clientId));
     let diff = participants.filter((x)=>(x.room!=currentRoomId && x.id!=clientId));
-    let samerot = Math.max( curVidRot%same.length, 1);
-    console.log({samerot,curVidRot,sl:same.length})
-    let samea = same.slice(samerot);
-    let sameb = same.slice(0,samerot);
-    let diffrot = Math.max( curStaRot%diff.length, 1);
-    let diffa = diff.slice(diffrot);
-    let diffb = diff.slice(0,diffrot);
+    curVidRot %= same.length;
+    let samea = same.slice(curVidRot);
+    let sameb = same.slice(0,curVidRot);
+    curStaRot %= diff.length;
+    let diffa = diff.slice(curStaRot);
+    let diffb = diff.slice(0,curStaRot);
     let clients = [].concat(mes,samea,sameb,diffa,diffb);
     let vidsPlaced = 0;
     console.log({act:'seting circles',clients,circles,mes,samea,sameb,diffa,diffb});
