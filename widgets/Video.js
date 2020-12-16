@@ -1,4 +1,4 @@
-import { putOnBox } from '../../lib.js';
+import { putOnBox, retrieveParameter } from '../../lib.js';
 
 export class Video {
   constructor({boxColor, videoUrl}) {
@@ -8,6 +8,10 @@ export class Video {
     this.video.removeClass('hidden').appendTo(this.video_div);
     this.video.animate({opacity: 1}, 500);
     let videoElem = this.video[0];
+    videoElem.muted = retrieveParameter('speakerMuted');
+    $('#speaker-mute-button').on('click.video', () => {
+      videoElem.muted = !videoElem.muted;
+    });
     videoElem.play();
   }
   
@@ -15,6 +19,7 @@ export class Video {
   
   destroy(){
     this.video[0].pause();
+    $('#speaker-mute-button').off('click.video');
     this.video.removeClass('bbs-video').addClass('hidden').appendTo(document.body);
     this.video_div.remove();
   }
