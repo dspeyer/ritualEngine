@@ -11,11 +11,11 @@
    width="10in"
    height="4in"
    viewBox="0 0 720 288"
-   id="svg43"
-   sodipodi:docname="3.svg"
+   id="svg21"
+   sodipodi:docname="2.svg"
    inkscape:version="0.92.3 (2405546, 2018-03-11)">
   <metadata
-     id="metadata49">
+     id="metadata27">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -27,7 +27,7 @@
     </rdf:RDF>
   </metadata>
   <defs
-     id="defs47" />
+     id="defs25" />
   <sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -39,7 +39,7 @@
      inkscape:pageshadow="2"
      inkscape:window-width="1142"
      inkscape:window-height="741"
-     id="namedview45"
+     id="namedview23"
      showgrid="false"
      units="in"
      inkscape:pagecheckerboard="true"
@@ -49,42 +49,17 @@
      inkscape:window-x="48"
      inkscape:window-y="24"
      inkscape:window-maximized="0"
-     inkscape:current-layer="g41" />
-  <g
-     id="g41"
-     style="font-family:Georgia;fill:#ffffff;enable-background:new"
-     transform="translate(0,-117)">
-    <text
-       y="167.66949"
-       x="375.44492"
-       font-size="50"
-       id="text29"
-       style="font-size:50px;font-family:Georgia;text-anchor:middle;fill:#ffffff">Afterparty</text>
-    <text
-       y="242.66949"
-       x="65.444916"
-       font-size="15"
-       id="text31"
-       style="font-size:15px;font-family:Georgia;fill:#ffffff">Now we can hang out and chat or whatever.</text>
-    <text
-       y="292.66949"
-       x="65.444916"
-       font-size="15"
-       id="text33"
-       style="font-size:15px;font-family:Georgia;fill:#ffffff">Note: You only expected to hear a subset of the people around you.</text>
-    <text
-       y="312.66949"
-       x="65.444916"
-       font-size="15"
-       id="text35"
-       style="font-size:15px;font-family:Georgia;fill:#ffffff">You're automatically put into a &quot;room&quot; with up to 26 other people.</text>
-    <text
-       y="332.66949"
-       x="65.444916"
-       font-size="15"
-       id="text37"
-       style="font-size:15px;font-family:Georgia;fill:#ffffff">Those people should be highlighted.</text>
-    <!-- <rect y="100" width="700" height="700" fill="rgba(0,255,0,.5)"/> -->
-    <!-- <path transform="matrix(.0018,0,0,.0024,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#000000" d="M 22278 70330 L 343482 70330 L 343482 202066 L 22278 202066 Z "/> -->
-  </g>
+     inkscape:current-layer="svg21" />
+  <text
+     style="font-size:30.16417313px;font-family:Georgia;text-anchor:middle;fill:#ffffff;stroke-width:0.67031497"
+     id="text15"
+     font-size="45"
+     x="310.82983"
+     y="27.8557"
+     transform="scale(1.1000517,0.90904817)">Necronomicon</text>
+  <path
+     style="font-family:Georgia;fill:none;stroke:#000000;stroke-width:0.69214052"
+     inkscape:connector-curvature="0"
+     id="path17"
+     d="M 99.622835,45.503905 V 275.2815 H 631.26698 V 45.503905 Z" />
 </svg>
