@@ -473,9 +473,7 @@ export async function twilioConnect(token, roomId) {
             hasAudioTrack[participant.identity] = true;
             $(track.attach()).appendTo($('body'));
             for (let circle of circles) {
-                if (circle.videoOf == participant.identity) {
-                    circle.css({opacity:1});
-                }
+                circle.css({opacity: (hasAudioTrack[circle[0].client.id] ? 1 : 0.2)});
             }
         }
     });
@@ -498,7 +496,7 @@ export function setTwilioAudioEnabled(nv) {
             }
         }
         for (let circle of circles) {
-            circle.css({opacity: (hasAudioTrack[circle.videoOf] ? 1 : 0.2)});
+            circle.css({opacity: (hasAudioTrack[circle[0].client.id] ? 1 : 0.2)});
         }
     } else {
         twilioAudioEnabled = false;
