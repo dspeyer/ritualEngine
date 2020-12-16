@@ -2,6 +2,11 @@
   "widget": "BucketSinging",
   "boxColor": "#000000",
   "background": "sunset4-01.jpg",
+  "boxColors": {
+    "lyrics":"#0000ff",
+    "video":"#00ff00",
+    "slots":"#ff0000"
+  },
   "lyrics": [ 
     "Dusty tome, lies forgotten.",
     "Cover worn, pages rotten.",
