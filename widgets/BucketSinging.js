@@ -419,7 +419,7 @@ export class BucketSinging {
     }
 
     async handleLyric(lid) {
-        if (lid>0 && lid%4==0) {
+        if (lid>0 && lid%8==0) {
             rotateAvatars();
         }
         this.div.find('span.current').removeClass('current').addClass('old');
