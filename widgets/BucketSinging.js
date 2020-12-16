@@ -1,5 +1,5 @@
 import {MicEnumerator, openMic, BucketBrigadeContext, SingerClient, VolumeCalibrator, LatencyCalibrator} from './BucketSinging/app.js';
-import { putOnBox, bkgSet, bkgZoom } from '../../lib.js';
+import { putOnBox, bkgSet, bkgZoom, deleteParameter, retrieveParameter, persistParameter } from '../../lib.js';
 import { rotateAvatars } from '../../avatars.js';
 
 let context = null;
@@ -81,7 +81,7 @@ async function initContext(){
                         .appendTo($('body'));
 
     div.append('Searching for microphone...');
-    
+
     let mics = await (new MicEnumerator()).mics();
     let mic = mics[0]; // TODO: be smarter?
     console.log('Chose mic: ',mic);
@@ -94,43 +94,31 @@ async function initContext(){
 
     const CALIBRATION_SAVE_DURATION = 6 * 60 * 60;  // 6 hours
     let now_s = Date.now() / 1000;
-    const saved_calibration = localStorage.getItem("saved_calibration");
+
+    const saved_calibration = retrieveParameter("saved_calibration")
+
     if (saved_calibration === null) {
         console.log("No saved calibration data, gotta calibrate.");
     } else {
-        var parsed_calibration = null;
-        try {
-            parsed_calibration = JSON.parse(saved_calibration);
-        } catch (e) {
-            console.log("Failed to parse saved calibration data:", saved_calibration, "with exception", e, "; Starting from scratch.");
-        }
+        const {
+            latency: saved_latency,
+            input_gain: saved_input_gain,
+        } = saved_calibration;
 
-        if (parsed_calibration != null) {
-            const {
-                latency: saved_latency,
-                input_gain: saved_input_gain,
-                time: saved_cal_ts
-            } = parsed_calibration;
+        console.log("Using saved latency and calibration values:", saved_latency, "input_gain:", saved_input_gain);
+        mycontext.send_local_latency(saved_latency);
+        mycontext.send_input_gain(saved_input_gain);
+        context = mycontext;
 
-            if (now_s - saved_cal_ts > CALIBRATION_SAVE_DURATION) {
-                console.log("Not using saved latency and calibration values from", now_s - saved_cal_ts, "seconds ago (too old): latency:", saved_latency, "input_gain:", saved_input_gain);
-            } else {
-                console.log("Using saved latency and calibration values from", now_s - saved_cal_ts, "seconds ago: latency:", saved_latency, "input_gain:", saved_input_gain);
-                mycontext.send_local_latency(saved_latency);
-                mycontext.send_input_gain(saved_input_gain);
-                context = mycontext;
+        // Any time we retrieve this, bump out the expiration another 6 hours. This prevents a timeout in the middle of an event, but ensures we won't retain it overnight.
+        persistParameter("saved_calibration", {
+            latency: saved_latency,
+            input_gain: saved_input_gain,
+        }, CALIBRATION_SAVE_DURATION);
 
-                // Any time we retrieve this, bump out the expiration another 6 hours. This prevents a timeout in the middle of an event, but ensures we won't retain it overnight.
-                localStorage.setItem("saved_calibration", JSON.stringify({
-                    latency: saved_latency,
-                    input_gain: saved_input_gain,
-                    time: now_s
-                }));
-                $('<p>').text("Found microphone and calibration for it: all is well!").appendTo(div);
-                setTimeout(()=>{div.remove();}, 500);
-                return;
-            }
-        }
+        $('<p>').text("Found microphone and calibration for it: all is well!").appendTo(div);
+        setTimeout(()=>{div.remove();}, 500);
+        return;
     }
 
     if (window.skipCalibration) {
@@ -142,11 +130,11 @@ async function initContext(){
 
     div.empty();
     div.append(`<div>Before we begin setting up your audio, is there any point?  If you're: <ul>
+                  <li> in a noisy area <em>(such as sharing a room with others who are using this app, on other devices)</em>
                   <li> using bluetooth
-                  <li> in a very noisy area
                   <li> or just desirous that no-one hear you
                 </ul> we'll set you up to never be heard.</div>`);
-    let buttonyes = $('<input type=button value="Yes, calibrate me.  None of those issues apply.">').appendTo(div);
+    let buttonyes = $('<input type=button class="yes-button" value="Yes, calibrate me.  None of those issues apply.">').appendTo(div);
     let buttonno = $('<input type=button value="Forget it; I\'ll be uncalibrated.  Just don\'t let anyone hear me">').appendTo(div);
     let res;
     let p = new Promise((r)=>{res=r});
@@ -161,11 +149,9 @@ async function initContext(){
     }
 
     div.empty();
-    div.append("<p>First we'll measure the <b>latency</b> of your audio hardware.</p><p>Please turn your volume to max "+
-               "and put your headphones where your microphone can hear them.  Or get ready to tap your microphone in "+
-               "time to the beeps.</p>");
+    div.append("<p>First we'll measure the <b>latency</b> of your audio hardware. We'll make some beeps, and listen to them on the server.</p><p>Please:</p><ol><li>turn your volume to max</li><li>put your headphones where your microphone can hear them. <em>(if you're wearing over-ear headphones, lift them off your ear so your microphone can hear)</em></li></ol>");
     div.append($('<br>'));
-    let button = $('<input type=button>').attr('value',"I'm ready: Start the LOUD beeping!").appendTo(div);
+    let button = $('<input type=button class="yes-button ready-button">').attr('value',"I read the instructions. Start the LOUD beeping!").appendTo(div);
     await new Promise((res)=>{button.on('click',res);});
 
 
@@ -173,7 +159,7 @@ async function initContext(){
     let latency_cal_result = null;
     while (retryBeeping) {
         div.empty();
-        div.append('<p>Beeping...</p>');
+        div.append("<p>Beeping... (make sure your mic can hear the beeps, i.e. turn volume to max and hold your headphones where your mic can hear them).</p><p><em>(We'll listen for about 6 beeps. If it doesn't work, you can try again, or give up)</em></p>");
         div.append('Beeps heard: ');
         let heard = $('<span>').appendTo(div);
         div.append($('<br><br>'));
@@ -212,7 +198,7 @@ async function initContext(){
     }
 
     div.empty();
-    div.append($("<p>Now we need to calibrate your <b>volume</b>.  Please sing at the same volume you plan to during "+
+    div.append($("<p>Now we need to calibrate your <b>volume</b>.</p><p>Please sing at the same volume you plan to during "+
                  "the event. For your convenience, here are some lyrics:" +
                  "<blockquote><i>" +
                  "Mary had a little iamb, little iamb, little iamb<br/>" +
@@ -234,13 +220,11 @@ async function initContext(){
     button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
     const volume_cal_result = await p;
 
-    now_s = Date.now() / 1000;
-    console.log("Saving calibration data at:", now_s, "latency:", latency_cal_result, "volume:", volume_cal_result);
-    localStorage.setItem("saved_calibration", JSON.stringify({
+    console.log("Saving calibration data: latency:", latency_cal_result, "volume:", volume_cal_result);
+    persistParameter("saved_calibration", {
         latency: latency_cal_result.estLatency,
         input_gain: volume_cal_result.detail.inputGain,
-        time: now_s
-    }));
+    }, CALIBRATION_SAVE_DURATION);
 
     div.empty();
     div.append("<p>That's enough singing.  Calibration is done.  On with the main event.</p>");
@@ -289,7 +273,7 @@ export class BucketSinging {
             this.declare_ready();
             return;
         }
-        
+
         if ( ! context && page!='welcome') {
             let button = $('<input type="button" value="Click here to Initialize Singing">').appendTo(this.div);
             button.on('click', ()=>{
@@ -339,7 +323,7 @@ export class BucketSinging {
             $('.old').removeClass('old');
             if (this.countdown) this.countdown.empty();
         }
-            
+
         let apiUrl = server_url;
         let username = 'RE/'+chatname[0]+' ['+clientId.substr(0,10)+'...]';
         let secretId = Math.round(Math.random()*1e6); // TODO: understand this
@@ -377,7 +361,7 @@ export class BucketSinging {
                 }
             });
         }
-                
+
         if (this.slotsUi) {
             this.slotsUi.empty();
             for (let i in slotCounts) {
@@ -396,7 +380,7 @@ export class BucketSinging {
                 }
             }
         }
-        
+
         if (lyricLead) {
             $('<div>').text('You are lead singer.  '+
                        (backing_track ? 'Instrumentals will begin soon.  ' : 'Sing when ready.  ') +
