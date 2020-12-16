@@ -45,29 +45,57 @@ let css = `
       opacity: 1;
   }
   div.slots {
-    display: flex;
-    flex-direction: row;
     color: white;
     background: rgba(0,0,0,0.5);
+    font-family: Gill Sans;
+    display:flex;
   }
   div.slotCol {
-    display: flex;
-    flex-direction: column;
+    display:inline-block;
     text-align: center;
     padding: 5px;
+    border: solid 1px rgba(255,255,200,.5);
+    position:relative;
+    width: 25px;
+    height: 16px;
+    font-size:12px;
+    cursor:pointer;
+    border-radius:3px;
+    margin-right:4px;
+    background-color:rgba(80,80,40);
+    border-radius: 0 0 28% 28%;
   }
-  div.slotCol div {
-    padding: 5px;
+  div.slotCol.selected {
+    background-color:rgba(150,150,60)
   }
-  div.bucket {
-    background: #660;
-    border-radius: 0 0 50% 50%;
-    padding: 10px;
+  .slot-label {
+      margin-right: 6px;
+      padding:4px;
+      font-size:12px;   
   }
-  div.semibutton {
-    border: 2px #990 outset;
+  div.tooltip {
+    display:none;
+    background:rgba(0,0,0,.5);
+    color: white;
     cursor: pointer;
-    padding: 2px !important;
+    padding: 8px;
+    position:relative;
+    top: -135px;
+    left: -5px;
+    width: 250px;
+    border-radius:5px;
+    text-align:left;
+  }
+  div.tooltip p {
+      margin-top:.5em;
+      margin-bottom:.5em;
+  }
+  div.slotCol:hover {
+    border: solid 1px rgba(255,255,200,.8);
+    background-color:rgba(100,100,40)
+  }
+  div.slotCol:hover .tooltip {
+    display:block
   }
 `;
 
@@ -304,6 +332,43 @@ export class BucketSinging {
         $.post('widgetData', {action:'ready', calibrationFail, clientId, islead});
     }
 
+    createSlotButtons (slot, slotCounts) {
+        if (this.slotsUi) {
+            this.slotsUi.empty();
+            for (let i in slotCounts) {
+                this.createSlotButton(slot, i, slotCounts)
+            }
+        }
+    }
+
+    createSlotButton(slot, i, slotCounts) {
+        let button = $('<div class=slotCol>')
+            .append($('<div>').text(slotCounts[i]))
+            .appendTo(this.slotsUi);
+
+        const tooltip = $('<div class=tooltip>').appendTo(button)
+        tooltip.append(`<p><b>Bucket ${i}</b></p>`)
+
+        if (i==slot) {
+            button.addClass('selected')
+            tooltip.append('<p><em>You are in this bucket.<em></p>')
+        } else if ( ! calibrationFail) {
+            if (i == 3) {
+                tooltip.append(`<p>Click to join</p>`)
+            } else {
+                tooltip.append(`<p>Click to join (Requires wired headphones)</p>`)
+            }
+            button.on('click',()=>{$.post('widgetData', {action:'pickslot', clientId, slot:i})})
+        }
+        if (i==0) {
+            tooltip.append('<p><em>Songleader. Singers in this bucket only hear the backing track, but everyone can hear them. Click hear if you want to help lead the song!</em></p>')
+        } else if (i==3) {
+            tooltip.append('<p><em>Listen Only. Singers in the last bucket can hear everyone, but nobody hears them.</em></p>')
+        } else {
+            tooltip.append('<p><em>Singers in this bucket can be heard by people in later buckets, and can hear people in earlier buckets</em></p>')
+        }
+    }
+
     async from_server({slot, ready, backing_track, dbginfo, justInit, server_url, lyricLead, slotCounts}) {
         this.dbg.append(dbginfo+' ready='+ready).append($('<br>'));
         if (!ready || !context) return;
@@ -362,24 +427,7 @@ export class BucketSinging {
             });
         }
 
-        if (this.slotsUi) {
-            this.slotsUi.empty();
-            for (let i in slotCounts) {
-                let col = $('<div class=slotCol>')
-                    .append($('<div class=bucket>').text(i))
-                    .append($('<div>').text(slotCounts[i]))
-                    .appendTo(this.slotsUi);
-                if (i==slot) {
-                    $('<div>').text('You').appendTo(col);
-                } else if ( ! calibrationFail) {
-                    $('<div class=semibutton>').text('Join')
-                                               .on('click',()=>{
-                                                   $.post('widgetData', {action:'pickslot', clientId, slot:i});
-                                               })
-                                               .appendTo(col);
-                }
-            }
-        }
+        this.createSlotButtons(slot, slotCounts)
 
         if (lyricLead) {
             $('<div>').text('You are lead singer.  '+
