@@ -417,7 +417,7 @@ export class BucketSinging {
                 this.client.declare_event(cur);
                 if (cur == 0) {
                     for (let i=1; i<=4; i++) {
-                        this.client.declare_event(i, i);
+                        this.client.declare_event(-i, i);
                     }
                 }
                 await this.handleLyric(cur);

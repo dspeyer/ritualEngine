@@ -431,7 +431,7 @@ export function setTwilioAudioEnabled(nv) {
             localAudioTrack = lat;
         });
         for (let [sid, participant] of room.participants) {
-            for (let [_, track] of participant.videoTracks) {
+            for (let [_, track] of participant.audioTracks) {
                 if (track.kind=='audio' && track.track && typeof(track.track.attach)=='function') {
                     $(track.track.attach()).appendTo($('body'));
                     hasAudioTrack[participant.identity] = true;

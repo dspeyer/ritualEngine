@@ -152,6 +152,8 @@ async def errorHandler(request, handler):
     try:
         return await handler(request)
     except Exception as e:
+        if hasattr(e,'__http_exception__'):
+            raise e
         txt = '%s\n%s\n\n%s'%(type(e).__name__,str(e),traceback.format_exc())
         print('\n'+txt+'\n')
         return web.Response(text=txt, status=500, content_type="text/plain")
