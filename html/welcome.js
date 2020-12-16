@@ -18,9 +18,12 @@ export async function  welcome(widgets) {
     let dlg = $('<div class=modaldlg>').appendTo($('body'));
     dlg.append($(`<div id="askname">
                     <h1>Welcome</h1>
-                    Please give us a name to call you.  This will be visible to the other participants.
-                    <input id="name">
-                    <input type="button" id="sendname" value="OK">
+                    <p>First, <b class="warning">please make sure you are using Google Chrome.</b> <br>Solstice will not reliably work on Firefox, Safari or other browsers.</p>
+                    <p>Please give us a name to call you.  This will be visible to the other participants.</p>
+                    <div class="name-input-row">
+                        <input id="name">
+                        <input type="button" id="sendname" value="OK">
+                    </div>
                   </div>`));
     let res;
     let p = new Promise((r)=>{res=r;});
@@ -54,7 +57,7 @@ export async function  welcome(widgets) {
                                       width:'100px',
                                       height:'100px'}).appendTo(dlg);
         await setVid(video);
-        $('<input type=button value="Looks good">').on('click',res).appendTo(dlg);
+        $('<input type=button class="yes-button" value="Looks good">').on('click',res).appendTo(dlg);
         if (devices.length > 1) {
             $('<input type=button value="Use other camera">').on('click',()=>{
                 choice = (choice + 1) % devices.length;
