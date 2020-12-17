@@ -10,6 +10,7 @@ export function putOnBox(elems, color) {
         let maybe = $('path, rect');
         for (let i=0; i<maybe.length; i++) {
             let stroke = maybe[i].style.stroke;
+//            console.log({i,maybe:maybe[i],stroke,color,convertedColor});
             if (stroke==color || stroke==convertedColor) {
                 box=maybe;
                 break;
