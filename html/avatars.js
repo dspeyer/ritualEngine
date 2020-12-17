@@ -623,7 +623,11 @@ async function sendVideoSnapshot(){
     if ( ! localVideoElement) return;
     let canvas = $('<canvas width=100 height=100>').css({border:'thick cyan solid'}).appendTo($('body'));
     let context = canvas[0].getContext('2d');
+    context.fillStyle='#9f0'
+    context.fillRect(0,0,100,100)
     context.drawImage(localVideoElement, 0, 0, 100, 100);
+    let pixel = context.getImageData(50,50,1,1)
+    console.log('Pixel seen in sending snapshot: ',pixel);
     let blob = await new Promise( (res) => { canvas[0].toBlob(res,'image/jpeg'); } );
     canvas.remove();
     let fd = new FormData();
