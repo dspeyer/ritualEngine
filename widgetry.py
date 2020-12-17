@@ -120,7 +120,7 @@ async def status(req):
         results['twilioAudioEnabled'] = data.get('twilioAudioEnabled', False);
         if results['twilioAudioEnabled']:
             if ritual.current_video_room == None or ritual.clients[clientId].room != ritual.current_video_room.unique_name:
-                await assign_twilio_room(ritual, client)
+                await assign_twilio_room(ritual, clientId)
         
         results['page'] = pagename
         
