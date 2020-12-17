@@ -21,7 +21,7 @@ parser.add_argument('--agent', metavar='UA', default="tester.py", help='User age
 args = parser.parse_args()
 print(args)
 
-if args.n:
+if args.n and not args.z: 
     names = open(args.n).read().split('\n')
     shuffle(names)
     for i,name in enumerate(names):
@@ -66,6 +66,11 @@ if args.a:
 if args.z:
     fns = glob(args.z+'/*.jpg')
     shuffle(fns)
+    if args.n:
+        names = open(args.n).readlines();
+        shuffle(names)
+    else:
+        names = ['Alice','Bob','Carol','David','Eve','Lord Excessivelylongname the Third']
     for i,fn in enumerate(fns):
         clientId = False
         client = requests.get(args.u+'/partake?fake', headers={'user-agent':args.agent}).text
@@ -78,6 +83,8 @@ if args.z:
             jpg = open(fn,'rb').read()
             files = { 'img': ('blob', jpg, 'image/jpeg') }
             requests.post(args.u+'/clientAvatar/'+clientId, files=files)
+            name = names[i]
+            requests.post(args.u+'/setName', data={'clientId':clientId,'name':name})
         else:
             print("no clientId")
         if args.c and i >= args.c-1:
