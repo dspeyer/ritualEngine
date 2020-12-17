@@ -374,8 +374,9 @@ function setVideoAvatars(savedVideoElements) {
         if (circle.videoOf) {
             circle.video.hide();
             circle.track.detach(circle.video[0]);
-            delete circles.videoOf;
-            delete circles.track;
+            circle.video[0].srcObject = null;
+            delete circle.videoOf;
+            delete circle.track;
         }
         if (vidsPlaced >= nvideos) {
             continue;
