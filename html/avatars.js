@@ -318,10 +318,10 @@ function setVideoAvatars() {
     let mes = participants.filter((x)=>(x.id==clientId));
     let same = participants.filter((x)=>(x.room==currentRoomId && x.id!=clientId));
     let diff = participants.filter((x)=>(x.room!=currentRoomId && x.id!=clientId));
-    curVidRot %= same.length;
+    if (same.length) curVidRot %= same.length;
     let samea = same.slice(curVidRot);
     let sameb = same.slice(0,curVidRot);
-    curStaRot %= diff.length;
+    if (diff.length) curStaRot %= diff.length;
     let diffa = diff.slice(curStaRot);
     let diffb = diff.slice(0,curStaRot);
     let clients = [].concat(mes,samea,sameb,diffa,diffb);
@@ -344,14 +344,14 @@ function setVideoAvatars() {
             vidsPlaced += 1;
             continue;
         }
-        if (vidsPlaced >= nvideos) {
-            continue;
-        }
         if (circle.videoOf) {
             circle.video.hide();
             circle.track.detach(circle.video[0]);
             delete circles.videoOf;
             delete circles.track;
+        }
+        if (vidsPlaced >= nvideos) {
+            continue;
         }
         if (client.id == clientId) {
             vidsPlaced += 1;
@@ -417,7 +417,11 @@ export async function twilioConnect(token, roomId) {
     currentRoomId = roomId;
     console.log({cameraChoice});
     if (cameraChoice[0] && ! localVideo) {
-        localVideo = await Twilio.Video.createLocalVideoTrack({ width: 100, height: 100, deviceId:{exact:cameraChoice[0]}});
+        let opts = { width: 100, height: 100};
+        if (cameraChoice[0]!='uninitialized') {
+            opts.deviceId = {exact:cameraChoice[0]};
+        }
+        localVideo = await Twilio.Video.createLocalVideoTrack(opts);
     } else {
         localVideo = null;
     }
