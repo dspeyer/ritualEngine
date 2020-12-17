@@ -1,9 +1,6 @@
 {
-  "widget": "Video",
   "background": "sunset2-01.jpg",
-  "videoUrl": "https://d3vyng54usxcs.cloudfront.net/BoldOrion_2.mp4",
-  "boxColor": "#000000",
   "showParticipants": true,
-  "rotate": false,
-  "bkgAll": true
+  "twilioAudioEnabled": true,
+  "chatClass": "normal"
 }

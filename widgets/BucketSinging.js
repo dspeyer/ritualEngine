@@ -240,7 +240,7 @@ export class BucketSinging {
         this.div = $('<div>').appendTo($('body'));
         putOnBox(this.div, boxColors.lyrics);
         if (videoUrl) {
-            this.video_div = $('<div>').css({zIndex:-1,borderRadius:'50%',overflow:'hidden'}).appendTo($('body'));
+            this.video_div = $('<div class="bbs-video-wrapper">').appendTo($('body'));
             putOnBox(this.video_div, boxColors.video);
         }
         if (boxColors.slots) {
@@ -349,8 +349,8 @@ export class BucketSinging {
                         await new Promise((res)=>{this.video.on('loadedmetadata', res)});
                         this.video.off('loadedmetadata');
                     }
-                    let left = (this.video_div.width() - this.video.width()) / 2 + 'px';
-                    this.video.css({left});
+                    // let left = (this.video_div.width() - this.video.width()) / 2 + 'px';
+                    // this.video.css({left});
                 }
             });
             this.client.addEventListener('backingTrackUpdate', ({detail: {progress}}) => {
