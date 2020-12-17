@@ -25,12 +25,23 @@ export function rotateAvatars() {
 let circles = [];
 export function redraw(force) {
     let div = $('#participants');
+    let savedVideoElems = {};
     if ((circles.length != participants.length) || force) {
-        if (video) detachAllVideos();
+        if (video) savedVideoElems = saveVideosBeforeDestruction();
         circles = fillAsDesired(div, participants.length);
     }
     if (video) {
-        setVideoAvatars();
+        console.log('savedVideoElems logging <<<');
+        console.log("savedVideoElems before filling",savedVideoElems);
+        setVideoAvatars(savedVideoElems);
+        console.log("savedVideoElems after filling",savedVideoElems);
+        for (let i in savedVideoElems) {
+            let video = savedVideoElems[i];
+            video.track.detach(video[0]);
+            video.remove();
+            console.log('removed savedVideoElem',i,video);
+        }
+        console.log('>>> savedVideoElems logging');
     } else {
         for (let i in participants) {
             circles[i].img.attr('src', participants[i].img);
@@ -303,6 +314,21 @@ function putcircle(d,{x,y,r,label,z,br}) {
     return div;
 }
 
+function saveVideosBeforeDestruction() {
+    let out = {};
+    for (let circle of circles) {
+        if (circle.videoOf) {
+            out[circle.videoOf] = circle.video;
+            circle.video.detach();
+            circle.video.track = circle.track;
+            circle.video.css({opacity:0}).appendTo($('body'));
+            delete circle.track;
+            delete circle.videoOf;
+        }
+    }
+    return out;
+}
+
 /*************************** Twilio  ******************************/
 
 let videosToPlace = {};
@@ -313,7 +339,7 @@ let twilioAudioEnabled = false;
 let hasAudioTrack = {};
 let localAudioTrack = null;
 
-function setVideoAvatars() {
+function setVideoAvatars(savedVideoElements) {
     videosToPlace = {};
     let mes = participants.filter((x)=>(x.id==clientId));
     let same = participants.filter((x)=>(x.room==currentRoomId && x.id!=clientId));
@@ -326,6 +352,7 @@ function setVideoAvatars() {
     let diffb = diff.slice(0,curStaRot);
     let clients = [].concat(mes,samea,sameb,diffa,diffb);
     let vidsPlaced = 0;
+    console.log({act:'rotating',curVidRot,curStaRot});
     console.log({act:'seting circles',clients,circles,mes,samea,sameb,diffa,diffb});
     for (let i in clients) {
         let client = clients[i];
@@ -351,6 +378,21 @@ function setVideoAvatars() {
             delete circles.track;
         }
         if (vidsPlaced >= nvideos) {
+            continue;
+        }
+        if (client.id in savedVideoElements) {
+            vidsPlaced += 1;
+            circle.video.remove();
+            circle.video = savedVideoElements[client.id];
+            circle.video.detach();
+            circle.append(circle.video);
+            circle.video.css({opacity:1});
+            // TODO: Unify with putVideoInCircle?
+            // TODO: Worry about varying border-radius
+            circle.videoOf = client.id;
+            circle.track = savedVideoElements[client.id].track;
+            delete savedVideoElements[client.id];
+            console.log('deleting '+client.id+' from savedVideoElements because reused');
             continue;
         }
         if (client.id == clientId) {
