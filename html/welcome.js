@@ -8,8 +8,11 @@ async function setVid(video) {
     try {
         track = await Twilio.Video.createLocalVideoTrack({width:100, height:100, deviceId:{exact:cameraChoice[0]}});
         track.attach(video[0]);
+        return true;
     } catch (e) {
+        track = null;
         console.log(e);
+        return false;
     }
 }
 
@@ -73,19 +76,33 @@ export async function  welcome(widgets) {
         console.log("Can't used saved camera, prompting...");
         dlg.empty();
         dlg.append($('<p>We like to show all ritual participants to each other, '+
-            'using a mixture of video feeds and still images...</p>'));
+                     'using a mixture of video feeds and still images...</p>'));
+        
+        let checking, feednote, video;
         if (devices.length >= 1) {
-            let res;
-            let p = new Promise((r)=>{res=r;});
-            let choice = 0;
-            cameraChoice[0] = devices[0].deviceId;
-            dlg.append($('<p>Your video feed looks like this:</p>'));
-            let video = $('<video>').css({borderRadius:'50%',
+            checking = $('<p>Checking camera'+(devices.length>1?'s':'')+'...</p>').appendTo(dlg);
+            feednote = dlg.append($('<p>Your video feed looks like this:</p>'));
+            video = $('<video>').css({borderRadius:'50%',
                                           border:'2px solid #999',
                                           marginLeft:'calc(50% - 51px)',
                                           width:'100px',
                                           height:'100px'}).appendTo(dlg);
-            await setVid(video);
+            let finishedok;
+            for (let dev of devices) {
+                cameraChoice[0] = devices[0].deviceId;
+                finishedok = dev.ok = await setVid(video);
+            }
+            devices = devices.filter((x)=>(x.ok));
+            if ( ! finishedok) {
+                cameraChoice[0] = devices[0].deviceId;
+                await setVid(video);
+            }
+        }
+        if (devices.length >= 1) {
+            checking.remove();
+            let res;
+            let p = new Promise((r)=>{res=r;});
+            let choice = 0;
             $('<input type=button  class="yes-button" value="Looks good">').on('click',res).appendTo(dlg);
             if (devices.length > 1) {
                 $('<input type=button value="Use other camera">').on('click',()=>{
@@ -107,6 +124,9 @@ export async function  welcome(widgets) {
                 track.stop();
             }
         } else {
+            if (feednote) feednote.remove();
+            if (checking) checking.remove();
+            if (video) video.remove();
             cameraChoice[0] = null;
         }
     }
@@ -121,7 +141,8 @@ export async function  welcome(widgets) {
     }
 
     if ( ! cameraChoice[0]) {
-        p = new Promise((r)=>{res=r;});
+        let res;
+        let p = new Promise((r)=>{res=r;});
         $('<p>In lieu of a webcam, would you like to upload a static avatar?</p>').appendTo(dlg);
         $('<input id=avatarfile type=file>').on('change',()=>{$('#sendav').attr('disabled',false);})
                                             .appendTo(dlg);
@@ -140,7 +161,7 @@ export async function  welcome(widgets) {
         }).appendTo(dlg);
         $('<input type=button value="No, I\'ll just use the default">').on('click',res).appendTo(dlg);
         if (devices.length == 0) {
-            $("<p>(If you <i>have</i> a webcam, double-check that it's plugged in and reload this page)</p>").css({fontSize:'smaller'}).appendTo(dlg);
+            $("<p>(If you <i>have</i> a webcam, double-check that it's plugged in and not in use by another app, then reload this page)</p>").css({fontSize:'smaller'}).appendTo(dlg);
         }
         await p;
     }
