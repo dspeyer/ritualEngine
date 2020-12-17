@@ -301,6 +301,8 @@ function putcircle(d,{x,y,r,label,z,br}) {
         tab.find('.name').text(client.name);
         tab.find('.cid.eq').text((client.id==clientId)?'[=]':'[\u2260]');
         tab.find('.room.eq').text((client.room==currentRoomId)?'[=]':'[\u2260]');
+        if ($(target).find('video').length==0) {
+            tab.find('.video').text('this is a bug');
         if ($(target).find('video')[0].srcObject) {
             tab.find('.video').text('has');
         } else if (client.id in videosToPlace) {
