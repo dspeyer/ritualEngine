@@ -1,3 +1,5 @@
+import { retrieveParameter } from "./lib.js";
+
 let fillAsDesired = null;
 export function setParticipantStyle(rotate){
     fillAsDesired = rotate ? fillAsReaderQueue : fillAsAuditorium;
@@ -519,7 +521,9 @@ export async function twilioConnect(token, roomId) {
         if (publication.kind == 'audio' && twilioAudioEnabled) {
             console.log('== put audio');
             hasAudioTrack[participant.identity] = true;
-            $(track.attach()).appendTo($('body'));
+            if (!retrieveParameter('speakerMuted')) {
+                $(track.attach()).appendTo($('body'));
+            }
             for (let circle of circles) {
                 circle.css({opacity: (hasAudioTrack[circle[0].client.id] ? 1 : 0.2)});
             }
@@ -528,17 +532,41 @@ export async function twilioConnect(token, roomId) {
     attachAllVideos();
 }
 
+$('#mic-mute-button').on('click', () => {
+    if (twilioAudioEnabled) {
+        if (retrieveParameter('micMuted')) {
+            muteMic();
+        } else {
+            unmuteMic();
+        }
+    }
+});
+
+$('#speaker-mute-button').on('click', () => {
+    if (twilioAudioEnabled) {
+        if (retrieveParameter('speakerMuted')) {
+            muteSpeaker();
+        } else {
+            unmuteSpeaker();
+        }
+    }
+});
+
 export function setTwilioAudioEnabled(nv) {
     if (nv == twilioAudioEnabled) return;
     if ( ! room) return;
+    twilioAudioEnabled = nv;
     hasAudioTrack = {[clientId]: true};
     if (nv) {
-        twilioAudioEnabled = true;
-        if (localAudioTrack) localAudioTrack.enable();
+        if (!retrieveParameter('micMuted')) {
+            unmuteMic();
+        }
+        if (!retrieveParameter('speakerMuted')) {
+            unmuteSpeaker();
+        }
         for (let [sid, participant] of room.participants) {
             for (let [_, track] of participant.audioTracks) {
                 if (track.kind=='audio' && track.track && typeof(track.track.attach)=='function') {
-                    $(track.track.attach()).appendTo($('body'));
                     hasAudioTrack[participant.identity] = true;
                 }
             }
@@ -547,17 +575,42 @@ export function setTwilioAudioEnabled(nv) {
             circle.css({opacity: (hasAudioTrack[circle[0].client.id] ? 1 : 0.2)});
         }
     } else {
-        twilioAudioEnabled = false;
-        if (localAudioTrack) localAudioTrack.disable();
-        for (let [sid, participant] of room.participants) {
-            for (let [_, track] of participant.videoTracks) {
-                if (track.kind=='audio' && track.track && typeof(track.track.detach)=='function') {
-                    $(track.track.detach()).remove
-                }
-            }
+        if (!retrieveParameter('micMuted')) {
+           muteMic();
+        }
+        if (!retrieveParameter('speakerMuted')) {
+            muteSpeaker();
         }
         for (let circle of circles) {
             circle.css({opacity: 1});
+        }
+    }
+}
+
+function unmuteMic() {
+    if (localAudioTrack) localAudioTrack.enable();
+}
+
+function unmuteSpeaker() {
+    for (let [sid, participant] of room.participants) {
+        for (let [_, track] of participant.audioTracks) {
+            if (track.kind=='audio' && track.track && typeof(track.track.attach)=='function') {
+                $(track.track.attach()).appendTo($('body'));
+            }
+        }
+    }
+}
+
+function muteMic() {
+    if (localAudioTrack) localAudioTrack.disable();
+}
+
+function muteSpeaker() {
+    for (let [sid, participant] of room.participants) {
+        for (let [_, track] of participant.audioTracks) {
+            if (track.kind=='audio' && track.track && typeof(track.track.detach)=='function') {
+                $(track.track.detach()).remove();
+            }
         }
     }
 }

@@ -398,9 +398,19 @@ export class BucketSinging {
 
         let apiUrl = server_url;
         let username = 'RE/'+chatname[0]+' ['+clientId.substr(0,10)+'...]';
-        this.client = new SingerClient({context, apiUrl, offset, username, secretId});
+        this.client = new SingerClient({
+            context, apiUrl, offset, username, secretId,
+            speakerMuted: Boolean(retrieveParameter('speakerMuted')),
+            micMuted: Boolean(retrieveParameter('micMuted')),
+        });
         addEventListener('error', this.clientErrorListener = () => {
             this.client.close();
+        });
+        $('#mic-mute-button').on('click.bucketSinging', () => {
+            this.client.micMuted = !this.client.micMuted;
+        });
+        $('#speaker-mute-button').on('click.bucketSinging', () => {
+            this.client.speakerMuted = !this.client.speakerMuted;
         });
 
         this.client.addEventListener('markReached', async ({detail: {data}}) => {
@@ -503,6 +513,8 @@ export class BucketSinging {
         if (this.client) {
             this.client.close();
             removeEventListener('error', this.clientErrorListener);
+            $('#mic-mute-button').off('click.bucketSinging');
+            $('#speaker-mute-button').off('click.bucketSinging');
         }
         this.div.remove();
         this.dbg.remove();

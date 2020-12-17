@@ -418,7 +418,8 @@
                 <input type="button" id="next" value="▶">
             </div>
             <div id="control-footer">
-                <input type="button" id="mute" class="footer-button" value="Mute">
+                <input type="button" id="mic-mute-button" class="footer-button" value="Mute Mic">
+                <input type="button" id="speaker-mute-button" class="footer-button" value="Mute Speaker">
                 <div id="widget-extra-ctrls"></div>
                 <input type="button" id="tech-support" value="Get Tech Support">
             </div>
@@ -441,8 +442,18 @@
              $('#skip').click(()=>{ $.post('skipSpeaker'); });
              $('#next').click(()=>{ $.post('nextPage'); });
          }
-         import('../lib.js').then((lib)=>{
+         let initPromise = import('../lib.js').then((lib)=>{
            lib.bkgInit($(%bkgAll% ? '#everything' : '#content'), 'bkg.jpg');
+           $('#mic-mute-button').val(lib.retrieveParameter('micMuted') ? 'Unmute mic' : 'Mute mic').on('click', () => {
+               let micMuted = !lib.retrieveParameter('micMuted');
+               lib.persistParameter('micMuted', micMuted);
+               $('#mic-mute-button').val(micMuted ? 'Unmute mic' : 'Mute mic');
+           });
+           $('#speaker-mute-button').val(lib.retrieveParameter('speakerMuted') ? 'Unmute speaker' : 'Mute speaker').on('click', () => {
+               let speakerMuted = !lib.retrieveParameter('speakerMuted');
+               lib.persistParameter('speakerMuted', speakerMuted);
+               $('#speaker-mute-button').val(speakerMuted ? 'Unmute speaker' : 'Mute speaker');
+           });
          });
          import('../avatars.js').then((avatars)=>{
              avatars.setParticipantStyle(%rotate%);
@@ -474,6 +485,7 @@
                          $('#svgwrapper svg').attr('width','').attr('height','');
                      }
                      if (data.video_token && data.room && page!='welcome') {
+                         await initPromise;
                          let { twilioConnect, setTwilioAudioEnabled } = await import ('../avatars.js');
                          console.log(data.clients)
                          await twilioConnect(data.video_token, data.room);    
