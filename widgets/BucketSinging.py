@@ -19,7 +19,7 @@ BUCKET_PATH = os.environ.get('BUCKET_PATH','../solstice-audio-test')
 BUCKET_SINGING_URL = secrets.get('BUCKET_SINGING_URL', '/api')
 
 class BucketSinging(object):
-    def __init__(self, ritual, lyrics, boxColor=None, boxColors=None, bsBkg=None, leader=None, backing=None, videoUrl=None, justInit=False, lyricTimings=None, **ignore):
+    def __init__(self, ritual, lyrics, boxColor=None, boxColors=None, bsBkg=None, leader=None, backing=None, videoUrl=None, justInit=False, lyricTimings=None, muteTimings=(), unmuteTimings=(), startMuted=False, **ignore):
         self.ritual = ritual
         if boxColors:
             self.boxColors = boxColors
@@ -37,6 +37,9 @@ class BucketSinging(object):
         self.first_ready = datetime(9999, 1, 1, 1, 1, 1)
         self.justInit = justInit
         self.lyricTimings = lyricTimings
+        self.muteTimings = muteTimings
+        self.unmuteTimings = unmuteTimings
+        self.startMuted = startMuted
         self.ready = False
         
         leader = getUserByEmail(leader)
@@ -203,9 +206,10 @@ class BucketSinging(object):
             metadata = json.loads(metadata)
             clock = metadata['server_clock']
             sr = metadata['server_sample_rate']
-            evs = [ {'evid':i, 'clock':clock+t*sr} for i,t in enumerate(self.lyricTimings) ]
-            countdown = [ {'evid':-i, 'clock':clock+(self.lyricTimings[0]-i)*sr} for i in range(1,5) ]
-            evs = countdown + evs
+            evs = ([ {'evid':i, 'clock':clock+t*sr} for i,t in enumerate(self.lyricTimings) ] +
+                   [ {'evid': f'mute{i}', 'clock':clock+t*sr} for i,t in enumerate(self.muteTimings) ] +
+                   [ {'evid': f'unmute{i}', 'clock':clock+t*sr} for i,t in enumerate(self.unmuteTimings) ] +
+                   [ {'evid':-i, 'clock':clock+(self.lyricTimings[0]-i)*sr} for i in range(1,5) ])
             for i in count(0,10):
                 # Break it up to avoid URL length limits
                 chunk = evs[i:i+10]
@@ -234,7 +238,8 @@ class BucketSinging(object):
                  "videoUrl": self.videoUrl,
                  'justInit': self.justInit,
                  'slotCounts': slotCounts,
-                 'dbginfo': '%d/%d/%d'%(len(self.c_ready),len(self.c_seen),len(self.c_expected)) }
+                 'dbginfo': '%d/%d/%d'%(len(self.c_ready),len(self.c_seen),len(self.c_expected)),
+                 'startMuted': self.startMuted }
 
     @staticmethod
     async def preload(ritual, videoUrl=None, **ignore):

@@ -268,7 +268,7 @@ async function initContext(){
 }
 
 export class BucketSinging {
-    constructor({boxColors, lyrics, cleanup, background_opts, videoUrl, page}) {
+    constructor({boxColors, lyrics, cleanup, background_opts, videoUrl, page, startMuted}) {
         this.div = $('<div>').appendTo($('body'));
         putOnBox(this.div, boxColors.lyrics);
         if (videoUrl) {
@@ -286,6 +286,7 @@ export class BucketSinging {
         this.cleanup = cleanup;
         this.background = background_opts;
         this.page = -1;
+        this.centrallyMuted = startMuted;
         this.btstart = NaN;
         this.timings = [];
 
@@ -401,16 +402,16 @@ export class BucketSinging {
         this.client = new SingerClient({
             context, apiUrl, offset, username, secretId,
             speakerMuted: Boolean(retrieveParameter('speakerMuted')),
-            micMuted: Boolean(retrieveParameter('micMuted')),
+            micMuted: this.centrallyMuted || Boolean(retrieveParameter('micMuted')),
         });
         addEventListener('error', this.clientErrorListener = () => {
             this.client.close();
         });
         $('#mic-mute-button').on('click.bucketSinging', () => {
-            this.client.micMuted = !this.client.micMuted;
+            this.client.micMuted = this.centrallyMuted || retrieveParameter('micMuted');
         });
         $('#speaker-mute-button').on('click.bucketSinging', () => {
-            this.client.speakerMuted = !this.client.speakerMuted;
+            this.client.speakerMuted = retrieveParameter('speakerMuted');
         });
 
         this.client.addEventListener('markReached', async ({detail: {data}}) => {
@@ -475,7 +476,12 @@ export class BucketSinging {
             this.client.addEventListener('markReached', (ev) => {
                 console.log('markreached',ev?.detail);
                 let lid = ev?.detail?.data;
-                if (lid == parseInt(lid)) {
+                if (typeof lid === 'string' && lid.startsWith('mute')) {
+                    this.client.micMuted = this.centrallyMuted = true;
+                } else if (typeof lid === 'string' && lid.startsWith('unmute')) {
+                    this.centrallyMuted = false;
+                    this.client.micMuted = retrieveParameter('micMuted');
+                } else if (lid == parseInt(lid)) {
                     this.handleLyric(lid);
                 }
             });
