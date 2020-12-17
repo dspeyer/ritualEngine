@@ -1,4 +1,4 @@
-import { retrieveParameter } from "./lib.js";
+import { retrieveParameter, wrappedFetch } from "./lib.js";
 
 let fillAsDesired = null;
 export function setParticipantStyle(rotate){
@@ -500,7 +500,7 @@ export async function twilioConnect(token, roomId) {
         room = null;
         currentRoomId = null;
         console.log(error);
-        $.post('twilioRoomFail/'+clientId);
+        wrappedFetch('twilioRoomFail/'+clientId, {method: 'POST'});
         return;
     }
     console.log('connected to room '+roomId);
@@ -626,12 +626,6 @@ async function sendVideoSnapshot(){
     canvas.remove();
     let fd = new FormData();
     fd.append('img', blob);
-    $.ajax({
-        type: 'POST',
-        url: 'clientAvatar/'+clientId,
-        data: fd,
-        processData: false,
-        contentType: false
-    });
+    wrappedFetch('clientAvatar/'+clientId, {method: 'POST', body: fd});
     setTimeout(sendVideoSnapshot, 5*1000);
 }

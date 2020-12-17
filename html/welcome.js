@@ -1,4 +1,4 @@
-import { deleteParameter, retrieveParameter, persistParameter } from './lib.js'
+import { deleteParameter, retrieveParameter, persistParameter, wrappedFetch } from './lib.js'
 
 let track = null;
 async function setVid(video) {
@@ -41,7 +41,10 @@ export async function  welcome(widgets) {
         persistParameter("chat_name", name);
     }
     // TODO: sanity-check name
-    $.post('setName', {clientId, name});
+    let body = new FormData();
+    body.append('clientId', clientId);
+    body.append('name', name);
+    wrappedFetch('setName', {method: 'POST', body});
     chatname[0] = name;
 
     dlg.empty();
@@ -129,13 +132,7 @@ export async function  welcome(widgets) {
             let blob = $('#avatarfile')[0].files[0];
             let fd = new FormData();
             fd.append('img', blob);
-            $.ajax({
-                type: 'POST',
-                url: 'clientAvatar/'+clientId,
-                data: fd,
-                processData: false,
-                contentType: false
-            });
+            wrappedFetch('clientAvatar/'+clientId, {method: 'POST', body: fd});
             res();
         }).appendTo(dlg);
         $('<input type=button value="No, I\'ll just use the default">').on('click',res).appendTo(dlg);
@@ -150,5 +147,5 @@ export async function  welcome(widgets) {
         let module = await import('/widgets/'+widget+'.js');
         await module.welcome();
     }
-    $.post('welcomed/'+clientId);
+    wrappedFetch('welcomed/'+clientId, {method: 'POST'});
 }

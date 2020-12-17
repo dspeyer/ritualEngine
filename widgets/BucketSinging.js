@@ -1,5 +1,5 @@
 import {MicEnumerator, openMic, BucketBrigadeContext, SingerClient, VolumeCalibrator, LatencyCalibrator} from './BucketSinging/app.js';
-import { putOnBox, bkgSet, bkgZoom, deleteParameter, retrieveParameter, persistParameter } from '../../lib.js';
+import { putOnBox, bkgSet, bkgZoom, retrieveParameter, persistParameter, warnUserAboutError, wrappedFetch } from '../../lib.js';
 import { rotateAvatars } from '../../avatars.js';
 
 let context = null;
@@ -336,7 +336,12 @@ export class BucketSinging {
     declare_ready() {
         let islead = window.location.pathname.endsWith('lead');
         this.dbg.append('declaring ready islead='+islead).append($('<br>'));
-        $.post('widgetData', {action:'ready', calibrationFail, clientId, islead});
+        let body = new FormData();
+        body.append('action', 'ready');
+        body.append('calibrationFail', calibrationFail);
+        body.append('clientId', clientId);
+        body.append('islead', islead);
+        wrappedFetch('widgetData', {method: 'POST', body});
     }
 
     createSlotButtons (slot, slotCounts) {
@@ -365,7 +370,13 @@ export class BucketSinging {
             } else {
                 tooltip.append(`<p>Click to join (Requires wired headphones)</p>`)
             }
-            button.on('click',()=>{$.post('widgetData', {action:'pickslot', clientId, slot:i})})
+            button.on('click',()=>{
+                let body = new FormData();
+                body.append('action', 'pickslot');
+                body.append('clientId', clientId);
+                body.append('slot', i);
+                wrappedFetch('widgetData', {method: 'POST', body});
+            });
         }
         if (i==0) {
             tooltip.append('<p><em>Songleader. Singers in this bucket only hear the backing track, but everyone can hear them.</em></p><p><em>Join if you want to help lead the song!</em></p>')
@@ -420,6 +431,19 @@ export class BucketSinging {
             }
         });
         await new Promise((res)=>{ this.client.addEventListener('connectivityChange',res); });
+
+        this.cancelConnectivityError = null;
+        this.client.addEventListener('connectivityChange', () => {
+            if (this.client.hasConnectivity) {
+                this.cancelConnectivityError();
+                this.cancelConnectivityError = null;
+            } else {
+                this.cancelConnectivityError = warnUserAboutError();
+            }
+        });
+        this.client.addEventListener('audioLag', () => {
+            warnUserAboutError()();
+        });
 
         if (this.video) {
             this.client.addEventListener('markReached', async ({detail:{data}})=>{
@@ -515,6 +539,9 @@ export class BucketSinging {
             removeEventListener('error', this.clientErrorListener);
             $('#mic-mute-button').off('click.bucketSinging');
             $('#speaker-mute-button').off('click.bucketSinging');
+            if (this.cancelConnectivityError) {
+                this.cancelConnectivityError();
+            }
         }
         this.div.remove();
         this.dbg.remove();

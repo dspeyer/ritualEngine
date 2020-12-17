@@ -220,3 +220,50 @@ export function retrieveParameter(key) {
     return null;
 }
 
+export async function wrappedFetch(resource, init, long) {
+    let cancelConnectivityError = null;
+    let response = null;
+    let duration = 1;
+    while (!(response = await fetch(resource, init).catch(() => null))) {
+        if (cancelConnectivityError) {
+            cancelConnectivityError();
+        }
+        cancelConnectivityError = warnUserAboutError();
+        await new Promise((resolve) => {
+            setTimeout(resolve, duration);
+        });
+        duration *= 2;
+        if (long) {
+            cancelConnectivityError();
+            cancelConnectivityError = null;
+        }
+    }
+    if (!response.ok) {
+        throw new Error(response.statusText);
+    }
+    if (cancelConnectivityError) {
+        cancelConnectivityError();
+    }
+    return response;
+}
+
+let errorTimeoutHandle = null;
+let cancelFuncs = new Set();
+export function warnUserAboutError() {
+    $('#error').show();
+    if (errorTimeoutHandle) {
+        clearTimeout(errorTimeoutHandle);
+        errorTimeoutHandle = null;
+    }
+    function cancelFunc() {
+        cancelFuncs.delete(cancelFunc);
+        if (!cancelFuncs.size && !errorTimeoutHandle) {
+            errorTimeoutHandle = setTimeout(() => {
+                $('#error').hide();
+                errorTimeoutHandle = null;
+            });
+        }
+    }
+    cancelFuncs.add(cancelFunc);
+    return cancelFunc;
+}
