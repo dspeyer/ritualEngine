@@ -71,6 +71,8 @@ let css = `
   }
 `;
 
+let secretId = Math.round(Math.random()*1e9);
+
 let backingTrackStartedRes;
 let backingTrackStartedPromise = new Promise((res) => {
     backingTrackStartedRes = res;
@@ -326,7 +328,6 @@ export class BucketSinging {
 
         let apiUrl = server_url;
         let username = 'RE/'+chatname[0]+' ['+clientId.substr(0,10)+'...]';
-        let secretId = Math.round(Math.random()*1e6); // TODO: understand this
         this.client = new SingerClient({context, apiUrl, offset, username, secretId});
         addEventListener('error', this.clientErrorListener = () => {
             this.client.close();
