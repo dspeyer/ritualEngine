@@ -4,8 +4,7 @@
   "chatClass": "normal", 
   "boxColors": {
     "lyrics":"#0000ff",
-    "video":"#00ff00",
-    "slots":"#ff0000"
+    "video":"#00ff00"
   },
   "lyrics": [
     "I'd heard there was a secret chord",

@@ -1,5 +1,6 @@
 <html>
     <head>
+        %errorhandler%
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://media.twiliocdn.com/sdk/js/video/releases/2.8.0/twilio-video.js"></script>
         <style>
@@ -171,8 +172,7 @@
              background:rgba(255,255,255,.25);
              border: solid 1px rgba(255,255,100,.25) !important;
          }
-         #bucket-buttons {
-             background: rgba(255,255,255,.25);
+         #widget-extra-ctrls {
              height:100%;
              width:300px;
          }
@@ -419,7 +419,7 @@
             </div>
             <div id="control-footer">
                 <input type="button" id="mute" class="footer-button" value="Mute">
-                <div id="bucket-buttons">Bucket Buttons Go Here</div>
+                <div id="widget-extra-ctrls"></div>
                 <input type="button" id="tech-support" value="Get Tech Support">
             </div>
         </div>

@@ -49,6 +49,8 @@ let css = `
     color: white;
     background: rgba(0,0,0,0.5);
     font-family: Gill Sans;
+    margin: auto;
+    width: fit-content;
   }
   div.slotCol {
     display:inline-block;
@@ -276,6 +278,9 @@ export class BucketSinging {
         if (boxColors.slots) {
             this.slotsUi = $('<div class=slots>').appendTo($('body'));
             putOnBox(this.slotsUi, boxColors.slots);
+        } else {
+            $('#widget-extra-ctrls').empty();
+            this.slotsUi = $('<div class=slots>').appendTo($('#widget-extra-ctrls'));
         }
         this.lyrics = lyrics;
         this.cleanup = cleanup;
