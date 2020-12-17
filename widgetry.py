@@ -17,6 +17,7 @@ from widgets.CircleFlames import CircleFlames
 from widgets.Livestream import Livestream
 from widgets.Video import Video
 from widgets.WelcomeWatch import WelcomeWatch
+from widgets.AvatarTester import AvatarTester
 
 async def lib(req):
     return web.Response(body=open('html/%s.js'%req.match_info['fn']).read(), content_type='text/javascript')
