@@ -85,9 +85,11 @@ else:
                     sendDefaultPii: true,
                     autoSessionTracking: true,
                     beforeSend(event) {
-                        if (event.exception && !showedReportDialog) {
-                            showedReportDialog = true;
-                            Sentry.showReportDialog({ eventId: event.event_id });
+                        if (event.exception) {
+                            // Wait one second so the browser has a chance to send the event to Sentry.
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1000);
                         }
                         return event;
                     },
