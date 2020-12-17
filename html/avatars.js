@@ -399,6 +399,7 @@ function setVideoAvatars(savedVideoElements) {
         if (client.id == clientId) {
             vidsPlaced += 1;
             putVideoInCircle(circle, localVideo, clientId);
+            continue;
         }
         if (client.room == currentRoomId) {
             vidsPlaced += 1;
