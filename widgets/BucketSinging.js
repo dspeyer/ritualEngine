@@ -207,7 +207,7 @@ async function initContext(){
         });
         button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
         latency_cal_result = await p;
-        if (latency_cal_result.success === false) {
+        if (latency_cal_result?.success === false) {
             div.empty();
             div.append('Failed to get a clear latency measurement.  Maybe increase volume or fiddle with audio hardware?');
             p = new Promise((r)=>{res=r;});
