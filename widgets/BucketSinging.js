@@ -1,6 +1,6 @@
 import {MicEnumerator, openMic, BucketBrigadeContext, SingerClient, VolumeCalibrator, LatencyCalibrator} from './BucketSinging/app.js';
 import { putOnBox, bkgSet, bkgZoom, retrieveParameter, persistParameter, warnUserAboutError, wrappedFetch } from '../../lib.js';
-import { rotateAvatars } from '../../avatars.js';
+import * as avatars from '../../avatars.js';
 
 let context = null;
 let calibrationFail = false;
@@ -418,6 +418,12 @@ export class BucketSinging {
         addEventListener('error', this.clientErrorListener = () => {
             this.client.close();
         });
+        this.client.addEventListener('audioLag', ()=>{
+            if (avatar.nvideos > 4) {
+                avatar.nvideos -= 2;
+                avatar.redraw();
+            }
+        });
         $('#mic-mute-button').on('click.bucketSinging', () => {
             this.client.micMuted = this.centrallyMuted || retrieveParameter('micMuted');
         });
@@ -514,7 +520,7 @@ export class BucketSinging {
 
     async handleLyric(lid) {
         if (lid>0 && lid%8==0) {
-            rotateAvatars();
+            avatars.rotateAvatars();
         }
         this.div.find('span.current').removeClass('current').addClass('old');
         let elem = this.lyricEls[lid];

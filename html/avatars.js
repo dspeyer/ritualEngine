@@ -13,7 +13,7 @@ export function setParticipants(p,v) {
     redraw();
 }
 
-export let nvideos = 6;
+export let nvideos = 12;
 export let staticRotateHint = 10;
 let curVidRot = 0;
 let curStaRot = 0;
