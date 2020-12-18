@@ -19,6 +19,6 @@ class Video(object):
         }
 
     @staticmethod
-    async def preload(ritual, videoUrl=None, **ignore):
+    async def preload(ritual, videoUrl=None, captions=None, **ignore):
         if videoUrl:
-            ritual.videos.add(videoUrl)
+            ritual.videos[videoUrl] = captions

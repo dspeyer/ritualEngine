@@ -83,8 +83,10 @@ async def ritualPage(req):
                                  bkgAll=str(active[name].bkgAll).lower(),
                                  rotate=str(active[name].rotate).lower(),
                                  videos=''.join(
-                                     f'<video class="hidden" src="{video}" playsinline preload="auto"></video>'
-                                     for video in active[name].videos
+                                     f'<video class="hidden" src="{video}" playsinline preload="auto"><track default kind="captions" srclang="en" src="captions/{captions}"></video>'
+                                     if captions
+                                     else f'<video class="hidden" src="{video}" playsinline preload="auto"></video>'
+                                     for video, captions in active[name].videos.items()
                                  ),
                                  intercomappid=intercom_app_id,
                         ),
@@ -197,6 +199,14 @@ async def namedimg(req):
     content = open(path,'rb').read()
     return web.Response(body=content, content_type='image/jpeg');   
 
+async def captions(req):
+    name = req.match_info.get('name')
+    fn = req.match_info.get('captions')
+    sc = active[name].script
+    path = 'examples/%s/%s'%(sc,fn)
+    content = open(path,'rb').read()
+    return web.Response(body=content, content_type='text/vtt');
+
 async def mkRitual(req):
     print("mkRitual")
     form = await req.post()
@@ -216,7 +226,7 @@ async def mkRitual(req):
     active[name] = Ritual(script=script, reqs={}, state=None, page=page, background=opts['background'],
                           bkgAll=opts.get('bkgAll',False), ratio=opts.get('ratio',16/9), welcome=opts.get('welcome'),
                           rotate=opts.get('rotate',True), breserve=opts.get('breserve','233px'), 
-                          jpgs=[defaultjpg], jpgrats=[1], clients={}, allChats=[], videos=set())
+                          jpgs=[defaultjpg], jpgrats=[1], clients={}, allChats=[], videos={})
     for slide_path in glob(f'examples/{script}/*.json'):
         filename = path.basename(slide_path)
         if filename == 'index.json':
@@ -304,6 +314,7 @@ app.router.add_post('/{name}/chat/send', chatSend)
 app.router.add_post('/mkRitual', mkRitual)
 app.router.add_get('/{name}/bkg.jpg', background)
 app.router.add_get('/{name}/namedimg/{img}', namedimg)
+app.router.add_get('/{name}/captions/{captions}', captions)
 app.router.add_get('/{name}/clientAvatar/{client}', getAvatar)
 app.router.add_post('/{name}/clientAvatar/{client}', setAvatar)
 app.router.add_post('/{name}/welcomed/{client}', welcomed)
