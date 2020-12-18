@@ -1,9 +1,13 @@
 {
   "widget": "BucketSinging",
-  "boxColor": "#000000",
-  "background": "sunset3-05.jpg",
+  "boxColors": {
+    "lyrics":"#0000ff",
+    "video":"#00ff00"
+  },
+  "background": "sunset4-05.jpg",
+  "backing": "anna-bitter-wind-lullaby-backing.wav",
+  "videoUrl": "https://d3vyng54usxcs.cloudfront.net/anna-bitter-wind-lullaby-silent-3.mp4",
   "lyrics": [
-    "Bitter Wind Lullaby",
     "",
     "Little one, little one, bitter wind blown",
     "Little one, little one, bitter wind blown",

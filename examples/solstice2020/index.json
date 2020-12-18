@@ -1,8 +1,11 @@
 {
     "background": "sunset4-01.jpg",
     "showParticipants": "video",
+    "rotate": false,
     "useParticipantAudio": true,
     "bkgAll": true,
-    "rotate": false,
+    "ratio": 2.5,
+    "breserve": "30vh",
     "welcome": "welcome"
-}
+  }
+  

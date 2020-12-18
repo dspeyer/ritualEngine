@@ -12,7 +12,7 @@ let css = `
       flex-direction: column;
       justify-content: space-between;
       overflow-y: auto;
-      text-shadow: 1px 1px 2px #777, -1px -1px 2px #777, 1px -1px 2px #777, -1px 1px 2px #777;
+      text-shadow: 1px 1px 2px rgba(0,0,0,.25), -1px -1px 2px rgba(0,0,0,.25), 1px -1px 2px rgba(0,0,0,.25), -1px 1px 2px rgba(0,0,0,.25);
       scrollbar-width: none;
       color: white;
   }
@@ -26,8 +26,8 @@ let css = `
   }
   div.lyrics span.current {
       font-weight: bold;
-      color: yellow;
-      text-shadow: 1px 1px 4px black, -1px -1px 4px black, 1px -1px 4px black, -1px 1px 4px black;
+      color: rgb(255,250,150);
+      text-shadow: 1px 1px 4px rgba(0,0,0,.35), -1px -1px 4px rgba(0,0,0,.35), 1px -1px 4px rgba(0,0,0,.35), -1px 1px 4px rgba(0,0,0,.35);
       font-size: 17pt;
   }
   div.lyrics span.old {
