@@ -94,6 +94,9 @@ else:
                         return event;
                     },
                 });
+                Sentry.setUser({
+                    id: '%clientId%',
+                });
             });
         </script>
     '''
