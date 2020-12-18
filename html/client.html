@@ -447,6 +447,7 @@
                 <div id="mute-buttons">
                     <input type="button" id="mic-mute-button" class="footer-button" value="Mute Mic">
                     <input type="button" id="speaker-mute-button" class="footer-button" value="Mute Speaker">
+                    <input type="button" id="webcam-mute-button" class="footer-button" value="Mute Webcam">
                 </div>
                 <div id="widget-extra-ctrls"></div>
                 <div id="right-side-ctrls">
@@ -500,9 +501,13 @@
            $('#delete-cached-button').on('click', () => {
                lib.wipeClearableParameters();
                $('#delete-cached-button').prop('disabled', true).addClass('footer-button-disabled');
+           $('#webcam-mute-button').val(lib.retrieveParameter('webcamMuted') ? 'Start broadcasting video' : 'Stop broadcasting video').on('click', () => {
+               let webcamMuted = !lib.retrieveParameter('webcamMuted');
+               lib.persistParameter('webcamMuted', webcamMuted);
+               $('#webcam-mute-button').val(webcamMuted ? 'Start broadcasting video' : 'Stop broadcasting video');
            });
          });
-         import('../avatars.js').then((avatars)=>{
+         initPromise.then(() => import('../avatars.js')).then((avatars)=>{
              avatars.setParticipantStyle(%rotate%);
          });
          let clientId = '%clientId%';
