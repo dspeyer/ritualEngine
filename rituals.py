@@ -23,6 +23,9 @@ except KeyError:
     intercom_app_id = ''
 
 async def homepage(req):
+    if len(active) == 1 and 'controlpanel' not in req.query:
+        ritual_name, = active.keys()
+        raise web.HTTPFound(f'/{ritual_name}/partake')
     l = '\n'.join([ '<li><a href="/%s/partake">%s (%s)</a>'%(x,x,active[x].script) for x in active.keys() ])
     s = '\n'.join([ '<option>%s</option>'%(x.replace('examples/','')) for x in glob('examples/*') ])
     html = tpl('html/index.html', list=l, scripts=s)
@@ -41,7 +44,7 @@ async def ritualPage(req):
     if hasattr(active[name],'participants'):
         foundLogin = connectUserRitual(req, active[name], islead)
         if not foundLogin:
-            res = web.Response(body=tpl('html/login.html', errorhandler=error_handler), content_type='text/html')
+            res = web.Response(body=tpl('html/login.html', errorhandler=error_handler.replace('%clientId%', '')), content_type='text/html')
             res.set_cookie('LastRitual', name)
             return res
     clientId = random_token()
@@ -70,7 +73,7 @@ async def ritualPage(req):
     return web.Response(body=tpl('html/client.html',
                                  name=name,
                                  clientId=clientId,
-                                 errorhandler=error_handler,
+                                 errorhandler=error_handler.replace('%clientId%', clientId),
                                  cclass=(
                                      'shrunk'
                                      if hasattr(active[name], 'participants')
@@ -280,6 +283,20 @@ async def getAvatar(req):
         ma = 0
     return web.Response(body=jpg, content_type='image/jpg', headers={'Cache-Control': 'max-age=%d'%ma})
 
+async def deleteAvatar(req):
+    name = req.match_info.get('name','')
+    if name not in active:
+        return web.Response(status=404)
+    ritual = active[name]
+    clientId = req.match_info.get('client','')
+    if clientId not in ritual.clients:
+        return web.Response(status=404)
+    client = ritual.clients[clientId]
+    print("Delete avatar for ritual %s, client %s"%(name,clientId))
+    if hasattr(client,'jpg'):
+        del client.jpg
+    return web.Response(status=204)  
+
 async def twilioRoomFail(req):
     name = req.match_info.get('name','')
     if name not in active:
@@ -317,6 +334,7 @@ app.router.add_get('/{name}/namedimg/{img}', namedimg)
 app.router.add_get('/{name}/captions/{captions}', captions)
 app.router.add_get('/{name}/clientAvatar/{client}', getAvatar)
 app.router.add_post('/{name}/clientAvatar/{client}', setAvatar)
+app.router.add_delete('/{name}/clientAvatar/{client}', deleteAvatar)
 app.router.add_post('/{name}/welcomed/{client}', welcomed)
 app.router.add_post('/{name}/setName', setName)
 app.router.add_post('/{name}/twilioRoomFail/{client}', twilioRoomFail)

@@ -1,10 +1,5 @@
 {
   "background": "sunset4-01.jpg",
   "chatClass": "hidden",
-  "fakewidget": {
-    "widget": "BucketSinging",
-    "boxColors": {"lyrics": "#000000"},
-    "lyrics": [],
-    "justInit": true
-  }
+  "initWidgets": ["BucketSinging"]  
 }

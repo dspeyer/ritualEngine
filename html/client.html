@@ -11,6 +11,19 @@
              background-color: tomato;
              border: 4px solid black;
          }
+         .error {
+             position: absolute;
+             background: wheat;
+             top: 10vh;
+             left: 20vw;
+             width: 60vw;
+             border: thick outset red;
+             z-index: 9999;
+         }
+         .error textarea {
+             width: 90%;
+             height: 7em;
+         }
          #everything {
              width: 100vw;
              height: 100vh;
@@ -178,6 +191,9 @@
          input::placeholder {
              color:black;
          }
+         input.long-button {
+             white-space: normal;
+         }
          #control-footer {
             position: absolute;
             bottom: 0;
@@ -203,7 +219,11 @@
              color:grey;
          }
          #mute-buttons {
-             width: 14em;
+             min-width: 25em;
+         }
+         #right-side-ctrls {
+             min-width: 25em;
+             text-align: right;
          }
          #show-captions-button {
              display: none;
@@ -443,6 +463,7 @@
                 <div id="mute-buttons">
                     <input type="button" id="mic-mute-button" class="footer-button" value="Mute Mic">
                     <input type="button" id="speaker-mute-button" class="footer-button" value="Mute Speaker">
+                    <input type="button" id="webcam-mute-button" class="footer-button" value="Mute Webcam">
                     <input type="button" id="show-captions-button" class="footer-button" value="Show Captions">
                 </div>
                 <div id="widget-extra-ctrls"></div>
@@ -452,6 +473,24 @@
                 </div>
             </div>
         </div>
+        <script>
+            window.intercomSettings = {
+                app_id: '%intercomappid%',
+                user_id: '%clientId%',
+                custom_launcher_selector: '#tech-support',
+                hide_default_launcher: true,
+                vertical_padding: 66,
+            };
+            if (location.hostname !== 'localhost' && location.protocol === 'https') {
+                window.intercomSettings.avatar = {
+                    "type": "avatar", 
+                    "image_url": new URL('clientAvatar/%clientId%', location).toString()
+                };
+            }
+            if (window.intercomSettings.app_id) {
+                var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/'+window.intercomSettings.app_id;var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}};
+            }
+        </script>
         <script>
          window.isLead = %islead%;
          let libPromise = import('../lib.js');
@@ -485,8 +524,13 @@
                lib.wipeClearableParameters();
                $('#delete-cached-button').prop('disabled', true).addClass('footer-button-disabled');
            });
+           $('#webcam-mute-button').val(lib.retrieveParameter('webcamMuted') ? 'Start broadcasting video' : 'Stop broadcasting video').on('click', () => {
+               let webcamMuted = !lib.retrieveParameter('webcamMuted');
+               lib.persistParameter('webcamMuted', webcamMuted);
+               $('#webcam-mute-button').val(webcamMuted ? 'Start broadcasting video' : 'Stop broadcasting video');
+           });
          });
-         import('../avatars.js').then((avatars)=>{
+         initPromise.then(() => import('../avatars.js')).then((avatars)=>{
              avatars.setParticipantStyle(%rotate%);
          });
          let clientId = '%clientId%';
@@ -593,11 +637,5 @@
         });
         </script>
         %videos%
-        <script>
-            window.intercomSettings = {app_id: '%intercomappid%', custom_launcher_selector: '#tech-support', hide_default_launcher: true, vertical_padding: 66};
-            if (window.intercomSettings.app_id) {
-                var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/'+window.intercomSettings.app_id;var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}};
-            }
-        </script>
     </body>
 </html>

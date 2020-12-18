@@ -1,7 +1,12 @@
 {
   "widget": "BucketSinging",
-  "boxColor": "#000000",
-  "background": "sunset3-06.jpg",
+  "boxColors": {
+    "lyrics":"#0000ff",
+    "video":"#00ff00"
+  },
+  "background": "sunset4-06.jpg",
+  "backing": ".wav",
+  "videoUrl": "https://d3vyng54usxcs.cloudfront.net/",
   "lyrics": [
     "Chasing patterns in the sky",
     "Trace the line from star to star",

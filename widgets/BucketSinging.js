@@ -12,7 +12,7 @@ let css = `
       flex-direction: column;
       justify-content: space-between;
       overflow-y: auto;
-      text-shadow: 1px 1px 2px #777, -1px -1px 2px #777, 1px -1px 2px #777, -1px 1px 2px #777;
+      text-shadow: 1px 1px 2px rgba(0,0,0,.25), -1px -1px 2px rgba(0,0,0,.25), 1px -1px 2px rgba(0,0,0,.25), -1px 1px 2px rgba(0,0,0,.25);
       scrollbar-width: none;
       color: white;
   }
@@ -26,8 +26,8 @@ let css = `
   }
   div.lyrics span.current {
       font-weight: bold;
-      color: yellow;
-      text-shadow: 1px 1px 4px black, -1px -1px 4px black, 1px -1px 4px black, -1px 1px 4px black;
+      color: rgb(255,250,150);
+      text-shadow: 1px 1px 4px rgba(0,0,0,.35), -1px -1px 4px rgba(0,0,0,.35), 1px -1px 4px rgba(0,0,0,.35), -1px 1px 4px rgba(0,0,0,.35);
       font-size: 17pt;
   }
   div.lyrics span.old {
@@ -114,7 +114,11 @@ async function initContext(){
 
     div.append('Searching for microphone...');
 
-    let mics = await (new MicEnumerator()).mics();
+    let res;
+    let p = new Promise((r)=>{res=r});
+    (new MicEnumerator()).mics().then(res);
+    setTimeout(res.bind(null,[]), 2000);
+    let mics = await p;
 
     if (mics.length == 0) {
         div.append($("<p>No microphone found.</p>"));
@@ -179,8 +183,7 @@ async function initContext(){
                 </ul> we'll set you up to never be heard.</div>`);
     let buttonyes = $('<input type=button class="yes-button" value="Yes, calibrate me.  None of those issues apply.">').appendTo(div);
     let buttonno = $('<input type=button value="Forget it; I\'ll be uncalibrated.  Just don\'t let anyone hear me">').appendTo(div);
-    let res;
-    let p = new Promise((r)=>{res=r});
+    p = new Promise((r)=>{res=r});
     buttonyes.on('click',res);
     buttonno.on('click',()=>{calibrationFail=true;res()});
     await p;
