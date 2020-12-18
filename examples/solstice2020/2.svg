@@ -1,14 +1,164 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
-  <g enable-background="new">
-    <text y="75" x="360" font-size="50" font-family="Georgia" fill="white" text-anchor="middle">
-      Necronomicon
-    </text>
-    <!-- <clipPath id="cp1">
-      <path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
-    </clipPath> -->
-    <path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#000000" d="M 22278 70330 L 343482 70330 L 343482 202066 L 22278 202066 Z "/>
-  </g>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   viewBox="0 0 1536 614.40001"
+   stroke-miterlimit="10"
+   id="svg1091"
+   sodipodi:docname="2.svg"
+   width="16in"
+   height="6.4000001in"
+   style="fill:none;stroke:none;stroke-linecap:square;stroke-miterlimit:10"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata1097">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs1095">
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter1822"
+       x="-0.041353211"
+       width="1.0827065"
+       y="-0.27809775"
+       height="1.5561955">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="16.815815"
+         id="feGaussianBlur1824" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1142"
+     inkscape:window-height="741"
+     id="namedview1093"
+     showgrid="false"
+     units="in"
+     inkscape:pagecheckerboard="true"
+     inkscape:zoom="0.32777778"
+     inkscape:cx="198.96794"
+     inkscape:cy="259.12853"
+     inkscape:window-x="63"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg1091" />
+  <clipPath
+     id="p.0">
+    <path
+       d="M 0,0 H 960 V 720 H 0 Z"
+       id="path1036"
+       inkscape:connector-curvature="0"
+       style="clip-rule:nonzero" />
+  </clipPath>
+  <path
+     style="fill:#000000;fill-opacity:0;fill-rule:evenodd;stroke-width:1.42246628"
+     inkscape:connector-curvature="0"
+     id="path1039"
+     d="M -85.423729,-49.880982 H 1280.1439 V 974.29479 H -85.423729 Z" />
+  <path
+     style="fill:#000000;fill-opacity:0;fill-rule:evenodd;stroke-width:1.42246628"
+     inkscape:connector-curvature="0"
+     id="path1041"
+     d="m -449.91483,249.4903 v 0 c 0,-244.1565741 477.103301,-442.0846 1065.64006,-442.0846 v 0 c 588.53677,0 1065.64017,197.9280259 1065.64017,442.0846 v 0 c 0,244.15657 -477.1034,442.08458 -1065.64017,442.08458 v 0 c -588.536759,0 -1065.64006,-197.92802 -1065.64006,-442.08458 z" />
+  <path
+     style="fill:#ffffff;fill-opacity:0.31764706;fill-rule:evenodd;stroke:#000000;stroke-width:1.44348574;stroke-opacity:1;filter:url(#filter1822)"
+     inkscape:connector-curvature="0"
+     id="path1045"
+     d="M 300.98654,3.2705763 H 1276.9194 V 148.39206 H 300.98654 Z"
+     transform="matrix(0.92861456,0,0,1.089354,54.091841,9.223227)" />
+  <path
+     style="fill-rule:evenodd;stroke:#00ff00;stroke-width:1.34895039;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+     inkscape:connector-curvature="0"
+     id="path1059"
+     d="m 108.45566,396.01134 v 0 c 0,-124.33955 100.79712,-225.13664 225.13666,-225.13664 v 0 c 59.70992,0 116.97431,23.71967 159.19561,65.94099 42.22132,42.22131 65.94103,99.48571 65.94103,159.19565 v 0 c 0,124.33955 -100.79713,225.13667 -225.13664,225.13667 v 0 c -124.33956,0 -225.13665,-100.79713 -225.13665,-225.13667 z" />
+  <path
+     style="fill-rule:evenodd;stroke:#0000ff;stroke-width:1.64153886;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+     inkscape:connector-curvature="0"
+     id="path1065"
+     d="M 439.30045,250.96374 H 1182.6478 V 617.14382 H 439.30045 Z" />
+  <path
+     style="fill:#000000;fill-opacity:0;fill-rule:evenodd;stroke-width:1.34895039"
+     inkscape:connector-curvature="0"
+     id="path1069"
+     d="M 135.84405,332.6205 H 313.56561 V 535.28169 H 135.84405 Z" />
+  <path
+     style="fill:#000000;fill-opacity:0;fill-rule:evenodd;stroke-width:1.34895039"
+     inkscape:connector-curvature="0"
+     id="path1079"
+     d="M 135.84405,19.023142 H 313.56561 V 221.68435 H 135.84405 Z" />
+  <flowRoot
+     xml:space="preserve"
+     id="flowRoot1826"
+     style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:'Bitstream Vera Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     transform="translate(-85.423729,-51.498305)"><flowRegion
+       id="flowRegion1828"><rect
+         id="rect1830"
+         width="975.93286"
+         height="145.12149"
+         x="300.98654"
+         y="3.2705762" /></flowRegion><flowPara
+       id="flowPara1832" /></flowRoot>  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:117.79148102px;line-height:125%;font-family:'Bitstream Vera Sans';letter-spacing:0px;word-spacing:0px;fill:#000003;fill-opacity:1;stroke:none;stroke-width:2.94478703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="493.13187"
+     y="115.33112"
+     id="text1836"><tspan
+       sodipodi:role="line"
+       id="tspan1834"
+       x="493.13187"
+       y="115.33112"
+       style="fill:#000003;fill-opacity:1;stroke-width:2.94478703px">Necronomicon</tspan></text>
+  <flowRoot
+     xml:space="preserve"
+     id="flowRoot1838"
+     style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:'Bitstream Vera Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     transform="translate(-85.423729,-51.498305)"><flowRegion
+       id="flowRegion1840"><rect
+         id="rect1842"
+         width="112.1783"
+         height="77.661896"
+         x="772.30444"
+         y="80.90667" /></flowRegion><flowPara
+       id="flowPara1844" /></flowRoot>  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:37.38035965px;line-height:125%;font-family:'Bitstream Vera Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.93450898px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="501.02383"
+     y="148.48515"
+     id="text1867"><tspan
+       sodipodi:role="line"
+       id="tspan1865"
+       x="501.02383"
+       y="148.48515"
+       style="stroke-width:0.93450898px">By Raymond</tspan></text>
+  <rect
+     style="fill:none;fill-opacity:1;stroke:#ff0000;stroke-width:3;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0.80120003;stroke-opacity:1"
+     id="rect837"
+     width="400"
+     height="40"
+     x="500"
+     y="900" />
 </svg>
