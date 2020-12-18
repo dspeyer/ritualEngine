@@ -127,13 +127,38 @@ export async function welcome(widgets) {
     if (inprog) return;
     inprog = true;
 
-    let name = retrieveParameter("chat_name");
     let dlg = $('<div class=modaldlg>').appendTo($('body'));
 
+    if (!navigator.userAgent.includes('Chrome/') && !retrieveParameter('clickedThroughBrowserWarning')) {
+        dlg.append($(`<div>
+                    <h1>Browser Support Warning</h1>
+                    <p><b class="warning">You appear not to be using Google Chrome.</b> <br>Solstice will not reliably work on Firefox, Safari or other browsers.</p>
+                    <p>Please switch to Chrome <em>(<a class="warning" href="https://www.google.com/chrome">Download</a>)</em> and then come back.</p>
+                  </div>`));
+        await new Promise((res) => {
+            $('<input type=button class=long-button value="I refuse to switch browsers and understand that I\'ll be on my own if I encounter bugs.">').on('click',res).appendTo(dlg);
+        });
+        persistParameter('clickedThroughBrowserWarning', true);
+        dlg.empty();
+    }
+
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) && !retrieveParameter('clickedThroughMobileWarning')) {
+        dlg.append($(`<div>
+                    <h1>Mobile Device Warning</h1>
+                    <p><b class="warning">You appear to be using a mobile device.</b> <br>Solstice is designed to be used from a desktop browser.</p>
+                    <p>Please switch to a desktop device.</p>
+                  </div>`));
+        await new Promise((res) => {
+            $('<input type=button class=long-button value="I refuse to switch devices and understand that I\'ll be on my own if I encounter bugs.">').on('click',res).appendTo(dlg);
+        });
+        persistParameter('clickedThroughMobileWarning', true);
+        dlg.empty();
+    }
+
+    let name = retrieveParameter("chat_name");
     if (name === null) {
         dlg.append($(`<div id="askname">
                     <h1>Welcome</h1>
-                    <p>First, <b class="warning">please make sure you are using Google Chrome. <em>(<a class="warning" href="https://www.google.com/chrome">Download</a>)</em> </b> <br>Solstice will not reliably work on Firefox, Safari or other browsers.</p>
                     <p>Please give us a name to call you.  This will be visible to the other participants.</p>
                     <div class="name-input-row">
                         <input id="name">
