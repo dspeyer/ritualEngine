@@ -1,14 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
+<svg
+   viewBox="0 0 1536 614.40001"
+   id="svg1091"
+   width="16in"
+   height="6.4in"
+   style="fill:none;stroke:none;stroke-linecap:square;stroke-miterlimit:10">
   <g enable-background="new">
-    <text y="75" x="360" font-size="50" font-family="Georgia" fill="white" text-anchor="middle">
-      Necronomicon
-    </text>
-    <!-- <clipPath id="cp1">
-      <path transform="matrix(.001968504,0,0,.001968504,0,0)" d="M 0 0 L 365760 0 L 365760 205740 L 0 205740 L 0 0 Z "/>
-    </clipPath> -->
-    <path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#000000" d="M 22278 70330 L 343482 70330 L 343482 202066 L 22278 202066 Z "/>
+  <text style="font-size:118;line-height:125%;font-family:'Georgia';fill:#ffffff;"
+     x="750"
+     y="50"
+     text-anchor="middle"
+     id="text1836">
+     Necronomicon
+  </text>
+  <path
+      stroke="#0000ff"
+     style="fill-rule:evenodd;;stroke-width:1.64153886;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+     inkscape:connector-curvature="0"
+     id="path1065"
+     d="M 439.30045,250.96374 H 1182.6478 V 617.14382 H 439.30045 Z" />
+
+  <path
+     style="fill-rule:evenodd;stroke:#00ff00;stroke-width:1.34895039;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+     inkscape:connector-curvature="0"
+     id="path1059"
+     d="m 108.45566,396.01134 v 0 c 0,-124.33955 100.79712,-225.13664 225.13666,-225.13664 v 0 c 59.70992,0 116.97431,23.71967 159.19561,65.94099 42.22132,42.22131 65.94103,99.48571 65.94103,159.19565 v 0 c 0,124.33955 -100.79713,225.13667 -225.13664,225.13667 v 0 c -124.33956,0 -225.13665,-100.79713 -225.13665,-225.13667 z" />
+
   </g>
 </svg>
