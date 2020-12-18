@@ -632,7 +632,24 @@ async function sendVideoSnapshot(){
     if ( ! localVideoElement) return;
     let canvas = $('<canvas width=100 height=100>').css({border:'thick cyan solid'}).appendTo($('body'));
     let context = canvas[0].getContext('2d');
+    context.fillStyle = '#deface'; // Odds of this exact color naturally occuring are low
+    context.fillRect(0, 0, 100, 100);
     context.drawImage(localVideoElement, 0, 0, 100, 100);
+    let strip = context.getImageData(0,0,100,1)
+    let x;
+    for (x=99; x>10; x--) {
+        if ( strip.data[x*4] != parseInt('de',16) ||
+             strip.data[x*4+1] != parseInt('fa',16) ||
+             strip.data[x*4+2] != parseInt('ce',16) ) {
+            break;
+        }
+    }
+    // TODO: x==10 means we something else has gone wrong
+    if (x<99) {
+        let stretch = 100/(x+1);
+        console.log('video snapshot too small, stretching',stretch);
+        context.drawImage(localVideoElement, 0, 0, 100*stretch, 100*stretch);
+    }
     let blob = await new Promise( (res) => { canvas[0].toBlob(res,'image/jpeg'); } );
     canvas.remove();
     let fd = new FormData();
