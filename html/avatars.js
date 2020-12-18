@@ -371,7 +371,7 @@ function setVideoAvatars(savedVideoElements) {
         if (twilioAudioEnabled) {
             circle.css({opacity: (hasAudioTrack[client.id] ? 1 : .2)});
         }
-        if (circle.videoOf == client.id) {
+        if (circle.videoOf==client.id && client.room==currentRoomId) {
             vidsPlaced += 1;
             continue;
         }
@@ -382,7 +382,7 @@ function setVideoAvatars(savedVideoElements) {
             delete circle.videoOf;
             delete circle.track;
         }
-        if (vidsPlaced >= nvideos) {
+        if (vidsPlaced>=nvideos || client.room!=currentRoomId) {
             continue;
         }
         if (client.id in savedVideoElements) {
@@ -512,6 +512,14 @@ export async function twilioConnect(token, roomId) {
     room.on('trackUnsubscribed', (track) => {
         let elem = track.detach();
         if (track.kind == 'audio') $(elem).remove();
+        if (track.kind == 'video') {
+            for (let circle of circles) {
+                if (circle.video[0] == elem) {
+                    delete circle.videoOf;
+                    delete circle.track;
+                }
+            }
+        }
     });
     room.on('trackSubscribed', (track, publication, participant) => {
         console.log('subscribe event',track,publication,participant);
