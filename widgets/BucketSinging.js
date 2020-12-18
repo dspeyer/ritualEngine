@@ -1,6 +1,6 @@
 import {MicEnumerator, openMic, BucketBrigadeContext, SingerClient, VolumeCalibrator, LatencyCalibrator} from './BucketSinging/app.js';
 import { putOnBox, bkgSet, bkgZoom, retrieveParameter, persistParameter, warnUserAboutError, wrappedFetch } from '../../lib.js';
-import { rotateAvatars } from '../../avatars.js';
+import * as avatars from '../../avatars.js';
 
 let context = null;
 let calibrationFail = false;
@@ -73,7 +73,7 @@ let css = `
   .slot-label {
       margin-right: 6px;
       padding:4px;
-      font-size:12px;   
+      font-size:12px;
   }
   div.tooltip {
     display:none;
@@ -115,6 +115,17 @@ async function initContext(){
     div.append('Searching for microphone...');
 
     let mics = await (new MicEnumerator()).mics();
+
+    if (mics.length == 0) {
+        div.append($("<p>No microphone found.</p>"));
+        div.append($("<p>If you have a microphone, double check that it's plugged in and hit refresh.</p>"));
+        await new Promise((res)=>{ $('<input type=button value="I guess no one will hear me">').on('click',res).appendTo(div); });
+        calibrationFail=true;
+        div.remove();
+        context = new BucketBrigadeContext({micStream:null});
+        return;
+    }
+    
     let mic = mics[0]; // TODO: be smarter?
     console.log('Chose mic: ',mic);
     let micStream = await openMic(mic.deviceId);
@@ -129,8 +140,8 @@ async function initContext(){
 
     const saved_calibration = retrieveParameter("saved_calibration")
 
-    if (saved_calibration === null) {
-        console.log("No saved calibration data, gotta calibrate.");
+    if (!saved_calibration || !saved_calibration.latency || !saved_calibration.input_gain) {
+        console.log("Missing or bad saved calibration data, gotta calibrate.");
     } else {
         const {
             latency: saved_latency,
@@ -245,18 +256,20 @@ async function initContext(){
                                      .appendTo(div);
     div.append(button);
     p = new Promise((res_)=>{res=res_;});
-    window.reportedVolume = {}; // WHY DO WE NEED THIS?
+    window.reportedVolume = {}; // WHY DO WE NEED THIS? (gwillen thinks he fixed this and we shouldn't need it anymore but is afraid to remove it)
     let estimator = new VolumeCalibrator({context: mycontext});
     estimator.addEventListener('volumeChange', (ev)=>{ $('#curvol').text((ev.detail.volume*1000).toPrecision(3)) });
     estimator.addEventListener('volumeCalibrated', res);
     button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
     const volume_cal_result = await p;
 
-    console.log("Saving calibration data: latency:", latency_cal_result, "volume:", volume_cal_result);
-    persistParameter("saved_calibration", {
-        latency: latency_cal_result.estLatency,
-        input_gain: volume_cal_result.detail.inputGain,
-    }, CALIBRATION_SAVE_DURATION);
+    if (volume_cal_result) {
+      console.log("Saving calibration data: latency:", latency_cal_result, "volume:", volume_cal_result);
+      persistParameter("saved_calibration", {
+          latency: latency_cal_result.estLatency,
+          input_gain: volume_cal_result.detail.inputGain,
+      }, {timeout: CALIBRATION_SAVE_DURATION});
+    }
 
     div.empty();
     div.append("<p>That's enough singing.  Calibration is done.  On with the main event.</p>");
@@ -418,6 +431,12 @@ export class BucketSinging {
         addEventListener('error', this.clientErrorListener = () => {
             this.client.close();
         });
+        this.client.addEventListener('audioLag', ()=>{
+            if (avatar.nvideos > 4) {
+                avatar.nvideos -= 2;
+                avatar.redraw();
+            }
+        });
         $('#mic-mute-button').on('click.bucketSinging', () => {
             this.client.micMuted = this.centrallyMuted || retrieveParameter('micMuted');
         });
@@ -514,7 +533,7 @@ export class BucketSinging {
 
     async handleLyric(lid) {
         if (lid>0 && lid%8==0) {
-            rotateAvatars();
+            avatars.rotateAvatars();
         }
         this.div.find('span.current').removeClass('current').addClass('old');
         let elem = this.lyricEls[lid];

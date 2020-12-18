@@ -28,6 +28,9 @@ async def homepage(req):
     html = tpl('html/index.html', list=l, scripts=s)
     return web.Response(text=html, content_type='text/html')
 
+async def favicon(req):
+    return web.Response(body=open('favicon.ico','rb').read(), content_type='image/x-icon')
+
 async def ritualPage(req):
     if 'facebookexternalhit' in req.headers.get('User-Agent',''):
         return web.Response(status=403)
@@ -290,6 +293,7 @@ async def twilioRoomFail(req):
     return web.Response(status=204)
 
 app.router.add_get('/', homepage)
+app.router.add_get('/favicon.ico', favicon)
 app.router.add_get('/{name}/partake', ritualPage)
 app.router.add_get('/{name}/lead', ritualPage)
 app.router.add_post('/{name}/nextPage', nextOrPrevPage)

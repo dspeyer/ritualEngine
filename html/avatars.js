@@ -13,7 +13,7 @@ export function setParticipants(p,v) {
     redraw();
 }
 
-export let nvideos = 6;
+export let nvideos = 12;
 export let staticRotateHint = 10;
 let curVidRot = 0;
 let curStaRot = 0;
@@ -371,7 +371,7 @@ function setVideoAvatars(savedVideoElements) {
         if (twilioAudioEnabled) {
             circle.css({opacity: (hasAudioTrack[client.id] ? 1 : .2)});
         }
-        if (circle.videoOf == client.id) {
+        if (circle.videoOf==client.id && client.room==currentRoomId) {
             vidsPlaced += 1;
             continue;
         }
@@ -382,7 +382,7 @@ function setVideoAvatars(savedVideoElements) {
             delete circle.videoOf;
             delete circle.track;
         }
-        if (vidsPlaced >= nvideos) {
+        if (vidsPlaced>=nvideos || client.room!=currentRoomId) {
             continue;
         }
         if (client.id in savedVideoElements) {
@@ -460,6 +460,7 @@ function putVideoInCircle(circle, track, id) {
 
 
 export async function twilioConnect(token, roomId) {
+    if (window.location.search.indexOf('notwilio') != -1) return;
     if (roomId == currentRoomId) return;
     if (room) room.disconnect();
     currentRoomId = roomId;
@@ -512,6 +513,14 @@ export async function twilioConnect(token, roomId) {
     room.on('trackUnsubscribed', (track) => {
         let elem = track.detach();
         if (track.kind == 'audio') $(elem).remove();
+        if (track.kind == 'video') {
+            for (let circle of circles) {
+                if (circle.video[0] == elem) {
+                    delete circle.videoOf;
+                    delete circle.track;
+                }
+            }
+        }
     });
     room.on('trackSubscribed', (track, publication, participant) => {
         console.log('subscribe event',track,publication,participant);
@@ -624,7 +633,24 @@ async function sendVideoSnapshot(){
     if ( ! localVideoElement) return;
     let canvas = $('<canvas width=100 height=100>').css({border:'thick cyan solid'}).appendTo($('body'));
     let context = canvas[0].getContext('2d');
+    context.fillStyle = '#deface'; // Odds of this exact color naturally occuring are low
+    context.fillRect(0, 0, 100, 100);
     context.drawImage(localVideoElement, 0, 0, 100, 100);
+    let strip = context.getImageData(0,0,100,1)
+    let x;
+    for (x=99; x>10; x--) {
+        if ( strip.data[x*4] != parseInt('de',16) ||
+             strip.data[x*4+1] != parseInt('fa',16) ||
+             strip.data[x*4+2] != parseInt('ce',16) ) {
+            break;
+        }
+    }
+    // TODO: x==10 means we something else has gone wrong
+    if (x<99) {
+        let stretch = 100/(x+1);
+        console.log('video snapshot too small, stretching',stretch);
+        context.drawImage(localVideoElement, 0, 0, 100*stretch, 100*stretch);
+    }
     let blob = await new Promise( (res) => { canvas[0].toBlob(res,'image/jpeg'); } );
     canvas.remove();
     let fd = new FormData();
