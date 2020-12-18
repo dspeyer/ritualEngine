@@ -140,8 +140,8 @@ async function initContext(){
 
     const saved_calibration = retrieveParameter("saved_calibration")
 
-    if (saved_calibration === null) {
-        console.log("No saved calibration data, gotta calibrate.");
+    if (!saved_calibration || !saved_calibration.latency || !saved_calibration.input_gain) {
+        console.log("Missing or bad saved calibration data, gotta calibrate.");
     } else {
         const {
             latency: saved_latency,

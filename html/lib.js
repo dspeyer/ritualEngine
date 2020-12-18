@@ -234,8 +234,11 @@ export function retrieveParameter(key) {
         try {
             var rawVal = ourState[key];
             var { val, expiration, clearable } = rawVal;
+            if (val === undefined) {
+                throw new Error("bad stored data");
+            }
         } catch (e) {
-            console.error("Failed to parse saved parameter", key, "with raw value", rawVal);
+            console.error("Failed to parse saved parameter", key, "with raw value", rawVal, "because of exception", e);
             deleteParameter(key);
             return null;
         }
