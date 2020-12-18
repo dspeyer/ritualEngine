@@ -66,6 +66,7 @@ export async function  welcome(widgets) {
 
     let current_devicelist = JSON.stringify(devices.map((x) => x.deviceId));
     console.log("Current device list:", current_devicelist, "Saved device list:", saved_devicelist, "saved camera:", saved_camera);
+    let saved_camera_ok = false;
     if (saved_devicelist == current_devicelist && saved_camera !== null) {
         console.log("All looks good, using saved camera");
         // ok to reuse existing selection if nothing has changed
@@ -74,8 +75,11 @@ export async function  welcome(widgets) {
             saved_camera = null;
         }
         cameraChoice[0] = saved_camera;
+        let video = $('<video>').appendTo(dlg);
+        saved_camera_ok = setVid(video);
         dlg.empty();
-    } else {
+    }
+    if (saved_camera_ok) {
         console.log("Can't used saved camera, prompting...");
         dlg.empty();
         dlg.append($('<p>We like to show all ritual participants to each other, '+
