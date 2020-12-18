@@ -501,6 +501,7 @@
            $('#delete-cached-button').on('click', () => {
                lib.wipeClearableParameters();
                $('#delete-cached-button').prop('disabled', true).addClass('footer-button-disabled');
+           });
            $('#webcam-mute-button').val(lib.retrieveParameter('webcamMuted') ? 'Start broadcasting video' : 'Stop broadcasting video').on('click', () => {
                let webcamMuted = !lib.retrieveParameter('webcamMuted');
                lib.persistParameter('webcamMuted', webcamMuted);
