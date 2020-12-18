@@ -122,7 +122,7 @@ async function initContext(){
         await new Promise((res)=>{ $('<input type=button value="I guess no one will hear me">').on('click',res).appendTo(div); });
         calibrationFail=true;
         div.remove();
-        //TODO: create a micless context
+        context = new BucketBrigadeContext({micStream:null});
         return;
     }
     
