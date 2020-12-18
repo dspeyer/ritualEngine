@@ -84,7 +84,7 @@ export async function  welcome(widgets) {
         let checking, feednote, video;
         if (devices.length >= 1) {
             checking = $('<p>Checking camera'+(devices.length>1?'s':'')+'...</p>').appendTo(dlg);
-            feednote = dlg.append($('<p>Your video feed looks like this:</p>'));
+            feednote = $('<p>Your video feed looks like this:</p>').appendTo(dlg);
             video = $('<video>').css({borderRadius:'50%',
                                           border:'2px solid #999',
                                           marginLeft:'calc(50% - 51px)',
