@@ -257,7 +257,7 @@ async function initContext(){
       persistParameter("saved_calibration", {
           latency: latency_cal_result.estLatency,
           input_gain: volume_cal_result.detail.inputGain,
-      }, CALIBRATION_SAVE_DURATION);
+      }, {timeout: CALIBRATION_SAVE_DURATION});
     }
 
     div.empty();
