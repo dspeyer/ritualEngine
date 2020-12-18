@@ -73,7 +73,7 @@
          .selected-avatar {
              width: 200px !important;
              height: 200px !important;
-             top: 0 !important; 
+             top: 0 !important;
              z-index: 9999 !important;
          }
          .avatar {
@@ -199,6 +199,9 @@
              background:rgba(255,255,255,.25);
              border: solid 1px rgba(255,255,100,.25) !important;
          }
+         #control-footer .footer-button-disabled {
+             color:grey;
+         }
          #mute-buttons {
              width: 14em;
          }
@@ -254,7 +257,7 @@
         }
          #chat-buffer {
              flex-grow: 1;
-             overflow: auto;    
+             overflow: auto;
              scrollbar-width: none;
              -ms-overflow-style: none;
          }
@@ -437,7 +440,10 @@
                     <input type="button" id="speaker-mute-button" class="footer-button" value="Mute Speaker">
                 </div>
                 <div id="widget-extra-ctrls"></div>
-                <input type="button" id="tech-support" value="Get Tech Support">
+                <div id="right-side-ctrls">
+                    <input type="button" id="delete-cached-button" class="footer-button" value="Delete saved settings" title="This will clear your nickname, calibration, camera choice, and mute settings. (Refresh to set new ones.)">
+                    <input type="button" id="tech-support" value="Get Tech Support">
+                </div>
             </div>
         </div>
         <script>
@@ -453,13 +459,20 @@
            lib.bkgInit($(%bkgAll% ? '#everything' : '#content'), 'bkg.jpg');
            $('#mic-mute-button').val(lib.retrieveParameter('micMuted') ? 'Unmute mic' : 'Mute mic').on('click', () => {
                let micMuted = !lib.retrieveParameter('micMuted');
-               lib.persistParameter('micMuted', micMuted);
+               lib.persistParameter('micMuted', micMuted, {clearable: false});
                $('#mic-mute-button').val(micMuted ? 'Unmute mic' : 'Mute mic');
            });
            $('#speaker-mute-button').val(lib.retrieveParameter('speakerMuted') ? 'Unmute speaker' : 'Mute speaker').on('click', () => {
                let speakerMuted = !lib.retrieveParameter('speakerMuted');
-               lib.persistParameter('speakerMuted', speakerMuted);
+               lib.persistParameter('speakerMuted', speakerMuted, {clearable: false});
                $('#speaker-mute-button').val(speakerMuted ? 'Unmute speaker' : 'Mute speaker');
+           });
+           if (!lib.haveClearableParameters()) {
+                $('#delete-cached-button').prop('disabled', true).addClass('footer-button-disabled');
+           }
+           $('#delete-cached-button').on('click', () => {
+               lib.wipeClearableParameters();
+               $('#delete-cached-button').prop('disabled', true).addClass('footer-button-disabled');
            });
          });
          import('../avatars.js').then((avatars)=>{
@@ -498,7 +511,7 @@
                          await initPromise;
                          let { twilioConnect, setTwilioAudioEnabled } = await import ('../avatars.js');
                          console.log(data.clients)
-                         await twilioConnect(data.video_token, data.room);    
+                         await twilioConnect(data.video_token, data.room);
                          if (data.twilioAudioEnabled !== undefined) {
                              setTwilioAudioEnabled(data.twilioAudioEnabled);
                          }

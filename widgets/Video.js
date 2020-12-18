@@ -15,13 +15,13 @@ export class Video {
     });
     videoElem.currentTime = retrieveParameter(videoUrl) ?? 0;
     this.intervalHandle = setInterval(() => {
-      persistParameter(videoUrl, videoElem.currentTime);
+      persistParameter(videoUrl, videoElem.currentTime, {clearable: false});
     }, 1000);
     videoElem.play();
   }
-  
+
   async from_server() {}
-  
+
   destroy(){
     this.video[0].pause();
     clearInterval(this.intervalHandle);
@@ -30,5 +30,5 @@ export class Video {
     this.video.removeClass('bbs-video').addClass('hidden').appendTo(document.body);
     this.video_div.remove();
   }
-  
+
 }
