@@ -403,6 +403,11 @@ function setVideoAvatars(savedVideoElements) {
         if (client.id == clientId) {
             vidsPlaced += 1;
             putVideoInCircle(circle, localVideo, clientId);
+            if (retrieveParameter('webcamMuted')) {
+                $(localVideoElement).hide();
+            } else {
+                $(localVideoElement).show();
+            }
             continue;
         }
         if (client.room == currentRoomId) {
@@ -470,6 +475,9 @@ export async function twilioConnect(token, roomId) {
             opts.deviceId = {exact:cameraChoice[0]};
         }
         localVideo = await Twilio.Video.createLocalVideoTrack(opts);
+        if (retrieveParameter('webcamMuted')) {
+            localVideo.disable();
+        }    
     } else {
         localVideo = null;
     }
@@ -554,6 +562,24 @@ $('#speaker-mute-button').on('click', () => {
     }
 });
 
+$('#webcam-mute-button').on('click', () => {
+    if (!localVideo) {
+        return;
+    }
+    if (retrieveParameter('webcamMuted')) {
+        localVideo.disable();
+        if (localVideoElement) {
+            $(localVideoElement).hide();
+        }
+        wrappedFetch('clientAvatar/'+clientId, {method: 'DELETE'});
+    } else {
+        localVideo.enable();
+        if (localVideoElement) {
+            $(localVideoElement).show();
+        }
+    }
+});
+
 export function setTwilioAudioEnabled(nv) {
     if (nv == twilioAudioEnabled) return;
     if ( ! room) return;
@@ -620,7 +646,7 @@ function muteSpeaker() {
 let localVideoElement = null;
 let svsRunning = false;
 async function sendVideoSnapshot(){
-    if ( ! localVideoElement) return;
+    if ( ! localVideoElement || retrieveParameter('webcamMuted')) return;
     let canvas = $('<canvas width=100 height=100>').css({border:'thick cyan solid'}).appendTo($('body'));
     let context = canvas[0].getContext('2d');
     context.drawImage(localVideoElement, 0, 0, 100, 100);

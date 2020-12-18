@@ -412,6 +412,7 @@
                 <div id="mute-buttons">
                     <input type="button" id="mic-mute-button" class="footer-button" value="Mute Mic">
                     <input type="button" id="speaker-mute-button" class="footer-button" value="Mute Speaker">
+                    <input type="button" id="webcam-mute-button" class="footer-button" value="Mute Webcam">
                 </div>
                 <div id="widget-extra-ctrls"></div>
                 <input type="button" id="tech-support" value="Get Tech Support">
@@ -438,8 +439,13 @@
                lib.persistParameter('speakerMuted', speakerMuted);
                $('#speaker-mute-button').val(speakerMuted ? 'Unmute speaker' : 'Mute speaker');
            });
+           $('#webcam-mute-button').val(lib.retrieveParameter('webcamMuted') ? 'Start broadcasting video' : 'Stop broadcasting video').on('click', () => {
+               let webcamMuted = !lib.retrieveParameter('webcamMuted');
+               lib.persistParameter('webcamMuted', webcamMuted);
+               $('#webcam-mute-button').val(webcamMuted ? 'Start broadcasting video' : 'Stop broadcasting video');
+           });
          });
-         import('../avatars.js').then((avatars)=>{
+         initPromise.then(() => import('../avatars.js')).then((avatars)=>{
              avatars.setParticipantStyle(%rotate%);
          });
          let clientId = '%clientId%';
