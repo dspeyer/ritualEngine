@@ -510,7 +510,8 @@ export async function twilioConnect(token, roomId) {
         room.disconnect();
     });
     room.on('trackUnsubscribed', (track) => {
-        $(track.detach()).remove();
+        let elem = track.detach();
+        if (track.kind == 'audio') $(elem).remove();
     });
     room.on('trackSubscribed', (track, publication, participant) => {
         console.log('subscribe event',track,publication,participant);
