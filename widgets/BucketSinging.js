@@ -115,6 +115,17 @@ async function initContext(){
     div.append('Searching for microphone...');
 
     let mics = await (new MicEnumerator()).mics();
+
+    if (mics.length == 0) {
+        div.append($("<p>No microphone found.</p>"));
+        div.append($("<p>If you have a microphone, double check that it's plugged in and hit refresh.</p>"));
+        await new Promise((res)=>{ $('<input type=button value="I guess no one will hear me">').on('click',res).appendTo(div); });
+        calibrationFail=true;
+        div.remove();
+        //TODO: create a micless context
+        return;
+    }
+    
     let mic = mics[0]; // TODO: be smarter?
     console.log('Chose mic: ',mic);
     let micStream = await openMic(mic.deviceId);
