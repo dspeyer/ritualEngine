@@ -129,7 +129,7 @@ async function initContext(){
         context = new BucketBrigadeContext({micStream:null});
         return;
     }
-    
+
     let mic = mics[0]; // TODO: be smarter?
     console.log('Chose mic: ',mic);
     let micStream = await openMic(mic.deviceId);
@@ -182,7 +182,7 @@ async function initContext(){
                   <li> or just desirous that no-one hear you
                 </ul> we'll set you up to never be heard.</div>`);
     let buttonyes = $('<input type=button class="yes-button" value="Yes, calibrate me.  None of those issues apply.">').appendTo(div);
-    let buttonno = $('<input type=button value="Forget it; I\'ll be uncalibrated.  Just don\'t let anyone hear me">').appendTo(div);
+    let buttonno = $('<input type=button value="Forget it; I\'ll be uncalibrated.  Just don\'t let anyone hear me during singalongs.">').appendTo(div);
     p = new Promise((r)=>{res=r});
     buttonyes.on('click',res);
     buttonno.on('click',()=>{calibrationFail=true;res()});
@@ -209,7 +209,7 @@ async function initContext(){
         div.append('Beeps heard: ');
         let heard = $('<span>').appendTo(div);
         div.append($('<br><br>'));
-        button = $('<input type=button>').attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.")
+        button = $('<input type=button>').attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me during singalongs.")
                                          .appendTo(div);
         div.append(button);
         p = new Promise((res_)=>{res=res_;});
@@ -255,7 +255,7 @@ async function initContext(){
     button.remove();
     div.append($("<p><i>We're listening...</i></p>"));
     div.append($("<p>Current volume: <span id=curvol></span> unhelpful volume units</p>"));
-    button = $('<input type=button>').attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.")
+    button = $('<input type=button>').attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me during singalongs.")
                                      .appendTo(div);
     div.append(button);
     p = new Promise((res_)=>{res=res_;});
