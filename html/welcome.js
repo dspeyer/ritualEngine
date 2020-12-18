@@ -96,7 +96,7 @@ export async function  welcome(widgets) {
                 finishedok = dev.ok = await setVid(video);
             }
             devices = devices.filter((x)=>(x.ok));
-            if ( ! finishedok) {
+            if ( ! finishedok && devices.length) {
                 cameraChoice[0] = devices[0].deviceId;
                 await setVid(video);
             }
