@@ -178,10 +178,12 @@ export async function welcome(widgets) {
     if (window.intercomSettings.app_id) {
         Intercom('update', {name});
     }
-    if (Sentry) {
+    try {
         Sentry.onLoad(() => {
             Sentry.setUser({id: clientId, username: name});
         });
+    } catch (err) {
+        console.log('Warning: failed to init Sentry',err);
     }
     let body = new FormData();
     body.append('clientId', clientId);
