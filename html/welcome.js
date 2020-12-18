@@ -150,6 +150,14 @@ export async function welcome(widgets) {
         persistParameter("chat_name", name);
     }
     // TODO: sanity-check name
+    if (window.intercomSettings.app_id) {
+        Intercom('update', {name});
+    }
+    if (Sentry) {
+        Sentry.onLoad(() => {
+            Sentry.setUser({id: clientId, username: name});
+        });
+    }
     let body = new FormData();
     body.append('clientId', clientId);
     body.append('name', name);

@@ -11,7 +11,7 @@ async def addLogin(req):
     return web.Response(body=open('html/login.html').read(), content_type='text/html')                
 
 async def manageLogins(req):
-    return web.Response(body=tpl('html/manage.html', errorhandler=error_handler), content_type='text/html')                
+    return web.Response(body=tpl('html/manage.html', errorhandler=error_handler.replace('%clientId%', '')), content_type='text/html')                
 
 async def dbgLoginPage(req):
     return web.Response(body=open('html/login.html').read(), content_type='text/html')
