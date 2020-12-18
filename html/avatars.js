@@ -460,6 +460,7 @@ function putVideoInCircle(circle, track, id) {
 
 
 export async function twilioConnect(token, roomId) {
+    if (window.location.search.indexOf('notwilio') != -1) return;
     if (roomId == currentRoomId) return;
     if (room) room.disconnect();
     currentRoomId = roomId;

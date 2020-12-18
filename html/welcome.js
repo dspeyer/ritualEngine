@@ -21,6 +21,11 @@ async function initVideo(dlg) {
     dlg.append($('<p>We like to show all ritual participants to each other, '+
                  'using a mixture of video feeds and still images...</p>'));
 
+    if (window.location.search.indexOf('notwilio') != -1) {
+        cameraChoice[0] = null;
+        return false;
+    }
+
     let checking = $('<p>Checking your camera...</p>').appendTo(dlg);
 
     try {
