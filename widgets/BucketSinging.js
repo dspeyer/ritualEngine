@@ -73,7 +73,7 @@ let css = `
   .slot-label {
       margin-right: 6px;
       padding:4px;
-      font-size:12px;   
+      font-size:12px;
   }
   div.tooltip {
     display:none;
@@ -245,18 +245,20 @@ async function initContext(){
                                      .appendTo(div);
     div.append(button);
     p = new Promise((res_)=>{res=res_;});
-    window.reportedVolume = {}; // WHY DO WE NEED THIS?
+    window.reportedVolume = {}; // WHY DO WE NEED THIS? (gwillen thinks he fixed this and we shouldn't need it anymore but is afraid to remove it)
     let estimator = new VolumeCalibrator({context: mycontext});
     estimator.addEventListener('volumeChange', (ev)=>{ $('#curvol').text((ev.detail.volume*1000).toPrecision(3)) });
     estimator.addEventListener('volumeCalibrated', res);
     button.on('click', (ev)=>{ calibrationFail=true; estimator.close(); res(); });
     const volume_cal_result = await p;
 
-    console.log("Saving calibration data: latency:", latency_cal_result, "volume:", volume_cal_result);
-    persistParameter("saved_calibration", {
-        latency: latency_cal_result.estLatency,
-        input_gain: volume_cal_result.detail.inputGain,
-    }, CALIBRATION_SAVE_DURATION);
+    if (volume_cal_result) {
+      console.log("Saving calibration data: latency:", latency_cal_result, "volume:", volume_cal_result);
+      persistParameter("saved_calibration", {
+          latency: latency_cal_result.estLatency,
+          input_gain: volume_cal_result.detail.inputGain,
+      }, CALIBRATION_SAVE_DURATION);
+    }
 
     div.empty();
     div.append("<p>That's enough singing.  Calibration is done.  On with the main event.</p>");
