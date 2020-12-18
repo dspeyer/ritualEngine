@@ -441,9 +441,25 @@ function detachAllVideos() {
     }
 }
 
+function removeVideo(track) {
+    console.log('removing video');
+    let elem = track.detach();
+    for (let circle of circles) {
+        if (circle.track && circle.track.sid == track.sid) {
+            console.log('found circle');
+            videosToPlace[circle.videoOf] = circle;
+            circle.video.hide();
+            circle.img.attr('src', (_,src)=>(src+'&extra_muting_cachebuster'));
+            delete circle.videoOf;
+            delete circle.track;
+        }
+    }
+}
 
 function putVideoInCircle(circle, track, id) {
     if (!track) return;
+    track.on('disabled',removeVideo);
+    track.on('enabled', (t)=>{ if (id in videosToPlace) putVideoInCircle(videosToPlace[id], t, id); });
     track.attach(circle.video[0]);
     circle.video.show();
     circle.videoOf = id;
@@ -519,16 +535,9 @@ export async function twilioConnect(token, roomId) {
         room.disconnect();
     });
     room.on('trackUnsubscribed', (track) => {
-        let elem = track.detach();
-        if (track.kind == 'audio') $(elem).remove();
-        if (track.kind == 'video') {
-            for (let circle of circles) {
-                if (circle.video[0] == elem) {
-                    delete circle.videoOf;
-                    delete circle.track;
-                }
-            }
-        }
+        console.log('unsubscribed event',track);
+        if (track.kind == 'audio') $(track.detach()).remove();
+        if (track.kind == 'video') removeVideo(track);
     });
     room.on('trackSubscribed', (track, publication, participant) => {
         console.log('subscribe event',track,publication,participant);
@@ -545,7 +554,7 @@ export async function twilioConnect(token, roomId) {
                 $(track.attach()).appendTo($('body'));
             }
             for (let circle of circles) {
-                circle.css({opacity: (hasAudioTrack[circle[0].client.id] ? 1 : 0.2)});
+                circle.css({opacity: (hasAudioTrack[circle[0].client?.id] ? 1 : 0.2)});
             }
         }
     });
@@ -580,6 +589,7 @@ $('#webcam-mute-button').on('click', () => {
         localVideo.disable();
         if (localVideoElement) {
             $(localVideoElement).hide();
+            $(localVideoElement).parent().find('img').attr('src', (_,src)=>(src+'&extra_muting_cachebuster'));
         }
         wrappedFetch('clientAvatar/'+clientId, {method: 'DELETE'});
     } else {
@@ -588,6 +598,7 @@ $('#webcam-mute-button').on('click', () => {
             $(localVideoElement).show();
         }
     }
+    redraw();
 });
 
 export function setTwilioAudioEnabled(nv) {
