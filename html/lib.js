@@ -166,11 +166,32 @@ function saveOurState(val) {
         return;
     }
     localStorage.setItem(STATE_KEY, JSON.stringify(val));
+    // This is not great, it's kind of gross and abstraction-violating, but it gets the job done.
+    if ($('#delete-cached-button')) {
+        $('#delete-cached-button').prop('disabled', false).removeClass('footer-button-disabled');
+    }
 }
 
-export function wipeSavedParameters() {
-    console.log("Deleting saved ritual engine state from local storage.")
-    localStorage.removeItem(STATE_KEY);
+export function wipeClearableParameters() {
+    var ourState = getOurState();
+    console.log("Deleting clearable ritual engine state from local storage.")
+    for (var k in ourState) {
+        if (ourState[k].clearable) {
+            delete ourState[k];
+        }
+    }
+    saveOurState(ourState);
+}
+
+export function haveClearableParameters() {
+    var ourState = getOurState();
+    console.log("ourState", ourState);
+    for (var k in ourState) {
+        if (ourState[k].clearable) {
+            return true;
+        }
+    }
+    return false;
 }
 
 export function deleteParameter(key) {
@@ -180,18 +201,29 @@ export function deleteParameter(key) {
     saveOurState(ourState);
 }
 
-export function persistParameter(key, val, max_seconds) {
-    console.log("Persisting parameter:", key, " -> ", val, "for max seconds:", max_seconds);
+export function persistParameter(key, val, options) {
+    if (options === undefined) {
+        options = {};
+    }
+    var { clearable, timeout } = options;
+    console.log("Persisting parameter:", key, " -> ", val, "for max seconds:", timeout, "clearable?:", clearable);
     var expiration;
-    if (max_seconds === undefined) {
+    if (timeout === undefined) {
         expiration = null;
     } else {
         var now = Date.now() / 1000;
-        expiration = now + max_seconds;
+        expiration = now + timeout;
+    }
+    if (clearable === undefined) {
+        clearable = true;  // default
     }
     console.log("Persisted parameter will expire at", expiration);
     var ourState = getOurState();
-    ourState[key] = [val, expiration];
+    ourState[key] = {
+        val,
+        expiration,
+        clearable
+    };
     saveOurState(ourState);
 }
 
@@ -201,7 +233,7 @@ export function retrieveParameter(key) {
     if (key in ourState) {
         try {
             var rawVal = ourState[key];
-            var [val, expiration] = rawVal;
+            var { val, expiration, clearable } = rawVal;
         } catch (e) {
             console.error("Failed to parse saved parameter", key, "with raw value", rawVal);
             deleteParameter(key);
