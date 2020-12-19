@@ -1,32 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 
-<svg
-   viewBox="0 0 1536 614.40001"
-   id="svg1091"
-   width="16in"
-   height="6.4in"
-   style="fill:none;stroke:none;stroke-linecap:square;stroke-miterlimit:10">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="720pt" height="405pt" viewBox="0 0 720 405">
   <g enable-background="new">
-  <text style="font-size:90;line-height:125%;font-family:'Georgia';fill:#ffffff;"
-     x="750"
-     y="125"
-     text-anchor="middle"
-     id="text1836">
-     Bitter Wind Lullaby
-  </text>
-  <path
-      stroke="#0000ff"
-     style="fill-rule:evenodd;;stroke-width:1.64153886;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
-     inkscape:connector-curvature="0"
-     id="path1065"
-     d="M 440,250 H 1182 V 617 H 440 Z" />
-
-  <path
-     style="fill-rule:evenodd;stroke:#00ff00;stroke-width:1.34895039;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
-     inkscape:connector-curvature="0"
-     id="path1059"
-     d="m 108,396 v 0 c 0,-124 100,-225 225,-225 v 0 c 59,0 116,23 159,65 42,42 65,99 65,159 v 0 c 0,124 -100,225 -225,225 v 0 c -124,0 -225,-100 -225,-225 z" />
-
+    <text y="75" x="360" font-size="50" font-family="Georgia" fill="white" text-anchor="middle" style="text-shadow: 0 0 20px rgba(0,0,0,.5);">
+        Meditation on the Past
+    </text>
+    <path transform="matrix(.001968504,0,0,.001968504,0,0)" stroke-width="381" stroke-linecap="butt" stroke-linejoin="round" fill="none" stroke="#000000" d="M 22278 70330 L 343482 70330 L 343482 202066 L 22278 202066 Z "/>
   </g>
 </svg>

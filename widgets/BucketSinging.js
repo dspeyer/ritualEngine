@@ -21,7 +21,7 @@ let css = `
   }
   div.lyrics span {
       font-size: 16pt;
-      text-align: center;
+      text-align: left;
       white-space: pre;
   }
   div.lyrics span.current {
@@ -381,7 +381,7 @@ export class BucketSinging {
     show_lyrics(lyrics) {
         this.div.addClass('lyrics');
         this.lyricEls = {};
-        this.countdown = $('<div>').css('text-align','center').appendTo(this.div);
+        this.countdown = $('<div>').css('text-align','left').appendTo(this.div);
         for (let i in this.lyrics) {
             this.lyricEls[i] = $('<span>').text(this.lyrics[i]).appendTo(this.div);
         }

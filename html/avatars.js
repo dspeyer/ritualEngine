@@ -270,11 +270,11 @@ function putcircle(d,{x,y,r,label,z,br}) {
         });
         setGlobalClickHandler = true;
     }
-    if (window.isLead) {
-        $('<input type="button" class="avatar-control" value="Click Me">').on('click', () => {
-            alert("This button doesn't do anything yet.");
-        }).appendTo(div);
-    }
+    // if (window.isLead) {
+    //     $('<input type="button" class="avatar-control" value="Click Me">').on('click', () => {
+    //         alert("This button doesn't do anything yet.");
+    //     }).appendTo(div);
+    // }
     div.on('mouseover', (ev) => {
         let target = ev.target;
         for (; target.tagName!='DIV'; target=target.parentElement);
