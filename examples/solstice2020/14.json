@@ -2,5 +2,6 @@
   "widget": "Video",
   "background": "sunset4-08.jpg",
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/three-virtues-composite.mp4",
+  "captions": "three-virtues-composite.vtt",
   "boxColor": "#000000"
 }
