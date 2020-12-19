@@ -31,7 +31,7 @@ export class Video {
     deleteParameter(this.videoUrl);
     this.video.removeClass('bbs-video').addClass('hidden').appendTo(document.body);
     this.video_div.remove();
-    this.showhidecap.remove();
+    if (this.showhidecap) this.showhidecap.remove(); 
   }
 
 }
