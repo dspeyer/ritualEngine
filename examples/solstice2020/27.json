@@ -4,9 +4,9 @@
     "lyrics":"#000011",
     "video":"#001100"
   },
-  "videoUrl": "",
-  "backing": ".wav",
+  "videoUrl": "https://d3vyng54usxcs.cloudfront.net/BrighterThanToday2020_v06-480-silent.mp4",
+  "backing": "500-million-brighter-than-today.wav",
   "lyrics": [
-    "500 million / brighter than today. Do muting thing"
+    ""
   ]
 }

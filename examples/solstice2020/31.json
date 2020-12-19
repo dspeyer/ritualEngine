@@ -1,0 +1,11 @@
+{
+  "widget": "BucketSinging",
+  "boxColors": {
+    "lyrics":"#000011",
+    "video":"#001100"
+  },
+  "videoUrl": "Beautiful-Tomorrow_1-silent.mp4",
+  "backing": "Beautiful-Tomorrow.wav",
+  "lyrics": [
+  ]
+}
