@@ -121,13 +121,22 @@ async function initContext(){
     let mics = await p;
 
     if (mics.length == 0) {
-        div.append($("<p>No microphone found.</p>"));
-        div.append($("<p>If you have a microphone, double check that it's plugged in and hit refresh.</p>"));
-        await new Promise((res)=>{ $('<input type=button value="I guess no one will hear me">').on('click',res).appendTo(div); });
+        const got_mic_warning = retrieveParameter("got_mic_warning");
+        if (!got_mic_warning) {
+            div.append($("<p>No microphone found.</p>"));
+            div.append($("<p>If you have a microphone, double check that it's plugged in and hit refresh.</p>"));
+            await new Promise((res)=>{ $('<input type=button value="I guess no one will hear me">').on('click',res).appendTo(div); });
+            persistParameter("got_mic_warning", true);
+        }
         calibrationFail=true;
         div.remove();
         context = new BucketBrigadeContext({micStream:null});
+        await context.start_bucket();
+        // We have no input anyway, but setting this here will prevent us from wasting our time uploading silence.
+        context.send_ignore_input(true);
         return;
+    } else {
+        persistParameter("got_mic_warning", false);
     }
 
     let mic = mics[0]; // TODO: be smarter?
