@@ -2,7 +2,7 @@
   "widget": "BucketSinging",
   "boxColors": {
     "lyrics":"#0000ff",
-    "video":"#0000ff"
+    "video":"#000000"
   },
   "background": "sunset4-14.jpg",
   "backing": "light-call-response.wav",
