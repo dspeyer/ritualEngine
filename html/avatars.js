@@ -509,11 +509,13 @@ export async function twilioConnect(token, roomId) {
         await p;
         if (localAudioTrack) {
             localAudioTrack.disable();
-        } else {
-            $('<h3>').css({color:'red',background:'white',opacity:1,position:'absolute'})
-                .text("Warning: timed out creating twilio local audio track")
-                .animate({opacity:0},50000)
+        } else if (!retrieveParameter("got_mic_warning")) {
+            let problem = $('<div class="problem-to-notify-user-about"></div>').css({bottom: 20})
+                .text("We weren't able to set up your microphone for voice chat in the lobby, so no one will be able to hear you there. This will not affect singalongs or text chat.")
                 .prependTo($('body'));
+            setTimeout(() => {
+                problem.hide(1000);
+            }, 5000);
         }
 //        localAudioTrack = await Twilio.Video.createLocalAudioTrack();
     }
