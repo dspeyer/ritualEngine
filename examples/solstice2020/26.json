@@ -1,7 +1,7 @@
 {
   "widget": "BucketSinging",
   "boxColors": {
-    "lyrics":"#000011"
+    "lyrics":"#0000ff"
   },
   "backing": "light-call-response.wav",
   "lyrics": [
@@ -26,5 +26,6 @@
     "Speaker: 'The stars and the mountains do not care.'",
     " ",
     "Response: 'But we care. There is light in the world, and it is us.'"
-  ]
+  ],
+  "lyricTimings": [0.56, 4.775, 5.839, 7.279, 7.686, 7.975, 10.275, 15.735, 16.416, 18.137, 18.872, 19.342, 19.983, 21.572, 22.332, 24.286, 24.835, 25.255, 26.131, 28.641, 29.19]
 }
