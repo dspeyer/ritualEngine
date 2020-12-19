@@ -6,11 +6,15 @@
         <script src="https://media.twiliocdn.com/sdk/js/video/releases/2.8.0/twilio-video.js"></script>
         <style>
          .problem-to-notify-user-about {
-             width: 3.5in;
+             max-width: 50vw;
              position: absolute;
-             background-color: tomato;
-             border: 4px solid black;
              z-index: 60;
+             background-color: #fc7;
+             border: 4px solid red;
+             z-index: 60;
+             margin: 4px;
+             padding: 0.2em 1em;
+             font-size: 14pt;
          }
          .error {
              position: absolute;
@@ -438,9 +442,10 @@
     </head>
     <body>
         <div id="error" class="problem-to-notify-user-about" style="display: none;">
-            <p id="error-shortform">The app is having some trouble. Click for more details.</p>
+            <div id="error-shortform">The app is having some trouble. Click for more details.</div>
             <div id="error-longform" style="display: none;">
-                <p>The app is having some trouble. This can be due to network issues, or load on your computer. If your sound is choppy, or if the app seems to be stuck, we suggest trying some of the following (and then refreshing the page if necessary):</p>
+                <p>The app is having some trouble.</p>
+                <p>This can be due to network issues, or load on your computer. If your sound is choppy, or if the app seems to be stuck, we suggest trying some of the following (and then refreshing the page if necessary):</p>
                 <ul>
                     <li>Close any other apps or browser tabs that you're not using</li>
                     <li>Disable browser extensions (or switch to incognito mode)</li>
@@ -476,7 +481,7 @@
                 </div>
                 <div id="widget-extra-ctrls"></div>
                 <div id="right-side-ctrls">
-                    <input type="button" id="delete-cached-button" class="footer-button" value="Delete saved settings" title="This will clear your nickname, calibration, camera choice, and mute settings. (Refresh to set new ones.)">
+                    <input type="button" id="delete-cached-button" class="footer-button" value="Delete saved settings and reload" title="This will clear your nickname, calibration, camera choice, and mute settings, and then reload the page.">
                     <input type="button" id="tech-support" value="Get Tech Support">
                 </div>
             </div>
@@ -526,6 +531,7 @@
            $('#delete-cached-button').on('click', () => {
                lib.wipeClearableParameters();
                $('#delete-cached-button').prop('disabled', true).addClass('footer-button-disabled');
+               location.reload();
            });
            $('#webcam-mute-button').val(lib.retrieveParameter('webcamMuted') ? 'Start broadcasting video' : 'Stop broadcasting video').on('click', () => {
                let webcamMuted = !lib.retrieveParameter('webcamMuted');

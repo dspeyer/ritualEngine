@@ -114,11 +114,17 @@ async function initContext(){
 
     div.append('Searching for microphone...');
 
+    let p;
     let res;
-    let p = new Promise((r)=>{res=r});
-    (new MicEnumerator()).mics().then(res);
-    setTimeout(res.bind(null,[]), 2000);
-    let mics = await p;
+
+    let mics = await Promise.race([
+        new MicEnumerator().mics(),
+        new Promise((res) => {
+            setTimeout(() => {
+                res([]);
+            }, 2000);
+        })
+    ]);
 
     if (mics.length == 0) {
         const got_mic_warning = retrieveParameter("got_mic_warning");
@@ -553,7 +559,7 @@ export class BucketSinging {
             this.slotsUi.hide();
         }
 
-        
+
         if (lyricLead) {
             $('<div>').text('You are lead singer.  '+
                        (backing_track ? 'Instrumentals will begin soon.  ' : 'Sing when ready.  ') +
