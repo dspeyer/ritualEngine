@@ -235,7 +235,12 @@ async def mkRitual(req):
         if filename == 'index.json':
             continue
         with open(slide_path) as f:
-            slide = json.load(f)
+            try:
+                slide = json.load(f)
+            except json.JSONDecodeError as e:
+                print('json file = '+filename)
+                e.extra_info = f'File: examples/{script}/{filename}'
+                raise e
             await preload(active[name],slide)
     if opts['showParticipants'] == 'avatars':
         active[name].participants = []
