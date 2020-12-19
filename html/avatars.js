@@ -500,14 +500,14 @@ export async function twilioConnect(token, roomId) {
         localVideo = null;
     }
     if ( ! localAudioTrack) {
-        let res;
-        let p = new Promise((r)=>{res=r;});
-        Twilio.Video.createLocalAudioTrack().then((lat)=>{
-            localAudioTrack = lat;
-            res();
-        }).catch((e)=>{throw e;});
-        setTimeout(res, 3000);
-        await p;
+        localAudioTrack = await Promise.race([
+            Twilio.Video.createLocalAudioTrack().catch(() => null),
+            new Promise((res) => {
+                setTimeout(() => {
+                    res(null);
+                }, 5000);
+            }),
+        ]);
         if (localAudioTrack) {
             localAudioTrack.disable();
         } else if (!retrieveParameter("got_mic_warning")) {
