@@ -8,7 +8,9 @@
   "roundVideo": false,
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/BrighterThanToday2020_v06-480-silent.mp4",
   "backing": "500-million-brighter-than-today.wav",
-  "lyrics": [  ],
+  "lyrics": [ "" ],
+  "lyricTimings": [0],
   "startMuted": true,
-  "unmuteTimings": [310]
+  "unmuteTimings": [310],
+  "captions": "500-million-placeholder.vtt"
 }
