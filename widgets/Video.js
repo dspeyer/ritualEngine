@@ -29,7 +29,6 @@ export class Video {
     this.video[0].pause();
     clearInterval(this.intervalHandle);
     deleteParameter(this.videoUrl);
-    $('#speaker-mute-button').off('click.video');
     this.video.removeClass('bbs-video').addClass('hidden').appendTo(document.body);
     this.video_div.remove();
     this.showhidecap.remove();
