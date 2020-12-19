@@ -15,10 +15,14 @@ export class Video {
     });
     if (videoElem.textTracks.length) {
       videoElem.textTracks[0].mode = retrieveParameter('showCaptions') ? 'showing' : 'hidden';
-      $('#show-captions-button').show();
-      $('#show-captions-button').on('click.video', () => {
-        videoElem.textTracks[0].mode = retrieveParameter('showCaptions') ? 'showing' : 'hidden';
-      });
+      this.showhidecap = $('<input type=button class="footer-button">').appendTo($('#widget-extra-ctrls'));
+      this.showhidecap.val(retrieveParameter('showCaptions') ? 'Hide captions' : 'Show captions')
+          .on('click', () => {
+            let showCaptions = !retrieveParameter('showCaptions');
+            persistParameter('showCaptions', showCaptions, {clearable: false});
+            this.showhidecap.val(showCaptions ? 'Hide captions' : 'Show captions');
+            videoElem.textTracks[0].mode = showCaptions ? 'showing' : 'hidden';
+          });
     }
     videoElem.currentTime = retrieveParameter(videoUrl) ?? 0;
     this.intervalHandle = setInterval(() => {
@@ -34,12 +38,9 @@ export class Video {
     clearInterval(this.intervalHandle);
     deleteParameter(this.videoUrl);
     $('#speaker-mute-button').off('click.video');
-    if (this.video[0].textTracks.length) {
-      $('#show-captions-button').off('click.video');
-      $('#show-captions-button').hide();
-    }
     this.video.removeClass('bbs-video').addClass('hidden').appendTo(document.body);
     this.video_div.remove();
+    this.showhidecap.remove();
   }
 
 }
