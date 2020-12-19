@@ -174,6 +174,7 @@ async def preload(ritual,slide):
     if 'widget' in slide:
         widget = globals()[slide['widget']]
         if hasattr(widget,'preload'):
+            print("preloading widget %s" % slide['widget'])
             await widget.preload(ritual=ritual,**slide)
 
 

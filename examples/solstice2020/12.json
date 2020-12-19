@@ -26,7 +26,7 @@
     "and music bright and gay",
     "There are frail forms fainting at the door",
     " ",
-    "Though their voices are silent,",
+    "Though their voices be silent,",
     "their pleading looks will say",
     "Oh hard times come again no more",
     " ",
@@ -50,5 +50,6 @@
     "to reach that distant shore",
     "Oh hard times come again no more",
     "Oh hard times come again no more"
-  ]
+  ],
+  "lyricTimings": [12.631, 15.929, 18.341, 22.815, 23.879, 25.937, 29.305, 34.243, 34.915, 41.195, 45.997, 49.033, 51.453, 56.855, 57.127, 59.877, 62.403, 67.231, 67.871, 70.897, 73.299, 78.049, 78.781, 84.097, 89.453, 92.535, 95.147, 98.753, 100.283, 103.363, 105.871, 110.495, 111.267, 114.425, 116.855, 121.623, 122.303, 128.159, 132.719, 135.776, 138.271, 143.765, 149.685]
 }

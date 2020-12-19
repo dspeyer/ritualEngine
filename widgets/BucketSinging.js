@@ -493,9 +493,9 @@ export class BucketSinging {
             this.client.close();
         });
         this.client.addEventListener('audioLag', ()=>{
-            if (avatar.nvideos > 4) {
-                avatar.nvideos -= 2;
-                avatar.redraw();
+            if (avatars.nvideos > 4) {
+                avatars.setNVideos(avatars.nvideos - 2);
+                avatars.redraw();
             }
         });
         $('#mic-mute-button').on('click.bucketSinging', () => {

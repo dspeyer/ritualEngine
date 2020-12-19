@@ -14,6 +14,7 @@ export function setParticipants(p,v) {
 }
 
 export let nvideos = 12;
+export function setNVideos(v) { nvideos = v; }
 export let staticRotateHint = 10;
 let curVidRot = 0;
 let curStaRot = 0;
