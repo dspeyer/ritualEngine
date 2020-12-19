@@ -467,7 +467,7 @@
                 </div>
                 <div id="widget-extra-ctrls"></div>
                 <div id="right-side-ctrls">
-                    <input type="button" id="delete-cached-button" class="footer-button" value="Delete saved settings" title="This will clear your nickname, calibration, camera choice, and mute settings. (Refresh to set new ones.)">
+                    <input type="button" id="delete-cached-button" class="footer-button" value="Delete saved settings and reload" title="This will clear your nickname, calibration, camera choice, and mute settings, and then reload the page.">
                     <input type="button" id="tech-support" value="Get Tech Support">
                 </div>
             </div>
@@ -517,6 +517,7 @@
            $('#delete-cached-button').on('click', () => {
                lib.wipeClearableParameters();
                $('#delete-cached-button').prop('disabled', true).addClass('footer-button-disabled');
+               location.reload();
            });
            $('#webcam-mute-button').val(lib.retrieveParameter('webcamMuted') ? 'Start broadcasting video' : 'Stop broadcasting video').on('click', () => {
                let webcamMuted = !lib.retrieveParameter('webcamMuted');
