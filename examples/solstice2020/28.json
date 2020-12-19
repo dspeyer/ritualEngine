@@ -8,6 +8,7 @@
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/here-comes-the-sun-2-silent.mp4",
   "background": "sunrise-02.jpg",
   "roundVideo": false,
+  "chatClass": "normal",
   "lyrics": [
     "Here comes the sun, do, dun, do, do",
     "Here comes the sun, and I say",

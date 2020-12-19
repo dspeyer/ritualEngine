@@ -4,6 +4,7 @@
     "lyrics":"#0000ff"
   },
   "background": "sunset4-10.jpg",
+  "chatClass": "hidden",
   "backing": "StoppingByTheWoods-Maia-Alex.wav",
   "lyrics": [
     "Whose woods these are I think I know.",

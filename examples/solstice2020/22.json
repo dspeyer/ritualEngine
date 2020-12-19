@@ -5,6 +5,7 @@
     "video":"#00ff00"
   },
   "background": "sunset4-12.jpg",
+  "chatClass": "hidden",
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/hymn-to-strain-silent.mp4",
   "backing": "hymn-to-strain-backing.wav",
   "lyrics": [

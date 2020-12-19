@@ -5,6 +5,7 @@
     "video":"#00ff00"
   },
   "background": "sunset4-07.jpg",
+  "chatClass": "normal",
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/anna-time-wrote-the-rocks-silent.mp4",
   "backing": "anna-time-wrote-the-rocks-backing.wav",
   "lyrics": [

@@ -1,6 +1,7 @@
 {
   "widget": "Video",
   "background": "sunset4-14.jpg",
+  "chatClass": "hidden",
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/Orders-of-Magnitude-4.mp4",
   "boxColor": "#000000"
 }
