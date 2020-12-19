@@ -5,6 +5,7 @@
     "video":"#00ff00"
   },
   "background": "sunset4-10.jpg",
+  "chatClass": "hidden",
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/hardTimes-silent.mp4",
   "backing": "hardTimes-backing.wav",
   "lyrics": [

@@ -5,6 +5,7 @@
     "video":"#00ff00"
   },
   "background": "sunset4-10.jpg",
+  "chatClass": "hidden",
   "backing": "Blowin-in-the-Wind.wav",
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/Blowin-in-the-Wind-silent.mp4",
   "lyrics": [

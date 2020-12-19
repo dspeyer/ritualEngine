@@ -1,6 +1,7 @@
 {
   "widget": "Video",
   "background": "sunset4-08.jpg",
+  "chatClass": "hidden",
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/I-dont-know.mp4",
   "captions": "I-dont-know.vtt",
   "boxColor": "#000000"

@@ -5,6 +5,7 @@
     "video":"#00ff00"
   },
   "background": "sunset4-05.jpg",
+  "chatClass": "normal",
   "backing": "anna-bitter-wind-lullaby-backing.wav",
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/anna-bitter-wind-lullaby-silent-3.mp4",
   "lyrics": [

@@ -1,6 +1,7 @@
 {
   "widget": "Video",
   "background": "sunset4-08.jpg",
+  "chatClass": "hidden",
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/meditation-present.mp4",
   "captions": "meditation-present.vtt",
   "boxColor": "#000000"

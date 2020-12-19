@@ -1,6 +1,7 @@
 {
   "widget": "Video",
   "background": "sunset4-01.jpg",
+  "chatClass": "bow",
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/meditation-past.mp4",
   "captions": "meditation-past.vtt",
   "boxColor": "#000000"

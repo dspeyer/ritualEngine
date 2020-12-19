@@ -7,6 +7,7 @@
   "backing": "BoldOrion3-backing.wav",
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/BoldOrion3-square-silent.mp4",
   "background": "sunset4-04.jpg",
+  "chatClass": "normal",
   "lyrics": [
     " ",
     "When the days are gettin' shorter",
