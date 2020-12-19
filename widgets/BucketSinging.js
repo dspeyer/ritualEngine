@@ -359,12 +359,27 @@ export class BucketSinging {
             cssInit = true;
         }
 
+        if (this.centrallyMuted) {
+            this.div.hide();
+        }
+
         if (videoUrl) {
             this.video = $(`video[src='${videoUrl}']`);
             (this.video).removeClass('hidden')
                         .addClass('bbs-video')
                         .css({opacity: 0, height:'100%', position:'relative'})
                         .prependTo(this.video_div);
+            if (this.video[0].textTracks.length) {
+                if (this.centrallyMuted) {
+                    this.video[0].textTracks[0].mode = retrieveParameter('showCaptions') ? 'showing' : 'hidden';
+                    $('#show-captions-button').show();
+                } else {
+                    this.video[0].textTracks[0].mode = 'hidden';
+                }
+                $('#show-captions-button').on('click.bucketSinging', () => {
+                    this.video[0].textTracks[0].mode = retrieveParameter('showCaptions') ? 'showing' : 'hidden';
+                });
+            }
         }
 
         if (window.location.search == 'fake') {
@@ -570,9 +585,19 @@ export class BucketSinging {
                 let lid = ev?.detail?.data;
                 if (typeof lid === 'string' && lid.startsWith('mute')) {
                     this.client.micMuted = this.centrallyMuted = true;
+                    this.div.hide(1000);
+                    if (this.video[0].textTracks.length) {
+                        this.video[0].textTracks[0].mode = retrieveParameter('showCaptions') ? 'showing' : 'hidden';
+                        $('#show-captions-button').show();
+                    }
                 } else if (typeof lid === 'string' && lid.startsWith('unmute')) {
+                    this.div.show(1000);
                     this.centrallyMuted = false;
                     this.client.micMuted = retrieveParameter('micMuted');
+                    if (this.video[0].textTracks.length) {
+                        this.video[0].textTracks[0].mode = 'hidden';
+                        $('#show-captions-button').hide();
+                    }
                 } else if (lid == parseInt(lid)) {
                     this.handleLyric(lid);
                 }
@@ -619,7 +644,13 @@ export class BucketSinging {
         }
         this.div.remove();
         this.dbg.remove();
-        if (this.video) this.video.removeClass('bbs-video').addClass('hidden').appendTo(document.body);
+        if (this.video) {
+            this.video.removeClass('bbs-video').addClass('hidden').appendTo(document.body);
+            if (this.video[0].textTracks.length) {
+                $('#show-captions-button').off('click.bucketSinging');
+                $('#show-captions-button').hide();
+            }
+        }
         if (this.video_div) this.video_div.remove();
         if (this.slotsUi) this.slotsUi.remove();
     }
