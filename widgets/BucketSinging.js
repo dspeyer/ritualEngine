@@ -101,7 +101,7 @@ let css = `
   }
 `;
 
-let secretId = Math.round(Math.random()*1e9);
+let secretId = Math.round(Math.random()*Number.MAX_SAFE_INTEGER);
 
 let backingTrackStartedRes;
 let backingTrackStartedPromise = new Promise((res) => {
