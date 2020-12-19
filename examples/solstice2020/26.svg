@@ -14,5 +14,12 @@
      inkscape:connector-curvature="0"
      id="path1065"
      d="M 650,250 H 1182 V 617 H 650 Z" />
+
+  <path
+     style="fill-rule:evenodd;stroke:#00ff00;stroke-width:1.34895039;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+     inkscape:connector-curvature="0"
+     id="path1059"
+     d="m 108,396 v 0 c 0,-124 100,-225 225,-225 v 0 c 59,0 116,23 159,65 42,42 65,99 65,159 v 0 c 0,124 -100,225 -225,225 v 0 c -124,0 -225,-100 -225,-225 z" />
+
   </g>
 </svg>

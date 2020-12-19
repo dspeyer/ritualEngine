@@ -1,8 +1,10 @@
 {
   "widget": "BucketSinging",
   "boxColors": {
-    "lyrics":"#0000ff"
+    "lyrics":"#0000ff",
+    "video":"#0000ff"
   },
+  "background": "sunset4-14.jpg",
   "backing": "light-call-response.wav",
   "lyrics": [
     "Speaker: 'The universe is vast, and dark, and cold.",
