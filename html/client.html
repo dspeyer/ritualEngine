@@ -5,12 +5,12 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://media.twiliocdn.com/sdk/js/video/releases/2.8.0/twilio-video.js"></script>
         <style>
-         #error {
-             display: none;
+         .problem-to-notify-user-about {
              width: 3.5in;
-             height: 1in;
+             position: absolute;
              background-color: tomato;
              border: 4px solid black;
+             z-index: 60;
          }
          .error {
              position: absolute;
@@ -437,7 +437,7 @@
         </style>
     </head>
     <body>
-        <div id="error">
+        <div id="error" class="problem-to-notify-user-about" style="display: none;">
             We're having some trouble. Maybe try switching to a better network connection?
         </div>
         <div id="everything">

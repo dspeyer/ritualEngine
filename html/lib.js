@@ -294,9 +294,9 @@ export function warnUserAboutError() {
         cancelFuncs.delete(cancelFunc);
         if (!cancelFuncs.size && !errorTimeoutHandle) {
             errorTimeoutHandle = setTimeout(() => {
-                $('#error').hide();
+                $('#error').hide(1000);
                 errorTimeoutHandle = null;
-            });
+            }, 5000);
         }
     }
     cancelFuncs.add(cancelFunc);
