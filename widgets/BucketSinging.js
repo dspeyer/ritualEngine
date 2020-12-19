@@ -247,7 +247,7 @@ async function initContext(){
             p = new Promise((r)=>{res=r;});
             $('<input type=button value="Try again">').on('click',res).appendTo(div);
             button = $('<input type=button>')
-                .attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.")
+                .attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me during singalongs.")
                 .on('click', ()=>{ calibrationFail=true; retryBeeping=false; res(); })
                 .appendTo(div);
             await p;
