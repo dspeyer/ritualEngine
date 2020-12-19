@@ -330,11 +330,12 @@ async function initContext(){
 }
 
 export class BucketSinging {
-    constructor({boxColors, lyrics, cleanup, background_opts, videoUrl, page, startMuted}) {
+    constructor({boxColors, lyrics, cleanup, background_opts, videoUrl, roundVideo, page, startMuted}) {
         this.div = $('<div>').appendTo($('body'));
         putOnBox(this.div, boxColors.lyrics);
         if (videoUrl) {
             this.video_div = $('<div class="bbs-video-wrapper">').appendTo($('body'));
+            if (! roundVideo) this.video_div.css('border-radius',0);
             putOnBox(this.video_div, boxColors.video);
         }
         if (boxColors.slots) {

@@ -19,7 +19,7 @@ BUCKET_PATH = os.environ.get('BUCKET_PATH','../solstice-audio-test')
 BUCKET_SINGING_URL = secrets.get('BUCKET_SINGING_URL', '/api')
 
 class BucketSinging(object):
-    def __init__(self, ritual, lyrics, boxColor=None, boxColors=None, bsBkg=None, leader=None, backing=None, videoUrl=None, justInit=False, lyricTimings=None, muteTimings=(), unmuteTimings=(), startMuted=False, **ignore):
+    def __init__(self, ritual, lyrics, boxColor=None, boxColors=None, bsBkg=None, leader=None, backing=None, videoUrl=None, justInit=False, lyricTimings=None, muteTimings=(), unmuteTimings=(), startMuted=False, roundVideo=True, **ignore):
         self.ritual = ritual
         if boxColors:
             self.boxColors = boxColors
@@ -40,6 +40,7 @@ class BucketSinging(object):
         self.muteTimings = muteTimings
         self.unmuteTimings = unmuteTimings
         self.startMuted = startMuted
+        self.roundVideo = roundVideo
         self.ready = False
         
         leader = getUserByEmail(leader)
@@ -236,6 +237,7 @@ class BucketSinging(object):
                  'lyricLead': clientId in self.c_songLeader,
                  'background_opts': self.background_opts,
                  "videoUrl": self.videoUrl,
+                 "roundVideo": self.roundVideo,
                  'justInit': self.justInit,
                  'slotCounts': slotCounts,
                  'dbginfo': '%d/%d/%d'%(len(self.c_ready),len(self.c_seen),len(self.c_expected)),
