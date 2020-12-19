@@ -191,7 +191,7 @@ async function initContext(){
     div.empty();
     div.append(`<div>Before we begin setting up your audio for singalongs, is there any point?  If you: <ul>
                   <li> are in a noisy area <em>(such as sharing a room with others who are using this app, on other devices)</em>
-                  <li> are using bluetooth headphones (which have a lot of lag)
+                  <li> are using Bluetooth headphones (which have a lot of lag)
                   <li> don't want anybody else to hear you sing
                   <li> or just don't plan to sing at all
                 </ul> then we'll set you up so nobody hears you during singalongs. (People can still hear you in the lobby.)</div>`);
