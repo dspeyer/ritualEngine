@@ -144,7 +144,19 @@ async function initContext(){
 
     const saved_calibration = retrieveParameter("saved_calibration")
 
-    if (!saved_calibration || !saved_calibration.latency || !saved_calibration.input_gain) {
+    if (saved_calibration?.skipped_calibration) {
+        console.log("User saved skipped calibration, skipping again.");
+        calibrationFail = true;
+        div.remove();
+        mycontext.send_ignore_input(true);
+        context = mycontext;
+
+        persistParameter("saved_calibration", {
+            skipped_calibration: true,
+        });
+
+        return;
+    } else if (!saved_calibration || !saved_calibration.latency || !saved_calibration.input_gain) {
         console.log("Missing or bad saved calibration data, gotta calibrate.");
     } else {
         const {
@@ -161,7 +173,7 @@ async function initContext(){
         persistParameter("saved_calibration", {
             latency: saved_latency,
             input_gain: saved_input_gain,
-        }, CALIBRATION_SAVE_DURATION);
+        }, { timeout: CALIBRATION_SAVE_DURATION });
 
         $('<p>').text("Found microphone and calibration for it: all is well!").appendTo(div);
         setTimeout(()=>{div.remove();}, 500);
@@ -169,6 +181,7 @@ async function initContext(){
     }
 
     if (window.skipCalibration) {
+        // This is WHEN DEBUGGING ONLY, no real users take this codepath
         mycontext.send_local_latency(150);
         context = mycontext;
         div.remove();
@@ -190,7 +203,13 @@ async function initContext(){
 
     if (calibrationFail) {
         div.remove();
+        mycontext.send_ignore_input(true);
         context = mycontext;
+
+        persistParameter("saved_calibration", {
+            skipped_calibration: true,
+        });
+
         return;
     }
 
@@ -238,8 +257,13 @@ async function initContext(){
 
     if (calibrationFail) {
         div.remove();
-        mycontext.send_ignore_input(true);  // XXX ??
+        mycontext.send_ignore_input(true);
         context = mycontext;
+
+        persistParameter("saved_calibration", {
+            skipped_calibration: true,
+        });
+
         return;
     }
 
@@ -272,6 +296,18 @@ async function initContext(){
           latency: latency_cal_result.estLatency,
           input_gain: volume_cal_result.detail.inputGain,
       }, {timeout: CALIBRATION_SAVE_DURATION});
+    }
+
+    if (calibrationFail) {
+        div.remove();
+        mycontext.send_ignore_input(true);
+        context = mycontext;
+
+        persistParameter("saved_calibration", {
+            skipped_calibration: true,
+        });
+
+        return;
     }
 
     div.empty();
