@@ -189,13 +189,14 @@ async function initContext(){
     }
 
     div.empty();
-    div.append(`<div>Before we begin setting up your audio, is there any point?  If you're: <ul>
-                  <li> in a noisy area <em>(such as sharing a room with others who are using this app, on other devices)</em>
-                  <li> using bluetooth
-                  <li> or just desirous that no-one hear you
-                </ul> we'll set you up to never be heard.</div>`);
+    div.append(`<div>Before we begin setting up your audio for singalongs, is there any point?  If you: <ul>
+                  <li> are in a noisy area <em>(such as sharing a room with others who are using this app, on other devices)</em>
+                  <li> are using Bluetooth headphones (which have a lot of lag)
+                  <li> don't want anybody else to hear you sing
+                  <li> or just don't plan to sing at all
+                </ul> then we'll set you up so nobody hears you during singalongs. (People can still hear you in the lobby.)</div>`);
     let buttonyes = $('<input type=button class="yes-button" value="Yes, calibrate me.  None of those issues apply.">').appendTo(div);
-    let buttonno = $('<input type=button value="Forget it; I\'ll be uncalibrated.  Just don\'t let anyone hear me during singalongs.">').appendTo(div);
+    let buttonno = $('<input type=button value="Forget it; just don\'t let anyone hear me during singalongs.">').appendTo(div);
     p = new Promise((r)=>{res=r});
     buttonyes.on('click',res);
     buttonno.on('click',()=>{calibrationFail=true;res()});
@@ -246,7 +247,7 @@ async function initContext(){
             p = new Promise((r)=>{res=r;});
             $('<input type=button value="Try again">').on('click',res).appendTo(div);
             button = $('<input type=button>')
-                .attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me.")
+                .attr('value',"Forget it; I'll be uncalibrated.  Just don't let anyone hear me during singalongs.")
                 .on('click', ()=>{ calibrationFail=true; retryBeeping=false; res(); })
                 .appendTo(div);
             await p;
