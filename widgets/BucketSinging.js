@@ -114,11 +114,14 @@ async function initContext(){
 
     div.append('Searching for microphone...');
 
-    let res;
-    let p = new Promise((r)=>{res=r});
-    (new MicEnumerator()).mics().then(res);
-    setTimeout(res.bind(null,[]), 2000);
-    let mics = await p;
+    let mics = await Promise.race([
+        new MicEnumerator().mics(),
+        new Promise((res) => {
+            setTimeout(() => {
+                res([]);
+            }, 2000);
+        })
+    ]);
 
     if (mics.length == 0) {
         const got_mic_warning = retrieveParameter("got_mic_warning");
