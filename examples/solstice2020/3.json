@@ -2,5 +2,6 @@
   "widget": "Video",
   "background": "sunset4-01.jpg",
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/intro-suit-trim.mp4",
+  "captions": "intro-suit-trim.vtt",
   "boxColor": "#000000"
 }

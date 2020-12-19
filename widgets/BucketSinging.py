@@ -244,7 +244,7 @@ class BucketSinging(object):
     @staticmethod
     async def preload(ritual, videoUrl=None, **ignore):
         if videoUrl:
-            ritual.videos.add(videoUrl)
+            ritual.videos[videoUrl] = None
 
     def destroy(self):
         if hasattr(self,'sleeping_readiness_checker') and not self.sleeping_readiness_checker.done():

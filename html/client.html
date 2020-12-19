@@ -229,6 +229,7 @@
          #widget-extra-ctrls {
              height:100%;
              width:300px;
+             text-align:center;
          }
          #tech-support {
              border: solid 1px rgba(255,255,100,.5) !important;
@@ -481,7 +482,7 @@
             };
             if (location.hostname !== 'localhost' && location.protocol === 'https') {
                 window.intercomSettings.avatar = {
-                    "type": "avatar", 
+                    "type": "avatar",
                     "image_url": new URL('clientAvatar/%clientId%', location).toString()
                 };
             }
@@ -519,7 +520,7 @@
            });
            $('#webcam-mute-button').val(lib.retrieveParameter('webcamMuted') ? 'Start broadcasting video' : 'Stop broadcasting video').on('click', () => {
                let webcamMuted = !lib.retrieveParameter('webcamMuted');
-               lib.persistParameter('webcamMuted', webcamMuted);
+               lib.persistParameter('webcamMuted', webcamMuted, {clearable: false});
                $('#webcam-mute-button').val(webcamMuted ? 'Start broadcasting video' : 'Stop broadcasting video');
            });
          });

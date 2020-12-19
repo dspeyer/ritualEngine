@@ -13,6 +13,17 @@ export class Video {
     $('#speaker-mute-button').on('click.video', () => {
       videoElem.muted = !videoElem.muted;
     });
+    if (videoElem.textTracks.length) {
+      videoElem.textTracks[0].mode = retrieveParameter('showCaptions') ? 'showing' : 'hidden';
+      this.showhidecap = $('<input type=button class="footer-button">').appendTo($('#widget-extra-ctrls'));
+      this.showhidecap.val(retrieveParameter('showCaptions') ? 'Hide captions' : 'Show captions')
+          .on('click', () => {
+            let showCaptions = !retrieveParameter('showCaptions');
+            persistParameter('showCaptions', showCaptions, {clearable: false});
+            this.showhidecap.val(showCaptions ? 'Hide captions' : 'Show captions');
+            videoElem.textTracks[0].mode = showCaptions ? 'showing' : 'hidden';
+          });
+    }
     videoElem.currentTime = retrieveParameter(videoUrl) ?? 0;
     this.intervalHandle = setInterval(() => {
       persistParameter(videoUrl, videoElem.currentTime, {clearable: false});
@@ -29,6 +40,7 @@ export class Video {
     $('#speaker-mute-button').off('click.video');
     this.video.removeClass('bbs-video').addClass('hidden').appendTo(document.body);
     this.video_div.remove();
+    this.showhidecap.remove();
   }
 
 }
