@@ -5,8 +5,8 @@
     "video":"#001100"
   },
   "background": "sunset4-14.jpg",
-  "videoUrl": "",
-  "backing": "",
+  "videoUrl": "asdf",
+  "backing": "asdf",
   "lyrics": [
     "Sun barely rising above the horizon",
     "Little one, little one, bitter wind blown",
@@ -57,6 +57,6 @@
     "Little one, little one, bitter wind blown",
     " ",
     "Not quite so many graves dug up tomorrow",
-    "Little one, little one, bitter wind blown",
+    "Little one, little one, bitter wind blown"
   ]
 }
