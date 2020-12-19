@@ -189,12 +189,12 @@ async function initContext(){
     }
 
     div.empty();
-    div.append(`<div>Before we begin setting up your audio for singalongs, is there any point?  If you: <ul>
-                  <li> are in a noisy area <em>(such as sharing a room with others who are using this app, on other devices)</em>
-                  <li> are using Bluetooth headphones (which have a lot of lag)
-                  <li> don't want anybody else to hear you sing
-                  <li> or just don't plan to sing at all
-                </ul> then we'll set you up so nobody hears you during singalongs. (People can still hear you in the lobby.)</div>`);
+    div.append(`<div>This event will have group singing! To partcipate, you need to use <b>wired</b> headphones, and we will do some calibration.<br><br>You should <b>skip this</b> if:<ul>
+                  <li> you don't have / can't use <b>wired</b> headphones (Bluetooth headphones won't work; they have too much lag)
+                  <li> you are in a noisy area <em>(including if you are sharing a room with others who are using this app, on other devices)</em>
+                  <li> you don't want anybody else to hear you sing
+                  <li> or you just don't want to sing at all.
+                </ul> In that case, we'll set you up so nobody hears you during singalongs. (People can still hear you in the lobby.)</div>`);
     let buttonyes = $('<input type=button class="yes-button" value="Yes, calibrate me.  None of those issues apply.">').appendTo(div);
     let buttonno = $('<input type=button value="Forget it; just don\'t let anyone hear me during singalongs.">').appendTo(div);
     p = new Promise((r)=>{res=r});
