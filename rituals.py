@@ -73,7 +73,10 @@ async def ritualPage(req):
     return web.Response(body=tpl('html/client.html',
                                  name=name,
                                  clientId=clientId,
-                                 errorhandler=error_handler.replace('%clientId%', clientId),
+                                 errorhandler=(
+                                     '' if 'nosentry' in req.query else
+                                     error_handler.replace('%clientId%', clientId)
+                                 ),
                                  cclass=(
                                      'shrunk'
                                      if hasattr(active[name], 'participants')
