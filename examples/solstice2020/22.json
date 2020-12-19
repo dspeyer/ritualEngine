@@ -5,8 +5,8 @@
     "video":"#00ff00"
   },
   "background": "sunset4-10.jpg",
-  "videoUrl": "",
-  "backing": "",
+  "videoUrl": "https://d3vyng54usxcs.cloudfront.net/hymn-to-strain-silent.mp4",
+  "backing": "hymn-to-strain-backing.wav",
   "lyrics": [
     "The careful text-books measure",
     "Let all who build beware!",

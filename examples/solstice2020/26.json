@@ -1,0 +1,30 @@
+{
+  "widget": "BucketSinging",
+  "boxColors": {
+    "lyrics":"#000011"
+  },
+  "backing": "we-are-the-light-softer.wav",
+  "lyrics": [
+    "Speaker: 'The universe is vast, and dark, and cold.",
+    " ",
+    "Response: 'But we are not.'",
+    " ",
+    "...",
+    " ",
+    "Speaker: 'The laws of physics are indifferent to hope, or desperation, or love.'",
+    " ",
+    "Response: 'But we are not.'",
+    " ",
+    "...",
+    " ",
+    "Speaker: 'There is no destiny written for us'",
+    " ",
+    "Response: 'Then we will write our own'",
+    " ",
+    "...",
+    " ",
+    "Speaker: 'The stars and the mountains do not care.'",
+    " ",
+    "Response: 'But we care. There is light in the world, and it is us.'"
+  ]
+}

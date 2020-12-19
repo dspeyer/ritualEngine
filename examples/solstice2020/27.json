@@ -1,0 +1,12 @@
+{
+  "widget": "BucketSinging",
+  "boxColors": {
+    "lyrics":"#000011",
+    "video":"#001100"
+  },
+  "videoUrl": "",
+  "backing": ".wav",
+  "lyrics": [
+    "500 million / brighter than today. Do muting thing"
+  ]
+}
