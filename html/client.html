@@ -438,7 +438,16 @@
     </head>
     <body>
         <div id="error" class="problem-to-notify-user-about" style="display: none;">
-            We're having some trouble. Maybe try switching to a better network connection?
+            <p id="error-shortform">The app is having some trouble. Click for more details.</p>
+            <div id="error-longform" style="display: none;">
+                <p>The app is having some trouble. This can be due to network issues, or load on your computer. If your sound is choppy, or if the app seems to be stuck, we suggest trying some of the following (and then refreshing the page if necessary):</p>
+                <ul>
+                    <li>Close any other apps or browser tabs that you're not using</li>
+                    <li>Disable browser extensions (or switch to incognito mode)</li>
+                    <li>Use a wired network connection, or move to somewhere with stronger Wi-Fi</li>
+                    <li>Stop any downloads or backups that are running</li>
+                </ul>
+            </div>
         </div>
         <div id="everything">
             <div id="content" class="content %cclass%">
@@ -523,6 +532,10 @@
                lib.persistParameter('webcamMuted', webcamMuted, {clearable: false});
                $('#webcam-mute-button').val(webcamMuted ? 'Start broadcasting video' : 'Stop broadcasting video');
            });
+         });
+         $('#error').on('click', () => {
+            $('#error-shortform').toggle();
+            $('#error-longform').toggle();
          });
          initPromise.then(() => import('../avatars.js')).then((avatars)=>{
              avatars.setParticipantStyle(%rotate%);
