@@ -288,7 +288,7 @@ async function initContext(){
                  "the event. For your convenience, here are some lyrics:" +
                  "<blockquote><i>" +
                  "Mary had a little iamb, little iamb, little iamb<br/>" +
-                 "And everywhere that Mary went scansion were sure to fail" +
+                 "And everywhere that Mary went scansion was sure to fail" +
                  "</i></blockquote></p>"));
     button = $('<input type=button>').attr('value',"I'm singing").appendTo(div);
     await new Promise((res)=>{button.on('click',res);});
