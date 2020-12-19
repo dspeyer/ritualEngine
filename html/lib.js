@@ -302,3 +302,17 @@ export function warnUserAboutError() {
     cancelFuncs.add(cancelFunc);
     return cancelFunc;
 }
+
+export function showHideCapBtn(videoElem) {
+    let showCap = retrieveParameter('showCaptions');
+    videoElem.textTracks[0].mode = showCap ? 'showing' : 'hidden';
+    let button = $('<input type=button class="footer-button">').appendTo($('#widget-extra-ctrls'));
+    button.val(showCap ? 'Hide captions' : 'Show captions')
+          .on('click', (ev) => {
+              let showCaptions = !retrieveParameter('showCaptions');
+              persistParameter('showCaptions', showCaptions, {clearable: false});
+              ev.target.value = (showCaptions ? 'Hide captions' : 'Show captions');
+              videoElem.textTracks[0].mode = showCaptions ? 'showing' : 'hidden';
+          });
+    return button;
+}

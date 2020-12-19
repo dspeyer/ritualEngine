@@ -1,5 +1,5 @@
 import {MicEnumerator, openMic, BucketBrigadeContext, SingerClient, VolumeCalibrator, LatencyCalibrator} from './BucketSinging/app.js';
-import { putOnBox, bkgSet, bkgZoom, retrieveParameter, persistParameter, warnUserAboutError, wrappedFetch } from '../../lib.js';
+import { putOnBox, bkgSet, bkgZoom, retrieveParameter, persistParameter, warnUserAboutError, wrappedFetch, showHideCapBtn } from '../../lib.js';
 import * as avatars from '../../avatars.js';
 
 let context = null;
@@ -371,14 +371,10 @@ export class BucketSinging {
                         .prependTo(this.video_div);
             if (this.video[0].textTracks.length) {
                 if (this.centrallyMuted) {
-                    this.video[0].textTracks[0].mode = retrieveParameter('showCaptions') ? 'showing' : 'hidden';
-                    $('#show-captions-button').show();
+                    this.showhidecap = showHideCapBtn(this.video[0]);
                 } else {
                     this.video[0].textTracks[0].mode = 'hidden';
                 }
-                $('#show-captions-button').on('click.bucketSinging', () => {
-                    this.video[0].textTracks[0].mode = retrieveParameter('showCaptions') ? 'showing' : 'hidden';
-                });
             }
         }
 
@@ -552,7 +548,11 @@ export class BucketSinging {
         }
 
         this.createSlotButtons(slot, slotCounts)
+        if (this.centrallyMuted) {
+            this.slotsUi.hide();
+        }
 
+        
         if (lyricLead) {
             $('<div>').text('You are lead singer.  '+
                        (backing_track ? 'Instrumentals will begin soon.  ' : 'Sing when ready.  ') +
@@ -588,7 +588,8 @@ export class BucketSinging {
                     this.div.hide(1000);
                     if (this.video[0].textTracks.length) {
                         this.video[0].textTracks[0].mode = retrieveParameter('showCaptions') ? 'showing' : 'hidden';
-                        $('#show-captions-button').show();
+                        this.showhidecap.show();
+                        this.slotsUi.hide();
                     }
                 } else if (typeof lid === 'string' && lid.startsWith('unmute')) {
                     this.div.show(1000);
@@ -596,7 +597,8 @@ export class BucketSinging {
                     this.client.micMuted = retrieveParameter('micMuted');
                     if (this.video[0].textTracks.length) {
                         this.video[0].textTracks[0].mode = 'hidden';
-                        $('#show-captions-button').hide();
+                        this.showhidecap.hide();
+                        this.slotsUi.show();
                     }
                 } else if (lid == parseInt(lid)) {
                     this.handleLyric(lid);
@@ -653,6 +655,7 @@ export class BucketSinging {
         }
         if (this.video_div) this.video_div.remove();
         if (this.slotsUi) this.slotsUi.remove();
+        if (this.showhidecap) this.showhidecap.remove();
     }
 }
 

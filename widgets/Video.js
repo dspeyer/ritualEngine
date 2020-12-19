@@ -1,4 +1,4 @@
-import { putOnBox, deleteParameter, persistParameter, retrieveParameter } from '../../lib.js';
+import { putOnBox, deleteParameter, persistParameter, retrieveParameter, showHideCapBtn } from '../../lib.js';
 
 export class Video {
   constructor({boxColor, videoUrl}) {
@@ -14,15 +14,7 @@ export class Video {
       videoElem.muted = !videoElem.muted;
     });
     if (videoElem.textTracks.length) {
-      videoElem.textTracks[0].mode = retrieveParameter('showCaptions') ? 'showing' : 'hidden';
-      this.showhidecap = $('<input type=button class="footer-button">').appendTo($('#widget-extra-ctrls'));
-      this.showhidecap.val(retrieveParameter('showCaptions') ? 'Hide captions' : 'Show captions')
-          .on('click', () => {
-            let showCaptions = !retrieveParameter('showCaptions');
-            persistParameter('showCaptions', showCaptions, {clearable: false});
-            this.showhidecap.val(showCaptions ? 'Hide captions' : 'Show captions');
-            videoElem.textTracks[0].mode = showCaptions ? 'showing' : 'hidden';
-          });
+      this.showhidecap = showHideCapBtn(videoElem);
     }
     videoElem.currentTime = retrieveParameter(videoUrl) ?? 0;
     this.intervalHandle = setInterval(() => {
