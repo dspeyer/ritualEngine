@@ -5,6 +5,7 @@
     "video":"#000000"
   },
   "background": "sunset4-14.jpg",
+  "chatClass": "hidden",
   "backing": "light-call-response.wav",
   "lyrics": [
     "Speaker: 'The universe is vast, and dark, and cold.",

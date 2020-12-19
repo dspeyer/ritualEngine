@@ -5,6 +5,7 @@
     "video":"#00ff00"
   },
   "background": "sunset4-06.jpg",
+  "chatClass": "normal",
   "backing": "Chasing-Patterns-live-studio-alex.wav",
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/chasingpatterns-480-trim-square-silent.mp4",
   "lyrics": [
