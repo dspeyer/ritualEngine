@@ -114,6 +114,9 @@ async function initContext(){
 
     div.append('Searching for microphone...');
 
+    let p;
+    let res;
+
     let mics = await Promise.race([
         new MicEnumerator().mics(),
         new Promise((res) => {
@@ -556,7 +559,7 @@ export class BucketSinging {
             this.slotsUi.hide();
         }
 
-        
+
         if (lyricLead) {
             $('<div>').text('You are lead singer.  '+
                        (backing_track ? 'Instrumentals will begin soon.  ' : 'Sing when ready.  ') +
