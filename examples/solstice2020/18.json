@@ -1,8 +1,7 @@
 {
   "widget": "BucketSinging",
   "boxColors": {
-    "lyrics":"#0000ff",
-    "video":"#00ff00"
+    "lyrics":"#0000ff"
   },
   "background": "sunset4-10.jpg",
   "backing": "StoppingByTheWoods-Maia-Alex.wav",
