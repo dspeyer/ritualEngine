@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 1536 614.40001"
+   id="svg1091"
+   width="16in"
+   height="6.4in"
+   style="fill:none;stroke:none;stroke-linecap:square;stroke-miterlimit:10"
+   version="1.1"
+   sodipodi:docname="3.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata24">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs22" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="715"
+     inkscape:window-height="644"
+     id="namedview20"
+     showgrid="false"
+     inkscape:pagecheckerboard="true"
+     inkscape:zoom="0.2890625"
+     inkscape:cx="768"
+     inkscape:cy="370.61584"
+     inkscape:window-x="312"
+     inkscape:window-y="74"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg1091" />
+  <text
+     id="text1836"
+     y="125"
+     x="750"
+     style="font-size:90px;line-height:125%;font-family:Georgia;text-anchor:middle;fill:#ffffff">Bold Orion As A Speech</text>
+  <path
+     d="M 736.56729,153.21594 H 1268.4057 V 596.16245 H 736.56729 Z"
+     id="path1065"
+     inkscape:connector-curvature="0"
+     style="fill-rule:evenodd;stroke:#0000ff;stroke-width:1.80313325;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" />
+  <path
+     d="m 86.934548,541.7343 v 0 c 0,-232.37842 317.898412,-421.65441 715.271452,-421.65441 v 0 c 187.56007,0 368.7622,43.10244 505.4585,121.81127 133.5174,78.70882 206.634,185.52795 206.634,297.96912 v 0 c 0,232.37844 -317.8984,421.65443 -715.27148,421.65443 v 0 c -394.19406,0 -715.271456,-187.40197 -715.271456,-421.65443 z"
+     id="path1059"
+     inkscape:connector-curvature="0"
+     style="fill-rule:evenodd;stroke:#00ff00;stroke-width:3.29251099;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" />
+</svg>
