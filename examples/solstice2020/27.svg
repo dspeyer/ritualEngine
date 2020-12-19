@@ -4,16 +4,10 @@
 <svg
    viewBox="0 0 1536 614.40001"
    id="svg1091"
-   width="16in"
-   height="6.4in"
+   height="100%" width="100%"
    style="fill:none;stroke:none;stroke-linecap:square;stroke-miterlimit:10">
   <g enable-background="new">
-  <path
-      stroke="#000011"
-     style="fill-rule:evenodd;;stroke-width:1.64153886;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
-     inkscape:connector-curvature="0"
-     id="path1065"
-     d="M 650,250 H 1182 V 617 H 650 Z" />
+  <rect stroke="#000011" fill="lime" width="100%" height="100%"/>
 
   <path
      style="fill-rule:evenodd;stroke:#001100;stroke-width:1.34895039;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"

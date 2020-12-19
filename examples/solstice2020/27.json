@@ -4,6 +4,8 @@
     "lyrics":"#000011",
     "video":"#001100"
   },
+  "background": "sunset4-14.jpg",
+  "roundVideo": false,
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/BrighterThanToday2020_v06-480-silent.mp4",
   "backing": "500-million-brighter-than-today.wav",
   "lyrics": [
