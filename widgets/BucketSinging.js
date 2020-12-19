@@ -545,7 +545,7 @@ export class BucketSinging {
             let cur = 0;
             this.div.on('click',async ()=>{
                 this.timings.push( ((new Date()).getTime() - this.bkstart) / 1000 );
-                console.log(this.timings);
+                console.log('timings: ',this.timings);
                 this.client.declare_event(cur);
                 if (cur == 0) {
                     for (let i=1; i<=4; i++) {
