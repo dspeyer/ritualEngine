@@ -226,6 +226,9 @@
              min-width: 25em;
              text-align: right;
          }
+         #show-captions-button {
+             display: none;
+         }
          #widget-extra-ctrls {
              height:100%;
              width:300px;
@@ -463,6 +466,7 @@
                     <input type="button" id="mic-mute-button" class="footer-button" value="Mute Mic">
                     <input type="button" id="speaker-mute-button" class="footer-button" value="Mute Speaker">
                     <input type="button" id="webcam-mute-button" class="footer-button" value="Mute Webcam">
+                    <input type="button" id="show-captions-button" class="footer-button" value="Show Captions">
                 </div>
                 <div id="widget-extra-ctrls"></div>
                 <div id="right-side-ctrls">
@@ -509,6 +513,11 @@
                let speakerMuted = !lib.retrieveParameter('speakerMuted');
                lib.persistParameter('speakerMuted', speakerMuted, {clearable: false});
                $('#speaker-mute-button').val(speakerMuted ? 'Unmute speaker' : 'Mute speaker');
+           });
+           $('#show-captions-button').val(lib.retrieveParameter('showCaptions') ? 'Hide captions' : 'Show captions').on('click', () => {
+               let showCaptions = !lib.retrieveParameter('showCaptions');
+               lib.persistParameter('showCaptions', showCaptions, {clearable: false});
+               $('#show-captions-button').val(showCaptions ? 'Hide captions' : 'Show captions');
            });
            if (!lib.haveClearableParameters()) {
                 $('#delete-cached-button').prop('disabled', true).addClass('footer-button-disabled');
