@@ -1,0 +1,7 @@
+{
+  "widget": "WelcomeWatch",
+  "boxColor": "#000000",
+  "twilioAudioEnabled": true,
+  "chatClass": "normal",
+  "background": "sunset4-01.jpg"
+}
