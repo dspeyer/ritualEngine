@@ -341,11 +341,12 @@ export class BucketSinging {
         putOnBox(this.div, boxColors.lyrics);
         if (videoUrl) {
             this.video_div = $('<div>').appendTo($('body'));
-            if (! roundVideo) this.video_div.css('border-radius',0).addClass('speaker-video')
-            if (roundVideo) {
+            if (! roundVideo) {
+                this.video_div.css('border-radius',0).addClass('speaker-video')
+            } else {
                 this.video_div.addClass('bbs-video-wrapper')
-                putOnBox(this.video_div, boxColors.video);
             }
+            putOnBox(this.video_div, boxColors.video);
         }
         if (boxColors.slots) {
             this.slotsUi = $('<div class=slots>').appendTo($('body'));
