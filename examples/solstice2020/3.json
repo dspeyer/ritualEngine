@@ -2,6 +2,7 @@
   "widget": "Video",
   "background": "sunset4-01.jpg",
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/Solstice-Welcome.mp4",
+  "captions": "Solstice-Welcome.vtt",
   "boxColor": "#000000",
   "chatClass": "bow"
 }
