@@ -9,11 +9,11 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    viewBox="0 0 1536 614.40001"
    id="svg1091"
-   height="100%"
-   width="100%"
+   width="16.5in"
+   height="6.4in"
    style="fill:none;stroke:none;stroke-linecap:square;stroke-miterlimit:10"
    version="1.1"
-   sodipodi:docname="27.svg"
+   sodipodi:docname="22.svg"
    inkscape:version="0.92.3 (2405546, 2018-03-11)">
   <metadata
      id="metadata12">
@@ -23,7 +23,6 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -42,26 +41,23 @@
      inkscape:window-height="741"
      id="namedview8"
      showgrid="false"
-     inkscape:pagecheckerboard="true"
      inkscape:zoom="0.2890625"
-     inkscape:cx="588.10811"
+     inkscape:cx="1024"
      inkscape:cy="307.2"
-     inkscape:window-x="58"
-     inkscape:window-y="24"
+     inkscape:window-x="43"
+     inkscape:window-y="-6"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg1091" />
+  <path
+     d="m 743.4054,246.54054 h 532 v 367 h -532 z"
+     id="path1065"
+     inkscape:connector-curvature="0"
+     style="fill-rule:evenodd;stroke:#0000ff;stroke-width:1.64153886;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" />
   <rect
-     style="fill:none;fill-opacity:1;stroke:#ff0000;stroke-width:9.57178783;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0.80120003;stroke-opacity:1"
-     id="rect14"
-     width="1531.7863"
-     height="857.52124"
-     x="7.6682277"
-     y="9.1143284" />
-  <rect
-     style="fill:none;fill-opacity:1;stroke:#00ff00;stroke-width:11.10000038;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0.80120003;stroke-opacity:1"
-     id="rect821"
-     width="577.72974"
-     height="422.05405"
-     x="-923.67566"
-     y="-15.22161" />
+     style="fill:none;fill-opacity:1;stroke:#00ff00;stroke-width:4.5;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0.80120003;stroke-opacity:1"
+     id="rect825"
+     width="1539.4595"
+     height="1089.7297"
+     x="0"
+     y="2.0756848" />
 </svg>

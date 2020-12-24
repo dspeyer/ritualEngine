@@ -9,11 +9,11 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    viewBox="0 0 1536 614.40001"
    id="svg1091"
-   width="16in"
+   width="16.5in"
    height="6.4in"
    style="fill:none;stroke:none;stroke-linecap:square;stroke-miterlimit:10"
    version="1.1"
-   sodipodi:docname="31.svg"
+   sodipodi:docname="22.svg"
    inkscape:version="0.92.3 (2405546, 2018-03-11)">
   <metadata
      id="metadata12">
@@ -41,11 +41,11 @@
      inkscape:window-height="741"
      id="namedview8"
      showgrid="false"
-     inkscape:zoom="0.20439805"
-     inkscape:cx="265.63624"
-     inkscape:cy="166.68603"
-     inkscape:window-x="38"
-     inkscape:window-y="-36"
+     inkscape:zoom="0.2890625"
+     inkscape:cx="1024"
+     inkscape:cy="307.2"
+     inkscape:window-x="43"
+     inkscape:window-y="-6"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg1091" />
   <text
@@ -54,15 +54,15 @@
      x="750"
      style="font-size:90px;line-height:125%;font-family:Georgia;text-anchor:middle;fill:#ffffff">Beautiful Tomorrow</text>
   <path
-     d="m -685.35136,-23.297298 h 532 V 343.7027 h -532 z"
+     d="m 743.4054,246.54054 h 532 v 367 h -532 z"
      id="path1065"
      inkscape:connector-curvature="0"
-     style="fill-rule:evenodd;stroke:#000011;stroke-width:1.64153886;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" />
+     style="fill-rule:evenodd;stroke:#0000ff;stroke-width:1.64153886;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1" />
   <rect
-     style="fill:none;fill-opacity:1;stroke:#001100;stroke-width:4.00753641;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0.80120003;stroke-opacity:1"
+     style="fill:none;fill-opacity:1;stroke:#00ff00;stroke-width:4.5;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0.80120003;stroke-opacity:1"
      id="rect825"
-     width="1539.9514"
-     height="863.99249"
-     x="2.0037682"
-     y="0.093722783" />
+     width="1539.4595"
+     height="1089.7297"
+     x="0"
+     y="2.0756848" />
 </svg>
