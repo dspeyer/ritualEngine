@@ -9,6 +9,9 @@
   "roundVideo": false,
   "videoUrl": "http://d3vyng54usxcs.cloudfront.net/btt-2020-silent.mp4",
   "backing": "500-million-brighter-than-today.wav",
-  "lyrics": [ "" ],
+  "startMuted": true,
+  "unmuteTimings": [310],
+  "lyrics": [ "", "" ],
+  "lyricTimings": [60, 80],
   "captions": "500-million-placeholder.vtt"
 }
