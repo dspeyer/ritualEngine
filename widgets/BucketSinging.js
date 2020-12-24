@@ -25,10 +25,8 @@ let css = `
       white-space: pre;
   }
   div.lyrics span.current {
-      font-weight: bold;
       color: rgb(255,250,150);
       text-shadow: 1px 1px 4px rgba(0,0,0,.35), -1px -1px 4px rgba(0,0,0,.35), 1px -1px 4px rgba(0,0,0,.35), -1px 1px 4px rgba(0,0,0,.35);
-      font-size: 17pt;
   }
   div.lyrics span.old {
       color: #999;
