@@ -12,6 +12,5 @@
   "startMuted": true,
   "unmuteTimings": [310],
   "lyrics": [ "", "" ],
-  "lyricTimings": [60, 80],
-  "captions": "500-million-placeholder.vtt"
+  "lyricTimings": [60, 80]
 }
