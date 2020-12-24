@@ -40,6 +40,9 @@
     "Studying the Necronomicon"
   ],
   "backing": "ben-necronomicon-trim.wav",
+  "startMuted": true,
+  "unmuteTimings": [55],
+  "lyricTimings": [60.771, 61.305, 64.17, 68.267, 72.13, 75.794, 78.822, 82.968, 85.913, 90.164, 93.542, 97.168, 100.734, 104.024, 107.871, 110.371, 111.416, 114.479, 118.797, 122.317, 125.655, 128.955, 132.711, 136.039, 139.474, 141.288, 141.756, 146.962, 150.442, 154.015],
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/ben-necronomicon-trim-480-square-silent.mp4"
 }
     
