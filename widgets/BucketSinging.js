@@ -341,7 +341,7 @@ export class BucketSinging {
         putOnBox(this.div, boxColors.lyrics);
         if (videoUrl) {
             this.video_div = $('<div class="bbs-video-wrapper">').appendTo($('body'));
-            if (! roundVideo) this.video_div.css('border-radius',0);
+            if (! roundVideo) this.video_div.css('border-radius',0).addClass('speaker-video')
             putOnBox(this.video_div, boxColors.video);
         }
         if (boxColors.slots) {
