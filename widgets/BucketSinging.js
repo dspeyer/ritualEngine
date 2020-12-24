@@ -97,6 +97,27 @@ let css = `
   div.slotCol:hover .tooltip {
     display:block
   }
+  div.slider {
+    width: fit-content;
+    position: relative;
+    user-select: none;
+  }
+  div.slider input {
+    height: 100%;
+  }
+  div.slider span {
+    color: #77ffff;
+    text-shadow: 0 0 1px black;
+    font-size: smaller;
+  }
+  div.slider .left {
+    position: absolute;
+    left: 0;
+  }
+  div.slider .right {
+    position: absolute;
+    right: 0;
+  }
 `;
 
 let secretId = Math.round(Math.random()*Number.MAX_SAFE_INTEGER);
@@ -353,6 +374,11 @@ export class BucketSinging {
             $('#widget-extra-ctrls').empty();
             this.slotsUi = $('<div class=slots>').appendTo($('#widget-extra-ctrls'));
         }
+        this.sliderbox = $(`<div class=slider
+                                 title="Control the relative volume you hear of the soloist vs your fellow attendees in earlier buckets">
+                               <span class=left>Soloist</span> <span class=right>Crowd</span>
+                            </div>`).appendTo($('#widget-extra-ctrls'));
+        this.slider = $('<input type=range min=50 max=150>').appendTo(this.sliderbox);
         this.lyrics = lyrics;
         this.cleanup = cleanup;
         this.background = background_opts;
@@ -512,7 +538,13 @@ export class BucketSinging {
         $('#speaker-mute-button').on('click.bucketSinging', () => {
             this.client.speakerMuted = retrieveParameter('speakerMuted');
         });
-
+        this.slider.attr('disabled',(slot==0));
+        this.client.x_send_metadata("backingVolume", 2-this.slider.val()/100);
+        this.slider.off('change');
+        this.slider.on('change', ()=>{
+            this.client.x_send_metadata("backingVolume", 2-this.slider.val()/100);
+        });
+            
         this.client.addEventListener('markReached', async ({detail: {data}}) => {
             if (data === 'backingTrackStart') {
                 this.bkstart = (new Date()).getTime();
@@ -559,6 +591,7 @@ export class BucketSinging {
         this.createSlotButtons(slot, slotCounts)
         if (this.centrallyMuted) {
             this.slotsUi.hide();
+            this.sliderbox.hide();
         }
 
 
@@ -599,6 +632,7 @@ export class BucketSinging {
                         this.video[0].textTracks[0].mode = retrieveParameter('showCaptions') ? 'showing' : 'hidden';
                         this.showhidecap.show();
                         this.slotsUi.hide();
+                        this.sliderbox.hide();
                     }
                 } else if (typeof lid === 'string' && lid.startsWith('unmute')) {
                     this.div.show(1000);
@@ -608,6 +642,7 @@ export class BucketSinging {
                         this.video[0].textTracks[0].mode = 'hidden';
                         this.showhidecap.hide();
                         this.slotsUi.show();
+                        this.sliderbox.show();
                     }
                 } else if (lid == parseInt(lid)) {
                     this.handleLyric(lid);
@@ -665,6 +700,7 @@ export class BucketSinging {
         if (this.video_div) this.video_div.remove();
         if (this.slotsUi) this.slotsUi.remove();
         if (this.showhidecap) this.showhidecap.remove();
+        if (this.sliderbox) this.sliderbox.remove();
     }
 }
 
