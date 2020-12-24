@@ -41,8 +41,6 @@
   ],
   "backing": "ben-necronomicon-trim.wav",
   "startMuted": true,
-  "unmuteTimings": [55],
-  "lyricTimings": [1, 55],
   "videoUrl": "https://d3vyng54usxcs.cloudfront.net/ben-necronomicon-trim-480-square-silent.mp4"
 }
     
