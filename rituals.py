@@ -23,9 +23,12 @@ except KeyError:
     intercom_app_id = ''
 
 async def homepage(req):
-    if len(active) == 1 and 'controlpanel' not in req.query:
-        ritual_name, = active.keys()
-        raise web.HTTPFound(f'/{ritual_name}/partake')
+    if 'RITUAL_NAME' in secrets and 'controlpanel' not in req.query:
+        ritual_name = secrets['RITUAL_NAME']
+        if ritual_name in active:
+            raise web.HTTPFound(f'/{ritual_name}/partake')
+        else:
+            return web.Response(text=tpl('html/notready.html'), content_type='text/html')
     l = '\n'.join([ '<li><a href="/%s/partake">%s (%s)</a>'%(x,x,active[x].script) for x in active.keys() ])
     s = '\n'.join([ '<option>%s</option>'%(x.replace('examples/','')) for x in glob('examples/*') ])
     html = tpl('html/index.html', list=l, scripts=s)
