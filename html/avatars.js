@@ -515,7 +515,7 @@ export async function twilioConnect(token, roomId) {
                 .text("We weren't able to set up your microphone for voice chat in the lobby, so no one will be able to hear you there. This will not affect singalongs or text chat.")
                 .prependTo($('body'));
             setTimeout(() => {
-                problem.hide(1000);
+                problem.fadeOut(1000);
             }, 5000);
         }
 //        localAudioTrack = await Twilio.Video.createLocalAudioTrack();
