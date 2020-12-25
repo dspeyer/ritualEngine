@@ -539,10 +539,10 @@ export class BucketSinging {
             this.client.speakerMuted = retrieveParameter('speakerMuted');
         });
         this.slider.attr('disabled',(slot==0));
-        this.client.x_send_metadata("backingVolume", 2-this.slider.val()/100);
+        this.client.send_user_backing_volume(2-this.slider.val()/100);
         this.slider.off('change');
         this.slider.on('change', ()=>{
-            this.client.x_send_metadata("backingVolume", 2-this.slider.val()/100);
+            this.client.send_user_backing_volume(2-this.slider.val()/100);
         });
             
         this.client.addEventListener('markReached', async ({detail: {data}}) => {
