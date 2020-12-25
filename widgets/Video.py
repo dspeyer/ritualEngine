@@ -10,12 +10,14 @@ class Video(object):
         self.ritual = ritual
         self.videoUrl = videoUrl
         self.boxColor = boxColor
-
+        self.startTime = datetime.now()
+        
     def to_client(self, clientId, have):
         return {
           'widget': 'Video', 
           'boxColor': self.boxColor,
-          'videoUrl': self.videoUrl
+          'videoUrl': self.videoUrl,
+          'startedAgo': (datetime.now() - self.startTime).total_seconds()  
         }
 
     @staticmethod

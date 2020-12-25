@@ -1,7 +1,7 @@
 import { putOnBox, deleteParameter, persistParameter, retrieveParameter, showHideCapBtn } from '../../lib.js';
 
 export class Video {
-  constructor({boxColor, videoUrl}) {
+  constructor({boxColor, videoUrl, startedAgo}) {
     this.video_div = $('<div class="speaker-video">').css('z-index',-1).appendTo($('body'));
     putOnBox([this.video_div], boxColor);
     this.videoUrl = videoUrl;
@@ -17,6 +17,9 @@ export class Video {
       this.showhidecap = showHideCapBtn(videoElem);
     }
     videoElem.currentTime = retrieveParameter(videoUrl) ?? 0;
+    if (startedAgo > videoElem.currentTime + 5) {
+      videoElem.currentTime = startedAgo;
+    }
     this.intervalHandle = setInterval(() => {
       persistParameter(videoUrl, videoElem.currentTime, {clearable: false});
     }, 1000);
