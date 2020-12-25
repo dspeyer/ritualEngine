@@ -627,7 +627,7 @@ export class BucketSinging {
                 let lid = ev?.detail?.data;
                 if (typeof lid === 'string' && lid.startsWith('mute')) {
                     this.client.micMuted = this.centrallyMuted = true;
-                    this.div.hide(1000);
+                    this.div.fadeOut(1000);
                     if (this.video[0].textTracks.length) {
                         this.video[0].textTracks[0].mode = retrieveParameter('showCaptions') ? 'showing' : 'hidden';
                         this.showhidecap.show();
@@ -635,7 +635,7 @@ export class BucketSinging {
                         this.sliderbox.hide();
                     }
                 } else if (typeof lid === 'string' && lid.startsWith('unmute')) {
-                    this.div.show(1000);
+                    this.div.fadeIn(1000);
                     this.centrallyMuted = false;
                     this.client.micMuted = retrieveParameter('micMuted');
                     if (this.video[0].textTracks.length) {
