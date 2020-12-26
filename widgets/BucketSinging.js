@@ -493,7 +493,7 @@ export class BucketSinging {
         if (i==0) {
             tooltip.append('<p><em>Songleader. Singers in this bucket only hear the backing track, but everyone can hear them.</em></p><p><em>Join if you want to help lead the song!</em></p>')
         } else if (i==3) {
-            tooltip.append('<p><em>Listen Only. Singers in the last bucket can hear everyone, but nobody hears them.</em></p>')
+            tooltip.append('<p><em>Listen Only. Singers in the last bucket can hear everyone, but nobody hears them live.</em></p>')
         } else {
             tooltip.append('<p><em>Singers in this bucket can be heard by people in later buckets, and can hear people in earlier buckets</em></p>')
         }
