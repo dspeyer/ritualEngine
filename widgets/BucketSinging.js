@@ -223,10 +223,13 @@ async function initContext(){
     }
 
     div.empty();
-    div.append(`<div>This event will have group singing! To partcipate, you need to use <b>wired</b> headphones, and we will do some calibration.<br><br>You should <b>skip this</b> if:<ul>
+    div.append(`<div>This event will have group singing! To participate, you need to use <b>wired</b> headphones, and we will do some calibration.<br><br>
+                  During the singing part of the ritual, you will be randomly assigned to one of 4 buckets. You can choose a different bucket if you like. You will be able to hear the voices of everyone ahead of you. 
+                  If you are in the last bucket, nobody will hear you sing live. Our group singing software automatically makes a recording per song that includes the voices of everyone in every bucket, including the last one.
+                  <br><br>You should <b>skip this</b> if:<ul>
                   <li> you don't have / can't use <b>wired</b> headphones (Bluetooth headphones won't work; they have too much lag)
                   <li> you are in a noisy area <em>(including if you are sharing a room with others who are using this app, on other devices)</em>
-                  <li> you don't want anybody else to hear you sing
+                  <li> you don't want your voice included in the auto-generated audio file
                   <li> or you just don't want to sing at all.
                 </ul> In that case, we'll set you up so nobody hears you during singalongs. (People can still hear you in the lobby.)</div>`);
     let buttonyes = $('<input type=button class="yes-button" value="Yes, calibrate me.  None of those issues apply.">').appendTo(div);
@@ -346,7 +349,7 @@ async function initContext(){
     }
 
     div.empty();
-    div.append("<p>That's enough singing.  Calibration is done.  On with the main event.</p>");
+    div.append("<p>That's enough singing.  Calibration is done.  If you experience difficulties during the event, you can refresh the page at any time and still keep your calibration settings.  On with the main event.</p>");
     button = $('<input type=button>').attr('value',"Nifty").appendTo(div);
     await new Promise((res)=>{button.on('click',res);});
 
